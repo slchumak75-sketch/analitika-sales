@@ -63,6 +63,10 @@ Workflow `.github/workflows/build-windows.yml` автоматически зап
 
 Названия столбцов и ограничения автоматического сопоставления описаны в [`docs/analysis-methodology.md`](docs/analysis-methodology.md). Отчёт предназначен для управленческой оценки, не заменяет бухгалтерскую или налоговую отчётность.
 
+## Анализ фактических продаж (2026)
+
+Фактические данные появились: финансовый отчёт `ОТЧЕТ ПО ОРГАНИЗАЦИИ мир.xlsx` в репозитории и приложенная «Ведомость по остаткам» (PDF). Итоги управленческого анализа — в [`docs/analiz-prodazh-2026.md`](docs/analiz-prodazh-2026.md), интерактивный дашборд — [`analysis/otchet-prodazhi.html`](analysis/otchet-prodazhi.html) (открыть в браузере). Распознанные данные и воспроизводимые расчёты — в каталоге `analysis/` (`extract_pdf.py` требует `pymupdf`, `sales_analysis.py` — `openpyxl`).
+
 ## Документация для продолжения
 
 - [`docs/source-workbook-status.md`](docs/source-workbook-status.md) — что найдено по исходной книге.
