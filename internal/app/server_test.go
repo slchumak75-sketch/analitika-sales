@@ -1,11 +1,19 @@
 package app
 
 import (
+	"bytes"
+	"encoding/json"
+	"math"
+	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/slchumak75-sketch/analitika-sales/internal/analysis"
 )
 
 func TestRootAndHealthEndpoints(t *testing.T) {
@@ -42,5 +50,50 @@ func TestShutdownEndpointInvokesCallback(t *testing.T) {
 	case <-called:
 	case <-time.After(time.Second):
 		t.Fatal("shutdown callback was not invoked")
+	}
+}
+
+func TestAnalyzeUploadRepositoryWorkbook(t *testing.T) {
+	data, err := os.ReadFile(filepath.Join("..", "..", "ОТЧЕТ ПО ОРГАНИЗАЦИИ мир.xlsx"))
+	if err != nil {
+		t.Skipf("repository workbook is not available: %v", err)
+	}
+
+	var body bytes.Buffer
+	writer := multipart.NewWriter(&body)
+	part, err := writer.CreateFormFile("file", "ОТЧЕТ ПО ОРГАНИЗАЦИИ мир.xlsx")
+	if err != nil {
+		t.Fatalf("create form file: %v", err)
+	}
+	if _, err := part.Write(data); err != nil {
+		t.Fatalf("write form file: %v", err)
+	}
+	if err := writer.Close(); err != nil {
+		t.Fatalf("close multipart writer: %v", err)
+	}
+
+	request := httptest.NewRequest(http.MethodPost, "/api/analyze", &body)
+	request.Header.Set("Content-Type", writer.FormDataContentType())
+	recorder := httptest.NewRecorder()
+	NewHandler(nil).ServeHTTP(recorder, request)
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("analyze status = %d, body = %s", recorder.Code, recorder.Body.String())
+	}
+
+	var payload struct {
+		FileName string          `json:"fileName"`
+		Report   analysis.Report `json:"report"`
+	}
+	if err := json.Unmarshal(recorder.Body.Bytes(), &payload); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if payload.FileName == "" || payload.Report.Mode != analysis.ModeReport {
+		t.Fatalf("unexpected response: file=%q mode=%q", payload.FileName, payload.Report.Mode)
+	}
+	if payload.Report.NetProfit == nil || math.Abs(*payload.Report.NetProfit-93362.63733333332) > 0.01 {
+		t.Fatalf("unexpected net profit: %v", payload.Report.NetProfit)
+	}
+	if payload.Report.ProfitTotal == nil || math.Abs(*payload.Report.ProfitTotal-116703.29666666663) > 0.01 {
+		t.Fatalf("unexpected profit before tax: %v", payload.Report.ProfitTotal)
 	}
 }
