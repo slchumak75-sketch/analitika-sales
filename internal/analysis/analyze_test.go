@@ -9,10 +9,10 @@ import (
 
 func TestAnalyzeCalculatesProfitAndMargin(t *testing.T) {
 	table := xlsx.Table{
-		SheetName: "Продажи",
-		TableName: "SalesTable",
-		Range:     "A1:D4",
-		HasHeader: true,
+		SheetName:  "Продажи",
+		TableName:  "SalesTable",
+		Range:      "A1:D4",
+		HasHeader:  true,
 		Structured: true,
 		Rows: [][]string{
 			{"Товар", "Выручка, BYN", "Себестоимость, BYN", "Количество"},

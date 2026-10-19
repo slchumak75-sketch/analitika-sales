@@ -8,12 +8,12 @@ import (
 
 func TestReadFirstStructuredTable(t *testing.T) {
 	workbook := testWorkbook(t, map[string]string{
-		"xl/workbook.xml": `<?xml version="1.0" encoding="UTF-8"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Продажи" sheetId="1" r:id="rId1"/></sheets></workbook>`,
-		"xl/_rels/workbook.xml.rels": `<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/></Relationships>`,
-		"xl/sharedStrings.xml": `<?xml version="1.0" encoding="UTF-8"?><sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><si><t>Товар</t></si><si><t>Выручка</t></si><si><t>Позиция А</t></si><si><t>Позиция Б</t></si></sst>`,
-		"xl/worksheets/sheet1.xml": `<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheetData><row r="1"><c r="A1" t="s"><v>0</v></c><c r="B1" t="inlineStr"><is><t>Выручка</t></is></c></row><row r="2"><c r="A2" t="s"><v>2</v></c><c r="B2"><v>1250.5</v></c></row><row r="3"><c r="A3" t="s"><v>3</v></c><c r="B3"><v>800</v></c></row></sheetData><tableParts count="1"><tablePart r:id="rId2"/></tableParts></worksheet>`,
+		"xl/workbook.xml":                     `<?xml version="1.0" encoding="UTF-8"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Продажи" sheetId="1" r:id="rId1"/></sheets></workbook>`,
+		"xl/_rels/workbook.xml.rels":          `<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/></Relationships>`,
+		"xl/sharedStrings.xml":                `<?xml version="1.0" encoding="UTF-8"?><sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><si><t>Товар</t></si><si><t>Выручка</t></si><si><t>Позиция А</t></si><si><t>Позиция Б</t></si></sst>`,
+		"xl/worksheets/sheet1.xml":            `<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheetData><row r="1"><c r="A1" t="s"><v>0</v></c><c r="B1" t="inlineStr"><is><t>Выручка</t></is></c></row><row r="2"><c r="A2" t="s"><v>2</v></c><c r="B2"><v>1250.5</v></c></row><row r="3"><c r="A3" t="s"><v>3</v></c><c r="B3"><v>800</v></c></row></sheetData><tableParts count="1"><tablePart r:id="rId2"/></tableParts></worksheet>`,
 		"xl/worksheets/_rels/sheet1.xml.rels": `<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/table" Target="../tables/table1.xml"/></Relationships>`,
-		"xl/tables/table1.xml": `<?xml version="1.0" encoding="UTF-8"?><table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Sales" displayName="SalesTable" ref="A1:B3" headerRowCount="1"><tableColumns count="2"><tableColumn id="1" name="Товар"/><tableColumn id="2" name="Выручка"/></tableColumns></table>`,
+		"xl/tables/table1.xml":                `<?xml version="1.0" encoding="UTF-8"?><table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Sales" displayName="SalesTable" ref="A1:B3" headerRowCount="1"><tableColumns count="2"><tableColumn id="1" name="Товар"/><tableColumn id="2" name="Выручка"/></tableColumns></table>`,
 	})
 
 	table, err := ReadFirstTable(workbook)
@@ -36,10 +36,10 @@ func TestReadFirstStructuredTable(t *testing.T) {
 
 func TestReadFirstNonEmptySheetWhenNoStructuredTable(t *testing.T) {
 	workbook := testWorkbook(t, map[string]string{
-		"xl/workbook.xml": `<?xml version="1.0"?><workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Отчёт" sheetId="1" r:id="rId1"/><sheet name="Пустой" sheetId="2" r:id="rId2"/></sheets></workbook>`,
+		"xl/workbook.xml":            `<?xml version="1.0"?><workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Отчёт" sheetId="1" r:id="rId1"/><sheet name="Пустой" sheetId="2" r:id="rId2"/></sheets></workbook>`,
 		"xl/_rels/workbook.xml.rels": `<?xml version="1.0"?><Relationships><Relationship Id="rId1" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Target="worksheets/sheet2.xml"/></Relationships>`,
-		"xl/worksheets/sheet1.xml": `<?xml version="1.0"?><worksheet><sheetData><row r="2"><c r="B2" t="inlineStr"><is><t>Позиция</t></is></c><c r="C2"><v>12</v></c></row><row r="3"><c r="B3" t="inlineStr"><is><t>Ещё</t></is></c><c r="C3"><v>8</v></c></row></sheetData></worksheet>`,
-		"xl/worksheets/sheet2.xml": `<?xml version="1.0"?><worksheet><sheetData/></worksheet>`,
+		"xl/worksheets/sheet1.xml":   `<?xml version="1.0"?><worksheet><sheetData><row r="2"><c r="B2" t="inlineStr"><is><t>Позиция</t></is></c><c r="C2"><v>12</v></c></row><row r="3"><c r="B3" t="inlineStr"><is><t>Ещё</t></is></c><c r="C3"><v>8</v></c></row></sheetData></worksheet>`,
+		"xl/worksheets/sheet2.xml":   `<?xml version="1.0"?><worksheet><sheetData/></worksheet>`,
 	})
 
 	table, err := ReadFirstTable(workbook)

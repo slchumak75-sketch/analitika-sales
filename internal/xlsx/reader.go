@@ -42,8 +42,8 @@ type workbookSheet struct {
 }
 
 type parsedSheet struct {
-	meta       workbookSheet
-	cells      map[int]map[int]string
+	meta        workbookSheet
+	cells       map[int]map[int]string
 	tableRelIDs []string
 }
 

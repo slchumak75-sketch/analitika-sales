@@ -88,6 +88,16 @@
     .metric-value.negative { color: var(--red); }
     .metric-value.positive { color: var(--green); }
     .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+    .report-panel { margin-top: 14px; }
+    .report-subhead { border-top: 1px solid var(--line); }
+    .report-table td:first-child { max-width: 380px; white-space: normal; overflow: visible; text-overflow: clip; }
+    .report-table td, .report-table th { padding-left: 12px; padding-right: 12px; }
+    .report-subtotal td { background: #f8fafc; font-weight: 720; color: var(--ink); }
+    .report-reference td { color: #8793a5; font-style: italic; }
+    .report-negative { color: var(--red) !important; }
+    .report-positive { color: var(--green); }
+    .report-note { margin: 0; padding: 0 18px 16px; color: #8290a3; font-size: 11px; line-height: 1.55; }
+    .period-table td, .period-table th { padding-left: 10px; padding-right: 10px; }
     .panel { background: #fff; border: 1px solid var(--line); border-radius: 13px; overflow: hidden; }
     .panel-heading { padding: 16px 18px 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
     .panel-title { font-size: 14px; font-weight: 720; }
@@ -173,8 +183,8 @@
     <section class="intro">
       <div>
         <p class="eyebrow">Локальный финансовый анализ</p>
-        <h1>Понимайте прибыль<br class="desktop-break"> по каждой позиции</h1>
-        <p>Загрузите книгу Excel — приложение найдёт первую таблицу, сопоставит финансовые столбцы и покажет прибыль, маржинальность и позиции с лучшим и худшим результатом.</p>
+        <h1>Понимайте прибыль<br class="desktop-break"> по таблице и периодам</h1>
+        <p>Загрузите книгу Excel — приложение найдёт первую таблицу, распознает построчные продажи или отчёт о прибыли и покажет прибыль, маржинальность, налоги и разбивку по периодам.</p>
       </div>
       <span class="version-chip">Windows · Go · HTML-интерфейс</span>
     </section>
@@ -227,28 +237,28 @@
 
       <div class="metric-grid">
         <article class="metric-card">
-          <div class="metric-label"><span class="metric-icon">↗</span>Выручка</div>
+          <div class="metric-label"><span class="metric-icon">↗</span><span id="revenueLabel">Выручка</span></div>
           <div class="metric-value" id="revenueValue">—</div>
-          <div class="metric-hint">по рассчитанным строкам</div>
+          <div class="metric-hint" id="revenueHint">по рассчитанным строкам</div>
         </article>
         <article class="metric-card">
-          <div class="metric-label"><span class="metric-icon">◫</span>Себестоимость</div>
+          <div class="metric-label"><span class="metric-icon">◫</span><span id="costLabel">Себестоимость</span></div>
           <div class="metric-value" id="costValue">—</div>
-          <div class="metric-hint">распознанные или рассчитанные затраты</div>
+          <div class="metric-hint" id="costHint">распознанные или рассчитанные затраты</div>
         </article>
         <article class="metric-card profit-card">
-          <div class="metric-label"><span class="metric-icon">◆</span>Прибыль</div>
+          <div class="metric-label"><span class="metric-icon">◆</span><span id="profitLabel">Прибыль</span></div>
           <div class="metric-value" id="profitValue">—</div>
-          <div class="metric-hint">итог по таблице</div>
+          <div class="metric-hint" id="profitHint">итог по таблице</div>
         </article>
         <article class="metric-card">
-          <div class="metric-label"><span class="metric-icon">%</span>Маржинальность</div>
+          <div class="metric-label"><span class="metric-icon">%</span><span id="marginLabel">Маржинальность</span></div>
           <div class="metric-value" id="marginValue">—</div>
-          <div class="metric-hint">прибыль ÷ выручка</div>
+          <div class="metric-hint" id="marginHint">прибыль ÷ выручка</div>
         </article>
       </div>
 
-      <div class="detail-grid">
+      <div class="detail-grid" id="detailGrid">
         <section class="panel">
           <div class="panel-heading"><div class="panel-title">Лучшие позиции по прибыли</div><div class="panel-caption">до 5 строк</div></div>
           <div class="scroll-table"><table><thead><tr><th>Позиция</th><th style="text-align:right">Выручка</th><th style="text-align:right">Прибыль</th></tr></thead><tbody id="topItems"></tbody></table></div>
@@ -259,6 +269,20 @@
         </section>
       </div>
 
+      <section class="panel report-panel" id="reportPanel" style="display:none">
+        <div class="panel-heading">
+          <div class="panel-title">Структура отчёта о прибыли</div>
+          <div class="panel-caption" id="reportCaption">итоговый столбец</div>
+        </div>
+        <div class="scroll-table"><table class="report-table"><thead><tr><th>Статья</th><th style="text-align:right">Сумма</th></tr></thead><tbody id="reportLines"></tbody></table></div>
+        <div class="panel-heading report-subhead">
+          <div class="panel-title">По периодам</div>
+          <div class="panel-caption">выручка без НДС · прибыль до налога · чистая прибыль</div>
+        </div>
+        <div class="scroll-table"><table class="report-table period-table"><thead><tr><th>Период</th><th style="text-align:right">Выручка</th><th style="text-align:right">Расходы</th><th style="text-align:right">Прибыль до налога</th><th style="text-align:right">Налог</th><th style="text-align:right">Чистая прибыль</th><th style="text-align:right">Маржа</th></tr></thead><tbody id="periodRows"></tbody></table></div>
+        <p class="report-note">Прибыль до налога = выручка без НДС − себестоимость и затраты. НДС к уплате показан справочно. Значения формул взяты из сохранённых в книге результатов.</p>
+      </section>
+
       <section class="mapping-panel">
         <div class="mapping-title">Как прочитана таблица</div>
         <div class="mapping-list" id="mappingList"></div>
@@ -266,12 +290,12 @@
 
       <div class="note-grid">
         <section class="stats-panel">
-          <div class="stats-title">Проверка охвата данных</div>
+          <div class="stats-title" id="statsTitle">Проверка охвата данных</div>
           <div class="stats-list">
-            <div><div class="stat-label">Строк рассчитано</div><div class="stat-value" id="rowsAnalyzed">—</div></div>
-            <div><div class="stat-label">Строк с убытком</div><div class="stat-value" id="lossRows">—</div></div>
-            <div><div class="stat-label">Пропущено строк</div><div class="stat-value" id="rowsSkipped">—</div></div>
-            <div><div class="stat-label">Итоговых строк исключено</div><div class="stat-value" id="totalRowsSkipped">—</div></div>
+            <div><div class="stat-label" id="statLabel1">Строк рассчитано</div><div class="stat-value" id="rowsAnalyzed">—</div></div>
+            <div><div class="stat-label" id="statLabel2">Строк с убытком</div><div class="stat-value" id="lossRows">—</div></div>
+            <div><div class="stat-label" id="statLabel3">Пропущено строк</div><div class="stat-value" id="rowsSkipped">—</div></div>
+            <div><div class="stat-label" id="statLabel4">Итоговых строк исключено</div><div class="stat-value" id="totalRowsSkipped">—</div></div>
           </div>
         </section>
         <section class="warnings-panel" id="warningsPanel">
@@ -282,7 +306,7 @@
           <ul class="warnings-list" id="warningsList"></ul>
         </section>
       </div>
-      <p class="source-note"><strong>Методика:</strong> прибыль берётся из распознанного столбца, если он есть; иначе считается как выручка минус себестоимость, либо по указанной марже. Маржинальность — прибыль / выручка. Это управленческая оценка по содержимому таблицы, а не бухгалтерская или налоговая отчётность.</p>
+      <p class="source-note" id="sourceNote"><strong>Методика:</strong> прибыль берётся из распознанного столбца, если он есть; иначе считается как выручка минус себестоимость, либо по указанной марже. Маржинальность — прибыль / выручка. Это управленческая оценка по содержимому таблицы, а не бухгалтерская или налоговая отчётность.</p>
     </section>
 
     <footer class="footer"><span>Аналитика продаж · локальное приложение</span><span>Формулы Excel читаются по сохранённым в файле значениям</span></footer>
@@ -298,6 +322,7 @@
     const errorBox = document.getElementById('errorBox');
     let activeFile = null;
     let toastTimer = null;
+    const defaultSourceNote = document.getElementById('sourceNote').innerHTML;
 
     document.getElementById('browseButton').addEventListener('click', (event) => {
       event.stopPropagation();
@@ -388,23 +413,145 @@
     function renderReport(payload) {
       const report = payload.report || {};
       document.getElementById('resultsContext').textContent = `${payload.fileName || activeFile.name} · лист «${report.sheetName || '—'}» · диапазон ${report.range || '—'}`;
+      if (report.mode === 'report') {
+        renderReportMode(report);
+      } else {
+        renderItemMode(report);
+      }
+      renderMappings(report.columns || []);
+      renderWarnings(report.warnings || []);
+    }
+
+    function renderItemMode(report) {
       document.getElementById('tablePill').textContent = report.structuredTable
         ? `Таблица Excel: ${report.tableName || 'без имени'}`
         : `Первый диапазон данных: ${report.tableName || ''}`;
-
+      setMetricLabels(
+        'Выручка', 'по рассчитанным строкам',
+        'Себестоимость', 'распознанные или рассчитанные затраты',
+        'Прибыль', 'итог по таблице',
+        'Маржинальность', 'прибыль ÷ выручка'
+      );
       setMetric('revenueValue', report.revenueTotal, false, false);
       setMetric('costValue', report.costTotal, false, false);
       setMetric('profitValue', report.profitTotal, false, true);
       setMetric('marginValue', report.marginPercent, true, true);
+      setStatLabels('Строк рассчитано', 'Строк с убытком', 'Пропущено строк', 'Итоговых строк исключено');
+      document.getElementById('statsTitle').textContent = 'Проверка охвата данных';
       document.getElementById('rowsAnalyzed').textContent = number(report.rowsAnalyzed);
       document.getElementById('lossRows').textContent = number(report.lossRows);
       document.getElementById('rowsSkipped').textContent = number(report.rowsSkipped);
       document.getElementById('totalRowsSkipped').textContent = number(report.totalRowsSkipped);
-
+      document.getElementById('detailGrid').style.display = 'grid';
+      document.getElementById('reportPanel').style.display = 'none';
+      document.getElementById('sourceNote').innerHTML = defaultSourceNote;
       renderItems('topItems', report.topItems || []);
       renderItems('lowestItems', report.lowestItems || []);
-      renderMappings(report.columns || []);
-      renderWarnings(report.warnings || []);
+    }
+
+    function renderReportMode(report) {
+      const hasVat = typeof report.outputVat === 'number';
+      document.getElementById('tablePill').textContent = `Отчёт о прибыли · итог: ${report.totalColumnHeader || 'сумма периодов'}`;
+      setMetricLabels(
+        hasVat ? 'Выручка без НДС' : 'Выручка',
+        hasVat && typeof report.grossRevenue === 'number' ? `с НДС: ${number(report.grossRevenue)}` : 'по итоговому столбцу',
+        'Себестоимость и затраты', 'сумма распознанных статей',
+        'Прибыль до налога', 'выручка без НДС − затраты',
+        'Маржинальность', 'прибыль ÷ выручка без НДС'
+      );
+      setMetric('revenueValue', report.revenueTotal, false, false);
+      setMetric('costValue', report.costTotal, false, false);
+      setMetric('profitValue', report.profitTotal, false, true);
+      setMetric('marginValue', report.marginPercent, true, true);
+      setStatLabels('Строк в отчёте', 'Распознано статей', 'Периодов', 'НДС к уплате');
+      document.getElementById('statsTitle').textContent = 'Структура отчёта';
+      document.getElementById('rowsAnalyzed').textContent = number(report.rowsInTable);
+      document.getElementById('lossRows').textContent = number((report.reportLines || []).length);
+      document.getElementById('rowsSkipped').textContent = number((report.periods || []).length);
+      document.getElementById('totalRowsSkipped').textContent = typeof report.vatPayable === 'number' ? money(report.vatPayable) : '—';
+      document.getElementById('detailGrid').style.display = 'none';
+      document.getElementById('reportPanel').style.display = 'block';
+      document.getElementById('reportCaption').textContent = report.totalColumnHeader ? `итоговый столбец: ${report.totalColumnHeader}` : 'сумма периодов';
+      document.getElementById('sourceNote').innerHTML = '<strong>Методика:</strong> прибыль до налога = выручка без НДС − себестоимость и затраты. НДС к уплате показан справочно и не вычитается из прибыли. Чистая прибыль = прибыль до налога − налог на прибыль. Значения формул взяты из сохранённых в книге результатов.';
+      renderReportLines(report.reportLines || []);
+      renderPeriods(report);
+    }
+
+    function setMetricLabels(revenueLabel, revenueHint, costLabel, costHint, profitLabel, profitHint, marginLabel, marginHint) {
+      document.getElementById('revenueLabel').textContent = revenueLabel;
+      document.getElementById('revenueHint').textContent = revenueHint;
+      document.getElementById('costLabel').textContent = costLabel;
+      document.getElementById('costHint').textContent = costHint;
+      document.getElementById('profitLabel').textContent = profitLabel;
+      document.getElementById('profitHint').textContent = profitHint;
+      document.getElementById('marginLabel').textContent = marginLabel;
+      document.getElementById('marginHint').textContent = marginHint;
+    }
+
+    function setStatLabels(first, second, third, fourth) {
+      document.getElementById('statLabel1').textContent = first;
+      document.getElementById('statLabel2').textContent = second;
+      document.getElementById('statLabel3').textContent = third;
+      document.getElementById('statLabel4').textContent = fourth;
+    }
+
+    function renderReportLines(lines) {
+      const body = document.getElementById('reportLines');
+      if (!lines.length) {
+        body.innerHTML = '<tr><td class="empty-row" colspan="2">Структура отчёта не распознана</td></tr>';
+        return;
+      }
+      body.innerHTML = lines.map((line) => {
+        const classes = [];
+        if (line.subtotal) classes.push('report-subtotal');
+        if (line.role === 'Справочно') classes.push('report-reference');
+        const amount = typeof line.amount === 'number' ? money(line.amount) : '—';
+        let amountClass = 'number';
+        if (typeof line.amount === 'number' && line.amount < 0) amountClass += ' report-negative';
+        if (line.subtotal && (line.role === 'Прибыль' || line.role === 'Чистая прибыль') && typeof line.amount === 'number' && line.amount > 0) amountClass += ' report-positive';
+        return `<tr class="${classes.join(' ')}"><td title="${escapeHTML(line.label || '')}">${escapeHTML(line.label || '—')}</td><td class="${amountClass}">${escapeHTML(amount)}</td></tr>`;
+      }).join('');
+    }
+
+    function renderPeriods(report) {
+      const body = document.getElementById('periodRows');
+      const periods = report.periods || [];
+      if (!periods.length) {
+        body.innerHTML = '<tr><td class="empty-row" colspan="7">Периоды не распознаны</td></tr>';
+        return;
+      }
+      const rows = periods.map((period) => {
+        const profitClass = typeof period.profit === 'number' && period.profit < 0 ? 'profit-negative' : 'profit-positive';
+        const netClass = typeof period.netProfit === 'number' && period.netProfit < 0 ? 'profit-negative' : 'profit-positive';
+        return `<tr>
+          <td>${escapeHTML(period.label || '—')}</td>
+          <td class="number">${formatOptional(period.revenue)}</td>
+          <td class="number">${formatOptional(period.cost)}</td>
+          <td class="number ${profitClass}">${formatOptional(period.profit)}</td>
+          <td class="number">${formatOptional(period.incomeTax)}</td>
+          <td class="number ${netClass}">${formatOptional(period.netProfit)}</td>
+          <td class="number">${formatOptional(period.marginPercent, true)}</td>
+        </tr>`;
+      });
+      if (typeof report.revenueTotal === 'number' || typeof report.profitTotal === 'number') {
+        const profitClass = typeof report.profitTotal === 'number' && report.profitTotal < 0 ? 'profit-negative' : 'profit-positive';
+        const netClass = typeof report.netProfit === 'number' && report.netProfit < 0 ? 'profit-negative' : 'profit-positive';
+        rows.push(`<tr class="report-subtotal">
+          <td>Итого</td>
+          <td class="number">${formatOptional(report.revenueTotal)}</td>
+          <td class="number">${formatOptional(report.costTotal)}</td>
+          <td class="number ${profitClass}">${formatOptional(report.profitTotal)}</td>
+          <td class="number">${formatOptional(report.incomeTax)}</td>
+          <td class="number ${netClass}">${formatOptional(report.netProfit)}</td>
+          <td class="number">${formatOptional(report.marginPercent, true)}</td>
+        </tr>`);
+      }
+      body.innerHTML = rows.join('');
+    }
+
+    function formatOptional(value, percent) {
+      if (typeof value !== 'number' || !Number.isFinite(value)) return '—';
+      return percent ? `${percentValue(value)}%` : money(value);
     }
 
     function setMetric(id, value, percent, colorize) {
@@ -414,7 +561,7 @@
         element.textContent = 'Нет данных';
         return;
       }
-      element.textContent = percent ? `${number(value)}%` : number(value);
+      element.textContent = percent ? `${percentValue(value)}%` : money(value);
       if (colorize) element.classList.add(value < 0 ? 'negative' : 'positive');
     }
 
@@ -425,9 +572,9 @@
         return;
       }
       body.innerHTML = items.map((item) => {
-        const revenue = typeof item.revenue === 'number' ? number(item.revenue) : '—';
+        const revenue = typeof item.revenue === 'number' ? money(item.revenue) : '—';
         const profitClass = item.profit < 0 ? 'profit-negative' : 'profit-positive';
-        return `<tr><td title="${escapeHTML(item.label || '')}">${escapeHTML(item.label || 'Без названия')}</td><td class="number">${escapeHTML(revenue)}</td><td class="number ${profitClass}">${escapeHTML(number(item.profit))}</td></tr>`;
+        return `<tr><td title="${escapeHTML(item.label || '')}">${escapeHTML(item.label || 'Без названия')}</td><td class="number">${escapeHTML(revenue)}</td><td class="number ${profitClass}">${escapeHTML(money(item.profit))}</td></tr>`;
       }).join('');
     }
 
@@ -484,6 +631,14 @@
 
     function number(value) {
       return new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 2 }).format(value);
+    }
+
+    function money(value) {
+      return new Intl.NumberFormat('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
+    }
+
+    function percentValue(value) {
+      return new Intl.NumberFormat('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
     }
 
     function formatFileSize(bytes) {

@@ -15,11 +15,15 @@ import (
 	"github.com/slchumak75-sketch/analitika-sales/internal/xlsx"
 )
 
-const rankedItemsLimit = 5
+const (
+	rankedItemsLimit = 5
+	ModeItems        = "items"
+	ModeReport       = "report"
+)
 
 type ColumnMapping struct {
-	Role       string `json:"role"`
-	Header     string `json:"header"`
+	Role        string `json:"role"`
+	Header      string `json:"header"`
 	ExcelColumn string `json:"excelColumn"`
 }
 
@@ -33,29 +37,61 @@ type LineItem struct {
 }
 
 type Report struct {
-	SheetName            string         `json:"sheetName"`
-	TableName            string         `json:"tableName"`
-	Range                string         `json:"range"`
-	StructuredTable      bool           `json:"structuredTable"`
-	HeaderRow            int            `json:"headerRow"`
-	HeaderExcelRow       int            `json:"headerExcelRow"`
-	RowsInTable          int            `json:"rowsInTable"`
-	RowsAnalyzed         int            `json:"rowsAnalyzed"`
-	RowsSkipped          int            `json:"rowsSkipped"`
-	TotalRowsSkipped     int            `json:"totalRowsSkipped"`
-	RowsWithRevenue      int            `json:"rowsWithRevenue"`
-	RowsWithCost         int            `json:"rowsWithCost"`
-	RowsWithProfit       int            `json:"rowsWithProfit"`
-	LossRows             int            `json:"lossRows"`
-	ProfitableRows       int            `json:"profitableRows"`
-	RevenueTotal         *float64       `json:"revenueTotal,omitempty"`
-	CostTotal            *float64       `json:"costTotal,omitempty"`
-	ProfitTotal          *float64       `json:"profitTotal,omitempty"`
-	MarginPercent        *float64       `json:"marginPercent,omitempty"`
-	Columns              []ColumnMapping `json:"columns"`
-	TopItems             []LineItem     `json:"topItems"`
-	LowestItems          []LineItem     `json:"lowestItems"`
-	Warnings             []string       `json:"warnings"`
+	Mode              string          `json:"mode"`
+	SheetName         string          `json:"sheetName"`
+	TableName         string          `json:"tableName"`
+	Range             string          `json:"range"`
+	StructuredTable   bool            `json:"structuredTable"`
+	HeaderRow         int             `json:"headerRow"`
+	HeaderExcelRow    int             `json:"headerExcelRow"`
+	RowsInTable       int             `json:"rowsInTable"`
+	RowsAnalyzed      int             `json:"rowsAnalyzed"`
+	RowsSkipped       int             `json:"rowsSkipped"`
+	TotalRowsSkipped  int             `json:"totalRowsSkipped"`
+	RowsWithRevenue   int             `json:"rowsWithRevenue"`
+	RowsWithCost      int             `json:"rowsWithCost"`
+	RowsWithProfit    int             `json:"rowsWithProfit"`
+	LossRows          int             `json:"lossRows"`
+	ProfitableRows    int             `json:"profitableRows"`
+	RevenueTotal      *float64        `json:"revenueTotal,omitempty"`
+	CostTotal         *float64        `json:"costTotal,omitempty"`
+	ProfitTotal       *float64        `json:"profitTotal,omitempty"`
+	MarginPercent     *float64        `json:"marginPercent,omitempty"`
+	GrossRevenue      *float64        `json:"grossRevenue,omitempty"`
+	OutputVat         *float64        `json:"outputVat,omitempty"`
+	VatPayable        *float64        `json:"vatPayable,omitempty"`
+	IncomeTax         *float64        `json:"incomeTax,omitempty"`
+	NetProfit         *float64        `json:"netProfit,omitempty"`
+	NetMarginPercent  *float64        `json:"netMarginPercent,omitempty"`
+	TotalColumnHeader string          `json:"totalColumnHeader,omitempty"`
+	Columns           []ColumnMapping `json:"columns"`
+	ReportLines       []ReportLine    `json:"reportLines,omitempty"`
+	Periods           []ReportPeriod  `json:"periods,omitempty"`
+	TopItems          []LineItem      `json:"topItems"`
+	LowestItems       []LineItem      `json:"lowestItems"`
+	Warnings          []string        `json:"warnings"`
+}
+
+type ReportLine struct {
+	Label    string   `json:"label"`
+	Role     string   `json:"role"`
+	ExcelRow int      `json:"excelRow,omitempty"`
+	Amount   *float64 `json:"amount,omitempty"`
+	Subtotal bool     `json:"subtotal,omitempty"`
+}
+
+type ReportPeriod struct {
+	Label            string   `json:"label"`
+	ExcelColumn      string   `json:"excelColumn"`
+	GrossRevenue     *float64 `json:"grossRevenue,omitempty"`
+	Revenue          *float64 `json:"revenue,omitempty"`
+	Cost             *float64 `json:"cost,omitempty"`
+	Profit           *float64 `json:"profit,omitempty"`
+	MarginPercent    *float64 `json:"marginPercent,omitempty"`
+	IncomeTax        *float64 `json:"incomeTax,omitempty"`
+	NetProfit        *float64 `json:"netProfit,omitempty"`
+	NetMarginPercent *float64 `json:"netMarginPercent,omitempty"`
+	VatPayable       *float64 `json:"vatPayable,omitempty"`
 }
 
 type columnKind int
@@ -74,9 +110,9 @@ const (
 )
 
 type columnCandidate struct {
-	index      int
-	score      int
-	header     string
+	index       int
+	score       int
+	header      string
 	excelColumn string
 }
 
@@ -106,8 +142,17 @@ type rankedRow struct {
 	order int
 }
 
-// Analyze calculates a profitability report for a single extracted table.
+// Analyze detects whether the extracted table is an item-level sales table or a
+// multi-period profit-and-loss report, then calculates the matching report.
 func Analyze(table xlsx.Table) (Report, error) {
+	if report, ok := analyzeReport(table); ok {
+		return report, nil
+	}
+	return analyzeItems(table)
+}
+
+// analyzeItems calculates a profitability report for a single item-level table.
+func analyzeItems(table xlsx.Table) (Report, error) {
 	if len(table.Rows) == 0 {
 		return Report{}, errors.New("в выбранной таблице нет строк")
 	}
@@ -127,6 +172,7 @@ func Analyze(table xlsx.Table) (Report, error) {
 
 	headerExcelRow := excelRowAt(table, headerIndex)
 	report := Report{
+		Mode:            ModeItems,
 		SheetName:       table.SheetName,
 		TableName:       table.TableName,
 		Range:           table.Range,
