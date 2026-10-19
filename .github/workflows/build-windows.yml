@@ -19,16 +19,28 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v7
         with:
           go-version-file: go.mod
           cache: false
 
       - name: Run tests
-        run: go test ./...
+        shell: pwsh
+        run: |
+          $output = go test ./... 2>&1
+          $testExitCode = $LASTEXITCODE
+          $output | ForEach-Object { Write-Output $_ }
+          if ($testExitCode -ne 0) {
+            $output | ForEach-Object {
+              $message = "$($_)".Replace('%', '%25').Replace("`r", '%0D').Replace("`n", '%0A')
+              Write-Output "::error title=go test output::$message"
+            }
+            @('## Go test output', '', '```text') + $output + @('```') | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+            exit $testExitCode
+          }
 
       - name: Build desktop application
         shell: pwsh
@@ -37,7 +49,7 @@ jobs:
           go build -trimpath -ldflags="-s -w -H=windowsgui" -o dist/AnalitikaSales-windows-amd64.exe ./cmd/analitika-sales
 
       - name: Upload Windows executable
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: AnalitikaSales-windows-amd64
           path: dist/AnalitikaSales-windows-amd64.exe
