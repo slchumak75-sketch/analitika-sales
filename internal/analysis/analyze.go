@@ -634,9 +634,18 @@ func parseNumber(input string) (float64, bool) {
 		return 0, false
 	}
 	negative := strings.HasPrefix(input, "(") && strings.HasSuffix(input, ")")
+	runes := []rune(input)
 	var filtered strings.Builder
-	for _, character := range input {
-		if character >= '0' && character <= '9' || character == '.' || character == ',' || character == '-' || character == '+' {
+	for index, character := range runes {
+		if character >= '0' && character <= '9' {
+			filtered.WriteRune(character)
+			continue
+		}
+		if (character == '.' || character == ',') && nearestDigit(runes, index, -1) && nearestDigit(runes, index, 1) {
+			filtered.WriteRune(character)
+			continue
+		}
+		if (character == '-' || character == '+') && filtered.Len() == 0 {
 			filtered.WriteRune(character)
 		}
 	}
@@ -669,6 +678,16 @@ func parseNumber(input string) (float64, bool) {
 		return 0, false
 	}
 	return parsed, true
+}
+
+func nearestDigit(runes []rune, index, direction int) bool {
+	for cursor := index + direction; cursor >= 0 && cursor < len(runes); cursor += direction {
+		if unicode.IsSpace(runes[cursor]) {
+			continue
+		}
+		return runes[cursor] >= '0' && runes[cursor] <= '9'
+	}
+	return false
 }
 
 func normalizeRepeatedSeparator(value string, separator rune) string {
