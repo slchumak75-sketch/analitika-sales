@@ -1,0 +1,909 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Аналитика продаж · Ведомость ТМЦ · окт 2025 — окт 2026</title>
+<style>
+  :root{
+    --bg:#f4f6fb; --card:#ffffff; --ink:#0f172a; --muted:#64748b; --soft:#94a3b8;
+    --line:#e2e8f0; --accent:#1d4ed8; --accent-2:#0ea5e9; --green:#15803d;
+    --green-bg:#dcfce7; --amber:#b45309; --amber-bg:#fef3c7; --red:#b91c1c;
+    --red-bg:#fee2e2; --violet:#6d28d9; --violet-bg:#ede9fe; --slate-bg:#e2e8f0;
+    --radius:16px; --shadow:0 1px 2px rgba(15,23,42,.04), 0 10px 28px -18px rgba(15,23,42,.25);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  h1,h2,h3,h4{margin:0;font-weight:700;letter-spacing:-.02em}
+  p{margin:0}
+  a{color:var(--accent);text-decoration:none}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+
+  /* hero */
+  .hero{background:linear-gradient(135deg,#0b1b3f 0%,#12306b 55%,#1d4ed8 100%);
+    color:#fff;padding:42px 0 34px;position:relative;overflow:hidden}
+  .hero:after{content:"";position:absolute;right:-120px;top:-140px;width:460px;height:460px;
+    border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.28),transparent 62%)}
+  .hero .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#93c5fd;
+    font-weight:700;margin-bottom:10px}
+  .hero h1{font-size:clamp(26px,3.2vw,40px);line-height:1.15;max-width:900px}
+  .hero .sub{margin-top:12px;color:#cbd5e1;max-width:860px;font-size:15px}
+  .hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+  .chip{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.10);
+    border:1px solid rgba(255,255,255,.18);padding:7px 12px;border-radius:999px;font-size:13px;
+    color:#e2e8f0;backdrop-filter:blur(4px)}
+  .chip b{color:#fff;font-weight:700}
+
+  main{padding:30px 0 56px}
+  section{margin-bottom:34px;scroll-margin-top:18px}
+  .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;
+    margin-bottom:14px;flex-wrap:wrap}
+  .section-head h2{font-size:21px}
+  .section-head .hint{color:var(--muted);font-size:13px;max-width:720px}
+  .card{min-width:0;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:22px}
+  .grid{display:grid;gap:16px}
+  .kpis{grid-template-columns:repeat(6,1fr)}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 16px 14px;
+    box-shadow:var(--shadow);display:flex;flex-direction:column;gap:5px;min-height:116px}
+  .kpi .label{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .kpi .value{font-size:26px;font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-top:2px}
+  .kpi .value small{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:0}
+  .kpi .note{font-size:12px;color:var(--muted);margin-top:auto}
+  .kpi.accent{border-left:4px solid var(--accent)}
+  .kpi.green{border-left:4px solid var(--green)}
+  .kpi.amber{border-left:4px solid #d97706}
+  .kpi.red{border-left:4px solid var(--red)}
+  .kpi.violet{border-left:4px solid var(--violet)}
+
+  .split{display:grid;grid-template-columns:1.55fr 1fr;gap:16px;align-items:start}
+  .split>*,.split-even>*,.grid>*,.stack>*{min-width:0}
+  .split-even{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+  .stack{display:grid;gap:16px}
+  .card h3{font-size:16px;margin-bottom:4px}
+  .card .caption{font-size:12.5px;color:var(--muted);margin-bottom:14px}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:10px}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px;vertical-align:1px}
+
+  .toggle{display:inline-flex;background:#eef2f7;border:1px solid var(--line);border-radius:10px;
+    padding:3px;gap:3px}
+  .toggle button{border:0;background:transparent;color:var(--muted);font:inherit;font-size:12.5px;
+    font-weight:600;padding:6px 12px;border-radius:8px;cursor:pointer}
+  .toggle button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(15,23,42,.12)}
+
+  svg{display:block;width:100%;height:auto;overflow:visible}
+  .axis text{fill:var(--soft);font-size:11px}
+  .gridline{stroke:#eef2f7;stroke-width:1}
+  .bar{transition:opacity .15s}
+  .bar:hover{opacity:.82}
+
+  /* horizontal bars */
+  .hbars{display:grid;gap:9px}
+  .hbar{display:grid;grid-template-columns:minmax(120px,240px) 1fr 94px;gap:10px;align-items:center}
+  .hbar .name{font-size:13px;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hbar .track{background:#eef2f7;border-radius:7px;height:20px;overflow:hidden}
+  .hbar .fill{height:100%;border-radius:7px;background:linear-gradient(90deg,#2563eb,#38bdf8)}
+  .hbar .val{font-size:12.5px;color:#334155;text-align:right;font-variant-numeric:tabular-nums}
+  .hbar .val small{display:block;color:var(--soft);font-size:11px;margin-top:1px;white-space:nowrap}
+
+  /* table */
+  .scroll-hint{display:none;font-size:11.5px;color:var(--soft);margin:2px 0 6px}
+  .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px}
+  table{border-collapse:collapse;width:100%;font-size:13px;min-width:720px}
+  th,td{padding:9px 8px;text-align:left;border-bottom:1px solid #eef2f7;white-space:nowrap}
+  th{position:sticky;top:0;background:#f8fafc;z-index:1;font-size:11px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--muted);cursor:pointer;user-select:none}
+  th:hover{color:var(--ink)}
+  th .arrow{opacity:.35;font-size:10px;margin-left:3px}
+  th.sorted .arrow{opacity:1;color:var(--accent)}
+  tbody tr:hover{background:#f8fafc}
+  td.num{text-align:right;font-variant-numeric:tabular-nums}
+  td.name{white-space:normal;min-width:250px;max-width:360px}
+  .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;
+    letter-spacing:.02em;white-space:nowrap}
+  .b-green{background:var(--green-bg);color:var(--green)}
+  .b-amber{background:var(--amber-bg);color:var(--amber)}
+  .b-red{background:var(--red-bg);color:var(--red)}
+  .b-violet{background:var(--violet-bg);color:var(--violet)}
+  .b-slate{background:var(--slate-bg);color:#475569}
+  .b-blue{background:#dbeafe;color:#1e40af}
+  .abc{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;
+    border-radius:7px;font-size:11px;font-weight:800}
+  .abc.A{background:#dbeafe;color:#1e40af}.abc.B{background:#e0f2fe;color:#0369a1}
+  .abc.C{background:#f1f5f9;color:#64748b}
+
+  .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+  .filters input,.filters select{font:inherit;font-size:13px;padding:8px 10px;border-radius:9px;
+    border:1px solid var(--line);background:#fff;color:var(--ink);min-width:150px}
+  .filters input{flex:1;min-width:220px}
+  .filters .count{font-size:12px;color:var(--muted);margin-left:auto}
+
+  /* insight blocks */
+  .insights{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .insight{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;
+    border-top:4px solid var(--accent)}
+  .insight.warn{border-top-color:#d97706}.insight.bad{border-top-color:var(--red)}
+  .insight.good{border-top-color:var(--green)}
+  .insight h4{font-size:13.5px;margin-bottom:6px}
+  .insight p{font-size:13px;color:#475569}
+  .insight .num{font-size:24px;font-weight:800;letter-spacing:-.03em;margin:2px 0 6px}
+
+  .note-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:14px 16px;
+    font-size:13px;color:#1e3a8a}
+  .note-box.warn{background:#fffbeb;border-color:#fde68a;color:#78350f}
+  .note-box.bad{background:#fef2f2;border-color:#fecaca;color:#7f1d1d}
+  .note-box b{font-weight:700}
+
+  .mini-list{display:grid;gap:8px;min-width:0}
+  .mini{min-width:0;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 11px;
+    border:1px solid var(--line);border-radius:10px;background:#fbfdff;font-size:13px}
+  .mini .n{color:#334155;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mini .v{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+  .matrix{width:100%;border-collapse:separate;border-spacing:6px;min-width:0;table-layout:fixed}
+  .matrix th,.matrix td{border:0;padding:9px 6px;text-align:center;position:static;background:transparent;
+    cursor:default;text-transform:none;letter-spacing:0;font-size:13px;white-space:normal}
+  .matrix th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+  .matrix td{background:#f8fafc;border-radius:10px}
+  .matrix td b{font-size:17px}
+  .matrix td small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+  .matrix td.hot{background:#dbeafe}
+  .matrix td.warm{background:#eff6ff}
+
+  footer{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--muted);font-size:12.5px}
+  footer p{margin-bottom:6px}
+
+  @media (max-width:1100px){
+    .kpis{grid-template-columns:repeat(3,1fr)}
+    .split,.split-even{grid-template-columns:1fr}
+    .insights{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:720px){
+    .wrap{padding:0 14px}
+    .kpis{grid-template-columns:1fr 1fr}
+    .insights{grid-template-columns:1fr}
+    .hbar{grid-template-columns:minmax(96px,1fr) 1fr 82px}
+    .mini{flex-wrap:wrap}
+    .scroll-hint{display:block}
+    #monthly-chart,#active-chart{overflow-x:auto}
+    #monthly-chart svg{min-width:640px}
+    #active-chart svg{min-width:520px}
+    .mini .n{white-space:normal;overflow:visible;text-overflow:clip}
+    .mini .v{margin-left:auto}
+    .hero{padding:30px 0 26px}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Аналитика продаж · количественные данные</div>
+    <h1>Ведомость по остаткам ТМЦ: что и сколько продавал склад «Кореличи»</h1>
+    <p class="sub">Разбор отчёта 1С за 01.10.2025–19.10.2026: динамика, сезонность, структура ассортимента,
+      ABC/XYZ, остатки и качество данных. Цены в ведомости отсутствуют, поэтому выручка и прибыль
+      не рассчитываются — анализ построен на физическом объёме (упаковки и литры).</p>
+    <div class="hero-meta">
+      <span class="chip">Период <b>01.10.2025 — 19.10.2026</b></span>
+      <span class="chip">Склад <b>Кореличи</b></span>
+      <span class="chip">Позиций <b id="chip-sku">111</b></span>
+      <span class="chip">Продано <b id="chip-units">—</b> упак.</span>
+      <span class="chip">Продано <b id="chip-litres">—</b> л</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- KPI -->
+  <section id="overview">
+    <div class="grid kpis" id="kpis"></div>
+    <div style="margin-top:14px" class="note-box">
+      <b>Главное.</b> Бизнес ярко сезонный: 89% продаж приходится на март–сентябрь, пик — июнь (449 упак.),
+      минимум — февраль (15 упак.). Ассортимент широкий и «плоский»: 10 позиций дают лишь 34% объёма,
+      а для 80% нужно 44 позиции. Склад в целом сбалансирован (536 упак. при нормативе 475), но
+      <b>45 позиций ниже минимального резерва</b> (дефицит 116 упак.); ещё 10 позиций с недавним
+      спросом полностью отсутствуют, а 7 позиций — мёртвый остаток. Данные о продажах расходятся с колонкой «Расход» на 16,5% —
+      это главный риск интерпретации.
+    </div>
+  </section>
+
+  <!-- dynamics -->
+  <section id="dynamics">
+    <div class="section-head">
+      <div>
+        <h2>Динамика по месяцам</h2>
+        <div class="hint">Октябрь 2026 — неполный месяц (1–19 октября), на графике выделен штриховкой.
+          Переключатель меняет единицу измерения.</div>
+      </div>
+      <div class="toggle" id="metric-toggle">
+        <button data-metric="litres" class="on">Литры</button>
+        <button data-metric="units">Упаковки</button>
+      </div>
+    </div>
+    <div class="split">
+      <div class="stack">
+        <div class="card">
+          <h3>Продажи по месяцам</h3>
+          <div class="caption" id="bar-caption">Литры, пунктир — среднее за 12 полных месяцев</div>
+          <div id="monthly-chart"></div>
+          <div class="scroll-hint">На узком экране график прокручивается вправо →</div>
+          <div class="legend">
+            <span><span class="dot" style="background:#2563eb"></span>полный месяц</span>
+            <span><span class="dot" style="background:#cbd5e1"></span>неполный месяц (1–19 окт.)</span>
+            <span><span class="dot" style="background:#94a3b8"></span>среднее 12 мес.</span>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Сезонность</h3>
+          <div class="caption">Индекс к среднемесячному объёму (100% = среднее за 12 мес.)</div>
+          <div id="season-bars"></div>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="card">
+          <h3>Активных позиций в месяц</h3>
+          <div class="caption">Сколько SKU имели хотя бы одну продажу</div>
+          <div id="active-chart"></div>
+        </div>
+        <div class="card">
+          <h3>Кварталы</h3>
+          <div class="caption">Доли по упаковкам и литрам; октябрь 2026 — неполный период (1–19)</div>
+          <div id="quarter-bars"></div>
+        </div>
+        <div class="card">
+          <h3>Что важно понимать</h3>
+          <div class="mini-list" id="dynamics-notes"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- structure -->
+  <section id="structure">
+    <div class="section-head">
+      <div>
+        <h2>Структура ассортимента</h2>
+        <div class="hint">Продажи за 13 месяцев. Литры — расчётная физическая ёмкость упаковки:
+          для имён с «N л» берётся указанный объём, для «N кг» — пересчёт по плотности 1,35 кг/л.</div>
+      </div>
+    </div>
+    <div class="split-even">
+      <div class="card">
+        <h3>Товарные группы</h3>
+        <div class="caption">Доля в литрах · подпись — доля в упаковках</div>
+        <div id="group-bars"></div>
+      </div>
+      <div class="card">
+        <h3>Размер упаковки</h3>
+        <div class="caption">Доля в литрах · спрос смещён в 1 л и 2–2,4 л</div>
+        <div id="size-bars"></div>
+      </div>
+    </div>
+    <div class="split-even" style="margin-top:16px">
+      <div class="card">
+        <h3>Цвета эмали ПФ-115 / ПФ-266</h3>
+        <div class="caption">Топ-12 цветов по литрам; доля — от объёма эмалей 4 408 л, все размеры вместе</div>
+        <div id="colour-bars"></div>
+      </div>
+      <div class="card">
+        <h3>Бренды и линейки в названии</h3>
+        <div class="caption">ECOL — отдельная линейка в наименованиях, не обязательно бренд производителя</div>
+        <div id="brand-bars"></div>
+        <div class="note-box warn" style="margin-top:14px">
+          В названиях 30 позиций бренд не указан — это базовая линейка ПФ-115/ПФ-266.
+          Для закупочной аналитики нужен стабильный атрибут «бренд» в номенклатуре.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABC/XYZ -->
+  <section id="abc-xyz">
+    <div class="section-head">
+      <div>
+        <h2>ABC- и XYZ-анализ</h2>
+        <div class="hint">ABC — по литрам за 12 полных месяцев (порог 80% / 95%).
+          XYZ — по коэффициенту вариации месячных продаж внутри сезона (апр–сен 2026):
+          X ≤ 0,5; Y 0,5–1,0; Z &gt; 1,0. Годовой ряд не используется, потому что сезонность
+          отправила бы почти все позиции в Z.</div>
+      </div>
+    </div>
+    <div class="grid kpis" id="abc-cards" style="grid-template-columns:repeat(3,1fr)"></div>
+    <div class="split" style="margin-top:16px">
+      <div class="card">
+        <h3>Матрица ABC × XYZ</h3>
+        <div class="caption">Число SKU · доля литров в скобках · цвет — вклад в объём.
+          X — стабильный спрос, Y — средний, Z — нерегулярный, «—» — нет продаж в сезоне.</div>
+        <div id="matrix"></div>
+        <div class="note-box" style="margin-top:12px">
+          <b>AX/AY — ядро.</b> 40 позиций дают 75% объёма. Держать наличие и контролировать
+          по ним ежедневно. <b>AZ</b> — 3 позиции с нестабильным спросом: закупать малыми партиями.
+          <b>CZ + C—</b> — 26 позиций в хвосте: кандидаты на вывод или заказ под клиента.
+        </div>
+      </div>
+      <div class="card">
+        <h3>Концентрация объёма</h3>
+        <div class="caption">Накопленная доля литров, %</div>
+        <div id="pareto"></div>
+        <div class="mini-list" style="margin-top:14px" id="concentration-list"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- stock -->
+  <section id="stock">
+    <div class="section-head">
+      <div>
+        <h2>Остатки, оборачиваемость и дефицит</h2>
+        <div class="hint">Покрытие считается по средним продажам последних трёх полных месяцев
+          (июль–сентябрь 2026). «Мёртвый остаток» — остаток есть, продаж за 6 месяцев нет.</div>
+      </div>
+    </div>
+    <div class="grid kpis" id="stock-cards"></div>
+    <div class="split" style="margin-top:16px">
+      <div class="card">
+        <h3>Статусы остатков</h3>
+        <div class="caption">Количество SKU по статусам</div>
+        <div id="status-bars"></div>
+        <div class="note-box warn" style="margin-top:14px" id="reserve-note"></div>
+      </div>
+      <div class="card">
+        <h3>Оборачиваемость</h3>
+        <div class="caption">За 12 полных месяцев</div>
+        <div class="mini-list" id="turnover-list"></div>
+      </div>
+    </div>
+    <div class="split" style="margin-top:16px">
+      <div class="card">
+        <h3>Нет в наличии при наличии спроса</h3>
+        <div class="caption">Средний спрос последних 3 месяцев, упак./мес.</div>
+        <div class="mini-list" id="oos-list"></div>
+      </div>
+      <div class="card">
+        <h3>Мёртвый и избыточный остаток</h3>
+        <div class="caption">Замороженный объём и месяцы покрытия</div>
+        <div class="mini-list" id="dead-list"></div>
+        <div class="mini-list" id="over-list" style="margin-top:8px"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- assortment -->
+  <section id="assortment">
+    <div class="section-head">
+      <div>
+        <h2>Топы и полный список позиций</h2>
+        <div class="hint">Сортировка — клик по заголовку столбца. Поиск и фильтры работают по всем 111 позициям.</div>
+      </div>
+    </div>
+    <div class="split-even">
+      <div class="card">
+        <h3>Топ-12 по литрам</h3>
+        <div class="caption">Физический объём, все группы</div>
+        <div id="top-litres"></div>
+      </div>
+      <div class="card">
+        <h3>Топ-12 по упаковкам</h3>
+        <div class="caption">Штуки/банки/вёдра — операционная единица заказа</div>
+        <div id="top-units"></div>
+      </div>
+    </div>
+    <div class="split-even" style="margin-top:16px">
+      <div class="card">
+        <h3>Рост за 3 месяца</h3>
+        <div class="caption">Июль–сентябрь к апрелю–июню 2026, упак.</div>
+        <div class="mini-list" id="growth-list"></div>
+      </div>
+      <div class="card">
+        <h3>Снижение за 3 месяца</h3>
+        <div class="caption">Июль–сентябрь к апрелю–июню 2026, упак.</div>
+        <div class="mini-list" id="decline-list"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h3>Все позиции</h3>
+      <div class="caption">111 SKU · продажи за 13 месяцев · остаток на 19.10.2026</div>
+      <div class="filters">
+        <input id="q" type="search" placeholder="Поиск по названию…">
+        <select id="f-group"><option value="">Все группы</option></select>
+        <select id="f-abc"><option value="">Все ABC</option><option>A</option><option>B</option><option>C</option></select>
+        <select id="f-status"><option value="">Все статусы</option></select>
+        <span class="count" id="row-count"></span>
+      </div>
+      <div class="table-wrap">
+        <table id="items">
+          <thead><tr>
+            <th data-key="name">Наименование <span class="arrow">↕</span></th>
+            <th data-key="group">Группа <span class="arrow">↕</span></th>
+            <th data-key="volume_l" class="num">Объём, л <span class="arrow">↕</span></th>
+            <th data-key="total_units" class="num">Упак. <span class="arrow">↕</span></th>
+            <th data-key="total_l" class="num">Литры <span class="arrow">↕</span></th>
+            <th data-key="stock" class="num">Остаток <span class="arrow">↕</span></th>
+            <th data-key="cover_months" class="num">Покр., мес. <span class="arrow">↕</span></th>
+            <th data-key="abc">ABC <span class="arrow">↕</span></th>
+            <th data-key="xyz">XYZ <span class="arrow">↕</span></th>
+            <th data-key="stock_status">Статус <span class="arrow">↕</span></th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- quality -->
+  <section id="quality">
+    <div class="section-head">
+      <div>
+        <h2>Качество данных и ограничения</h2>
+        <div class="hint">Что проверено, что сходится и где выводы требуют осторожности.</div>
+      </div>
+    </div>
+    <div class="grid split-even">
+      <div class="card">
+        <h3>Проверки</h3>
+        <div class="caption">Автоматические сверки по 111 строкам</div>
+        <div class="mini-list" id="quality-list"></div>
+      </div>
+      <div class="card">
+        <h3>Что нельзя посчитать по этой ведомости</h3>
+        <div class="mini-list">
+          <div class="mini"><span class="n">Выручка, прибыль, маржа</span><span class="v">нет цен</span></div>
+          <div class="mini"><span class="n">Средний чек и стоимость запасов</span><span class="v">нет сумм</span></div>
+          <div class="mini"><span class="n">Рентабельность по цветам и размерам</span><span class="v">нет цен</span></div>
+          <div class="mini"><span class="n">Сравнение год к году</span><span class="v">только 1 сезон</span></div>
+          <div class="mini"><span class="n">Продажи по клиентам и каналам</span><span class="v">нет аналитики</span></div>
+        </div>
+        <div class="note-box bad" style="margin-top:14px">
+          <b>Расхождение 16,5%.</b> Сумма ежемесячных колонок — 2 955 упак., колонка «Расход» — 2 537.
+          Совпадают 37 строк из 111, в остальных 74 месячная сумма больше. В 30 строках «продажи»
+          превышают доступный объём (начальный остаток + приход). Это означает, что месячные колонки
+          и «Расход» — разные потоки (или в выгрузке есть отрицательные остатки/продажи с другого склада).
+          Проверьте настройку отчёта: какой показатель выведен в месячных колонках.
+        </div>
+      </div>
+    </div>
+    <div class="grid split-even" style="margin-top:16px">
+      <div class="card">
+        <h3>Гигиена номенклатуры</h3>
+        <div class="caption">Примеры, которые мешают автоматической аналитике</div>
+        <div class="mini-list" id="hygiene-list"></div>
+      </div>
+      <div class="card">
+        <h3>Как читать отчёт</h3>
+        <div class="mini-list">
+          <div class="mini"><span class="n">Источник</span><span class="v">PDF, 12 страниц</span></div>
+          <div class="mini"><span class="n">Строк в отчёте</span><span class="v">111</span></div>
+          <div class="mini"><span class="n">Склад</span><span class="v">Склад Кореличи</span></div>
+          <div class="mini"><span class="n">Группа</span><span class="v">2 краски растворители</span></div>
+          <div class="mini"><span class="n">Единицы</span><span class="v">шт · банка · ведро</span></div>
+          <div class="mini"><span class="n">Объём, л</span><span class="v">расчётный</span></div>
+        </div>
+        <p style="font-size:12.5px;color:var(--muted);margin-top:12px">
+          Литры — оценка: «N л» берётся как есть; «N кг» пересчитывается по 1,35 кг/л.
+          Для 2 позиций объём восстановлен по названию (отмечено в отчёте). Одна позиция
+          без размера исключена из литрового объёма (1 упаковка).
+        </p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><b>Источник:</b> «Ведомость по остаткам ТМЦ на складах», 1С, период 01.10.2025–19.10.2026,
+      склад «Кореличи», группа «2 краски растворители», 111 номенклатурных позиций.</p>
+    <p><b>Методика:</b> ABC по литрам (80/95), XYZ по CV месячных продаж апреля–сентября 2026
+      (0,5/1,0), покрытие — остаток ÷ средние продажи июля–сентября 2026, оборачиваемость —
+      продажи 12 полных месяцев ÷ средний остаток. Октябрь 2026 (1–19) показан отдельно и не входит
+      в расчётные средние.</p>
+    <p><b>Ограничение:</b> в ведомости нет цен и сумм, поэтому показатели выручки, прибыли и
+      маржинальности не рассчитывались. Оценка литров — приближённая. Отчёт носит управленческий
+      характер и не заменяет бухгалтерскую отчётность.</p>
+  </div>
+</footer>
+
+<script>
+const DATA = {"source":"Ведомость по остаткам ТМЦ на складах, 01.10.25–19.10.26","period":{"from":"2025-10-01","to":"2026-10-19","days":384,"full_months":12,"partial_month":"2026-10","partial_days":19},"months":["2025-10","2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09","2026-10"],"month_labels":["Окт 25","Ноя 25","Дек 25","Янв 26","Фев 26","Мар 26","Апр 26","Май 26","Июн 26","Июл 26","Авг 26","Сен 26","Окт 26*"],"full_months":["2025-10","2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09"],"partial_month":"2026-10","sku":111,"active_sku":107,"dead_sku":4,"warehouses":{"Склад Кореличи":111},"units":{"шт":34,"ведро":5,"банка":72},"totals":{"units":2955.0,"litres":4985.6,"full12_units":2874.0,"full12_litres":4862.3,"start":514.0,"start_litres":842.8,"income":2559.0,"outcome":2537.0,"stock":536.0,"stock_litres":850.4,"min_reserve":475.0,"avg_stock":525.0,"avg_stock_l":846.6,"partial_units":81.0,"partial_litres":123.4},"monthly":[{"month":"2025-10","label":"Окт 25","units":94.0,"litres":170.5,"active_sku":49,"partial":false,"days":31,"avg_per_day":3.03,"litres_per_day":5.5,"mom_pct":null},{"month":"2025-11","label":"Ноя 25","units":49.0,"litres":83.1,"active_sku":28,"partial":false,"days":30,"avg_per_day":1.63,"litres_per_day":2.77,"mom_pct":-47.9},{"month":"2025-12","label":"Дек 25","units":65.0,"litres":122.6,"active_sku":29,"partial":false,"days":31,"avg_per_day":2.1,"litres_per_day":3.95,"mom_pct":32.7},{"month":"2026-01","label":"Янв 26","units":16.0,"litres":26.7,"active_sku":8,"partial":false,"days":31,"avg_per_day":0.52,"litres_per_day":0.86,"mom_pct":-75.4},{"month":"2026-02","label":"Фев 26","units":15.0,"litres":38.9,"active_sku":12,"partial":false,"days":28,"avg_per_day":0.54,"litres_per_day":1.39,"mom_pct":-6.2},{"month":"2026-03","label":"Мар 26","units":310.0,"litres":521.1,"active_sku":68,"partial":false,"days":31,"avg_per_day":10.0,"litres_per_day":16.81,"mom_pct":1966.7},{"month":"2026-04","label":"Апр 26","units":352.0,"litres":565.2,"active_sku":68,"partial":false,"days":30,"avg_per_day":11.73,"litres_per_day":18.84,"mom_pct":13.5},{"month":"2026-05","label":"Май 26","units":366.0,"litres":608.7,"active_sku":73,"partial":false,"days":31,"avg_per_day":11.81,"litres_per_day":19.64,"mom_pct":4.0},{"month":"2026-06","label":"Июн 26","units":449.0,"litres":756.0,"active_sku":74,"partial":false,"days":30,"avg_per_day":14.97,"litres_per_day":25.2,"mom_pct":22.7},{"month":"2026-07","label":"Июл 26","units":417.0,"litres":741.5,"active_sku":81,"partial":false,"days":31,"avg_per_day":13.45,"litres_per_day":23.92,"mom_pct":-7.1},{"month":"2026-08","label":"Авг 26","units":441.0,"litres":727.9,"active_sku":82,"partial":false,"days":31,"avg_per_day":14.23,"litres_per_day":23.48,"mom_pct":5.8},{"month":"2026-09","label":"Сен 26","units":300.0,"litres":500.1,"active_sku":71,"partial":false,"days":30,"avg_per_day":10.0,"litres_per_day":16.67,"mom_pct":-32.0},{"month":"2026-10","label":"Окт 26*","units":81.0,"litres":123.4,"active_sku":40,"partial":true,"days":19,"avg_per_day":4.26,"litres_per_day":6.49,"mom_pct":-73.0}],"quarterly":[{"label":"IV кв. 2025","units":208.0,"litres":376.2,"unit_share":7.0,"litre_share":7.5},{"label":"I кв. 2026","units":341.0,"litres":586.7,"unit_share":11.5,"litre_share":11.8},{"label":"II кв. 2026","units":1167.0,"litres":1929.9,"unit_share":39.5,"litre_share":38.7},{"label":"III кв. 2026","units":1158.0,"litres":1969.5,"unit_share":39.2,"litre_share":39.5},{"label":"Окт. 2026 (1–19)","units":81.0,"litres":123.4,"unit_share":2.7,"litre_share":2.5}],"seasonality":[{"month":"Окт 25","index":39.0},{"month":"Ноя 25","index":20.0},{"month":"Дек 25","index":27.0},{"month":"Янв 26","index":7.0},{"month":"Фев 26","index":6.0},{"month":"Мар 26","index":129.0},{"month":"Апр 26","index":147.0},{"month":"Май 26","index":153.0},{"month":"Июн 26","index":187.0},{"month":"Июл 26","index":174.0},{"month":"Авг 26","index":184.0},{"month":"Сен 26","index":125.0}],"halves":{"oct_mar":549.0,"apr_sep":2325.0,"growth_pct":323.5,"winter_oct_feb":239.0,"season_mar_sep":2635.0,"season_share":89.2},"groups":[{"group":"Эмаль ПФ-115","sku":77,"units":2653.0,"litres":4237.7,"stock":468.0,"stock_l":723.7,"unit_share":89.8,"litre_share":85.0},{"group":"Эмаль ПФ-266","sku":3,"units":71.0,"litres":170.4,"stock":13.0,"stock_l":31.2,"unit_share":2.4,"litre_share":3.4},{"group":"Краска","sku":17,"units":50.0,"litres":135.6,"stock":3.0,"stock_l":15.4,"unit_share":1.7,"litre_share":2.7},{"group":"Грунтовка","sku":11,"units":159.0,"litres":419.8,"stock":48.0,"stock_l":76.1,"unit_share":5.4,"litre_share":8.4},{"group":"Лак","sku":3,"units":22.0,"litres":22.0,"stock":4.0,"stock_l":4.0,"unit_share":0.7,"litre_share":0.4}],"brands":[{"key":"ECOL","units":1427.0,"litres":2465.2,"sku":61,"stock":298.0,"stock_l":491.2,"last3":532.0,"unit_share":48.3,"litre_share":49.4,"cover_months":1.7},{"key":"Без явного бренда","units":1394.0,"litres":2148.3,"sku":30,"stock":213.0,"stock_l":305.8,"last3":556.0,"unit_share":47.2,"litre_share":43.1,"cover_months":1.1},{"key":"FLAGMAN","units":88.0,"litres":289.1,"sku":8,"stock":20.0,"stock_l":44.4,"last3":48.0,"unit_share":3.0,"litre_share":5.8,"cover_months":1.2},{"key":"HAUSE MASTER","units":11.0,"litres":49.0,"sku":6,"stock":1.0,"stock_l":5.0,"last3":0.0,"unit_share":0.4,"litre_share":1.0,"cover_months":null},{"key":"BRAVA","units":23.0,"litres":22.0,"sku":4,"stock":4.0,"stock_l":4.0,"last3":11.0,"unit_share":0.8,"litre_share":0.4,"cover_months":1.1},{"key":"BELAKOR","units":12.0,"litres":12.0,"sku":2,"stock":0.0,"stock_l":0.0,"last3":11.0,"unit_share":0.4,"litre_share":0.2,"cover_months":0.0}],"colours":[{"key":"Белая","units":416.0,"litres":623.1,"sku":5,"stock":53.0,"stock_l":71.5,"last3":179.0,"unit_share":14.1,"litre_share":12.5,"cover_months":0.9},{"key":"—","units":231.0,"litres":577.5,"sku":31,"stock":55.0,"stock_l":95.5,"last3":138.0,"unit_share":7.8,"litre_share":11.6,"cover_months":1.2},{"key":"Серая","units":226.0,"litres":379.0,"sku":4,"stock":31.0,"stock_l":47.6,"last3":82.0,"unit_share":7.6,"litre_share":7.6,"cover_months":1.1},{"key":"Зеленая","units":222.0,"litres":372.6,"sku":4,"stock":26.0,"stock_l":40.7,"last3":83.0,"unit_share":7.5,"litre_share":7.5,"cover_months":0.9},{"key":"Вишневая","units":225.0,"litres":359.8,"sku":4,"stock":21.0,"stock_l":33.8,"last3":74.0,"unit_share":7.6,"litre_share":7.2,"cover_months":0.9},{"key":"Шоколадная","units":221.0,"litres":312.4,"sku":4,"stock":41.0,"stock_l":54.0,"last3":70.0,"unit_share":7.5,"litre_share":6.3,"cover_months":1.8},{"key":"Черная","units":203.0,"litres":305.8,"sku":4,"stock":25.0,"stock_l":35.9,"last3":74.0,"unit_share":6.9,"litre_share":6.1,"cover_months":1.0},{"key":"Желтая","units":178.0,"litres":294.6,"sku":4,"stock":31.0,"stock_l":51.6,"last3":56.0,"unit_share":6.0,"litre_share":5.9,"cover_months":1.7},{"key":"Синяя","units":106.0,"litres":172.4,"sku":2,"stock":16.0,"stock_l":27.6,"last3":40.0,"unit_share":3.6,"litre_share":3.5,"cover_months":1.2},{"key":"Оранжевая","units":95.0,"litres":160.1,"sku":4,"stock":29.0,"stock_l":37.1,"last3":44.0,"unit_share":3.2,"litre_share":3.2,"cover_months":2.0},{"key":"Еловая хвоя","units":83.0,"litres":155.8,"sku":2,"stock":8.0,"stock_l":10.8,"last3":26.0,"unit_share":2.8,"litre_share":3.1,"cover_months":0.9},{"key":"Голубая","units":66.0,"litres":119.3,"sku":4,"stock":16.0,"stock_l":31.1,"last3":34.0,"unit_share":2.2,"litre_share":2.4,"cover_months":1.4},{"key":"Красная","units":79.0,"litres":115.2,"sku":4,"stock":24.0,"stock_l":37.7,"last3":29.0,"unit_share":2.7,"litre_share":2.3,"cover_months":2.5},{"key":"Ярко-синяя","units":59.0,"litres":115.0,"sku":2,"stock":12.0,"stock_l":20.4,"last3":26.0,"unit_share":2.0,"litre_share":2.3,"cover_months":1.4},{"key":"Красно-коричневая","units":61.0,"litres":111.4,"sku":2,"stock":6.0,"stock_l":11.6,"last3":23.0,"unit_share":2.1,"litre_share":2.2,"cover_months":0.8},{"key":"Майская зелень","units":50.0,"litres":94.8,"sku":2,"stock":12.0,"stock_l":21.8,"last3":17.0,"unit_share":1.7,"litre_share":1.9,"cover_months":2.1},{"key":"Светло-коричневая","units":39.0,"litres":93.6,"sku":1,"stock":4.0,"stock_l":9.6,"last3":11.0,"unit_share":1.3,"litre_share":1.9,"cover_months":1.1},{"key":"Графит","units":54.0,"litres":77.8,"sku":2,"stock":9.0,"stock_l":11.8,"last3":20.0,"unit_share":1.8,"litre_share":1.6,"cover_months":1.3},{"key":"Зеленое яблоко","units":42.0,"litres":75.6,"sku":2,"stock":11.0,"stock_l":16.6,"last3":13.0,"unit_share":1.4,"litre_share":1.5,"cover_months":2.5},{"key":"Серебристая","units":37.0,"litres":60.8,"sku":2,"stock":14.0,"stock_l":23.8,"last3":22.0,"unit_share":1.3,"litre_share":1.2,"cover_months":1.9},{"key":"Бирюзовая","units":33.0,"litres":56.8,"sku":2,"stock":7.0,"stock_l":14.0,"last3":7.0,"unit_share":1.1,"litre_share":1.1,"cover_months":3.0},{"key":"Золотисто-коричневая","units":22.0,"litres":52.8,"sku":1,"stock":5.0,"stock_l":12.0,"last3":7.0,"unit_share":0.7,"litre_share":1.1,"cover_months":2.1},{"key":"Коричневая","units":28.0,"litres":42.0,"sku":2,"stock":9.0,"stock_l":14.6,"last3":15.0,"unit_share":0.9,"litre_share":0.8,"cover_months":1.8},{"key":"Ореховая","units":24.0,"litres":40.8,"sku":2,"stock":8.0,"stock_l":13.6,"last3":6.0,"unit_share":0.8,"litre_share":0.8,"cover_months":4.0},{"key":"Бежевая","units":20.0,"litres":38.2,"sku":2,"stock":4.0,"stock_l":9.6,"last3":6.0,"unit_share":0.7,"litre_share":0.8,"cover_months":2.0},{"key":"Светло-серая","units":35.0,"litres":35.0,"sku":2,"stock":9.0,"stock_l":11.8,"last3":17.0,"unit_share":1.2,"litre_share":0.7,"cover_months":1.6},{"key":"Лимонная","units":23.0,"litres":34.2,"sku":2,"stock":10.0,"stock_l":18.4,"last3":7.0,"unit_share":0.8,"litre_share":0.7,"cover_months":4.3},{"key":"Карамель","units":20.0,"litres":29.8,"sku":2,"stock":12.0,"stock_l":20.4,"last3":13.0,"unit_share":0.7,"litre_share":0.6,"cover_months":2.8},{"key":"Фиолетовая","units":21.0,"litres":29.4,"sku":2,"stock":12.0,"stock_l":19.0,"last3":7.0,"unit_share":0.7,"litre_share":0.6,"cover_months":5.1},{"key":"Жёлто-коричневая","units":10.0,"litres":24.0,"sku":1,"stock":4.0,"stock_l":9.6,"last3":4.0,"unit_share":0.3,"litre_share":0.5,"cover_months":3.0},{"key":"Слоновая кость","units":16.0,"litres":16.0,"sku":1,"stock":5.0,"stock_l":5.0,"last3":6.0,"unit_share":0.5,"litre_share":0.3,"cover_months":2.5},{"key":"Защитная","units":10.0,"litres":10.0,"sku":1,"stock":1.0,"stock_l":1.0,"last3":2.0,"unit_share":0.3,"litre_share":0.2,"cover_months":1.5},{"key":"Салатовая","units":0.0,"litres":0.0,"sku":2,"stock":6.0,"stock_l":10.9,"last3":0.0,"unit_share":0.0,"litre_share":0.0,"cover_months":null}],"enamel_colours":[{"key":"Белая","units":416.0,"litres":623.1,"sku":5,"stock":53.0,"stock_l":71.5,"last3":179.0,"unit_share":14.1,"litre_share":12.5,"cover_months":0.9},{"key":"Серая","units":226.0,"litres":379.0,"sku":4,"stock":31.0,"stock_l":47.6,"last3":82.0,"unit_share":7.6,"litre_share":7.6,"cover_months":1.1},{"key":"Зеленая","units":222.0,"litres":372.6,"sku":4,"stock":26.0,"stock_l":40.7,"last3":83.0,"unit_share":7.5,"litre_share":7.5,"cover_months":0.9},{"key":"Вишневая","units":225.0,"litres":359.8,"sku":4,"stock":21.0,"stock_l":33.8,"last3":74.0,"unit_share":7.6,"litre_share":7.2,"cover_months":0.9},{"key":"Шоколадная","units":221.0,"litres":312.4,"sku":4,"stock":41.0,"stock_l":54.0,"last3":70.0,"unit_share":7.5,"litre_share":6.3,"cover_months":1.8},{"key":"Черная","units":203.0,"litres":305.8,"sku":4,"stock":25.0,"stock_l":35.9,"last3":74.0,"unit_share":6.9,"litre_share":6.1,"cover_months":1.0},{"key":"Желтая","units":178.0,"litres":294.6,"sku":4,"stock":31.0,"stock_l":51.6,"last3":56.0,"unit_share":6.0,"litre_share":5.9,"cover_months":1.7},{"key":"Синяя","units":106.0,"litres":172.4,"sku":2,"stock":16.0,"stock_l":27.6,"last3":40.0,"unit_share":3.6,"litre_share":3.5,"cover_months":1.2},{"key":"Оранжевая","units":95.0,"litres":160.1,"sku":4,"stock":29.0,"stock_l":37.1,"last3":44.0,"unit_share":3.2,"litre_share":3.2,"cover_months":2.0},{"key":"Еловая хвоя","units":83.0,"litres":155.8,"sku":2,"stock":8.0,"stock_l":10.8,"last3":26.0,"unit_share":2.8,"litre_share":3.1,"cover_months":0.9},{"key":"Голубая","units":66.0,"litres":119.3,"sku":4,"stock":16.0,"stock_l":31.1,"last3":34.0,"unit_share":2.2,"litre_share":2.4,"cover_months":1.4},{"key":"Красная","units":79.0,"litres":115.2,"sku":4,"stock":24.0,"stock_l":37.7,"last3":29.0,"unit_share":2.7,"litre_share":2.3,"cover_months":2.5},{"key":"Ярко-синяя","units":59.0,"litres":115.0,"sku":2,"stock":12.0,"stock_l":20.4,"last3":26.0,"unit_share":2.0,"litre_share":2.3,"cover_months":1.4},{"key":"Красно-коричневая","units":61.0,"litres":111.4,"sku":2,"stock":6.0,"stock_l":11.6,"last3":23.0,"unit_share":2.1,"litre_share":2.2,"cover_months":0.8},{"key":"Майская зелень","units":50.0,"litres":94.8,"sku":2,"stock":12.0,"stock_l":21.8,"last3":17.0,"unit_share":1.7,"litre_share":1.9,"cover_months":2.1},{"key":"Светло-коричневая","units":39.0,"litres":93.6,"sku":1,"stock":4.0,"stock_l":9.6,"last3":11.0,"unit_share":1.3,"litre_share":1.9,"cover_months":1.1},{"key":"Графит","units":54.0,"litres":77.8,"sku":2,"stock":9.0,"stock_l":11.8,"last3":20.0,"unit_share":1.8,"litre_share":1.6,"cover_months":1.3},{"key":"Зеленое яблоко","units":42.0,"litres":75.6,"sku":2,"stock":11.0,"stock_l":16.6,"last3":13.0,"unit_share":1.4,"litre_share":1.5,"cover_months":2.5},{"key":"Серебристая","units":37.0,"litres":60.8,"sku":2,"stock":14.0,"stock_l":23.8,"last3":22.0,"unit_share":1.3,"litre_share":1.2,"cover_months":1.9},{"key":"Бирюзовая","units":33.0,"litres":56.8,"sku":2,"stock":7.0,"stock_l":14.0,"last3":7.0,"unit_share":1.1,"litre_share":1.1,"cover_months":3.0},{"key":"Золотисто-коричневая","units":22.0,"litres":52.8,"sku":1,"stock":5.0,"stock_l":12.0,"last3":7.0,"unit_share":0.7,"litre_share":1.1,"cover_months":2.1},{"key":"Коричневая","units":28.0,"litres":42.0,"sku":2,"stock":9.0,"stock_l":14.6,"last3":15.0,"unit_share":0.9,"litre_share":0.8,"cover_months":1.8},{"key":"Ореховая","units":24.0,"litres":40.8,"sku":2,"stock":8.0,"stock_l":13.6,"last3":6.0,"unit_share":0.8,"litre_share":0.8,"cover_months":4.0},{"key":"Бежевая","units":20.0,"litres":38.2,"sku":2,"stock":4.0,"stock_l":9.6,"last3":6.0,"unit_share":0.7,"litre_share":0.8,"cover_months":2.0},{"key":"Светло-серая","units":35.0,"litres":35.0,"sku":2,"stock":9.0,"stock_l":11.8,"last3":17.0,"unit_share":1.2,"litre_share":0.7,"cover_months":1.6},{"key":"Лимонная","units":23.0,"litres":34.2,"sku":2,"stock":10.0,"stock_l":18.4,"last3":7.0,"unit_share":0.8,"litre_share":0.7,"cover_months":4.3},{"key":"Карамель","units":20.0,"litres":29.8,"sku":2,"stock":12.0,"stock_l":20.4,"last3":13.0,"unit_share":0.7,"litre_share":0.6,"cover_months":2.8},{"key":"Фиолетовая","units":21.0,"litres":29.4,"sku":2,"stock":12.0,"stock_l":19.0,"last3":7.0,"unit_share":0.7,"litre_share":0.6,"cover_months":5.1},{"key":"Жёлто-коричневая","units":10.0,"litres":24.0,"sku":1,"stock":4.0,"stock_l":9.6,"last3":4.0,"unit_share":0.3,"litre_share":0.5,"cover_months":3.0},{"key":"Слоновая кость","units":16.0,"litres":16.0,"sku":1,"stock":5.0,"stock_l":5.0,"last3":6.0,"unit_share":0.5,"litre_share":0.3,"cover_months":2.5},{"key":"Защитная","units":10.0,"litres":10.0,"sku":1,"stock":1.0,"stock_l":1.0,"last3":2.0,"unit_share":0.3,"litre_share":0.2,"cover_months":1.5},{"key":"Салатовая","units":0.0,"litres":0.0,"sku":2,"stock":6.0,"stock_l":10.9,"last3":0.0,"unit_share":0.0,"litre_share":0.0,"cover_months":null}],"sizes":[{"key":"2–2,4 л","units":1526.0,"litres":3347.5,"sku":44,"stock":240.0,"stock_l":540.0,"last3":602.0,"unit_share":51.6,"litre_share":67.1,"cover_months":1.2},{"key":"до 1 л","units":1356.0,"litres":1295.7,"sku":54,"stock":289.0,"stock_l":275.0,"last3":526.0,"unit_share":45.9,"litre_share":26.0,"cover_months":1.6},{"key":"3–5 л","units":70.0,"litres":320.3,"sku":11,"stock":7.0,"stock_l":35.4,"last3":30.0,"unit_share":2.4,"litre_share":6.4,"cover_months":0.7},{"key":"7–11 л","units":2.0,"litres":22.0,"sku":1,"stock":0.0,"stock_l":0.0,"last3":0.0,"unit_share":0.1,"litre_share":0.4,"cover_months":null},{"key":"Не указан","units":1.0,"litres":0.0,"sku":1,"stock":0.0,"stock_l":0.0,"last3":0.0,"unit_share":0.0,"litre_share":0.0,"cover_months":null}],"finish":[{"key":"—","units":2862.0,"litres":4892.6,"sku":109,"stock":516.0,"stock_l":830.4,"last3":1115.0,"unit_share":96.9,"litre_share":98.1,"cover_months":1.4},{"key":"Глянцевая","units":83.0,"litres":83.0,"sku":1,"stock":14.0,"stock_l":14.0,"last3":38.0,"unit_share":2.8,"litre_share":1.7,"cover_months":1.1},{"key":"Матовая","units":10.0,"litres":10.0,"sku":1,"stock":6.0,"stock_l":6.0,"last3":5.0,"unit_share":0.3,"litre_share":0.2,"cover_months":3.6}],"abc":{"A":{"sku":43,"units":2161.0,"litres":3880.3,"litre_share":77.8,"unit_share":73.1},"B":{"sku":31,"units":572.0,"litres":728.1,"litre_share":14.6,"unit_share":19.4},"C":{"sku":37,"units":222.0,"litres":253.8,"litre_share":5.1,"unit_share":7.5}},"xyz":{"Y":50,"—":16,"Z":21,"X":24},"matrix":{"AX":{"sku":20,"litres":2166.6,"share":43.5},"AY":{"sku":20,"litres":1572.1,"share":31.5},"AZ":{"sku":3,"litres":141.6,"share":2.8},"BX":{"sku":4,"litres":113.8,"share":2.3},"BY":{"sku":19,"litres":449.1,"share":9.0},"BZ":{"sku":6,"litres":127.7,"share":2.6},"B—":{"sku":2,"litres":37.6,"share":0.8},"CY":{"sku":11,"litres":119.7,"share":2.4},"CZ":{"sku":12,"litres":98.7,"share":2.0},"C—":{"sku":14,"litres":35.4,"share":0.7}},"pareto_sku":44,"concentration":{"top1":4.5,"top5":20.2,"top10":34.0,"top20":53.6},"stock_status":{"Норма":{"sku":56,"units":399.0,"litres":628.0},"Мёртвый остаток":{"sku":7,"units":19.0,"litres":30.4},"Избыток":{"sku":2,"units":26.0,"litres":21.6},"Нет в наличии":{"sku":10,"units":0.0,"litres":0.0},"Нет остатка":{"sku":11,"units":0.0,"litres":0.0},"Ниже резерва":{"sku":25,"units":92.0,"litres":170.4}},"dead":[{"name":"Грунтовка ВД-АК-08 FLAGMAN1л","stock":6.0,"stock_l":6.0,"volume_l":1.0},{"name":"Краска HAUSE MASTER белая мат. 5л(( 7кг)","stock":1.0,"stock_l":5.0,"volume_l":5.0},{"name":"Лак ПФ-1120 дек.защ.бесц.гл. 1,0л. BRAVA","stock":1.0,"stock_l":1.0,"volume_l":1.0},{"name":"Эмаль ПФ-115 голубая 0,9л (0,8кг)","stock":3.0,"stock_l":2.7,"volume_l":0.9},{"name":"Эмаль ПФ-115 салатовая 0,9л (0,8кг)","stock":1.0,"stock_l":0.9,"volume_l":0.9},{"name":"Эмаль ПФ-115 салатовая 2л (1,8кг)","stock":5.0,"stock_l":10.0,"volume_l":2.0},{"name":"Эмаль ПФ-115 св.серая 2,4л (2кг) ECOL","stock":2.0,"stock_l":4.8,"volume_l":2.4}],"out_of_stock":[{"name":"Грунтовка ГФ-021 кр-кор. 2,3кг","avg3":1.0,"min_reserve":1.0},{"name":"Грунтовка ГФ-021 св.-сер. 2,3кг","avg3":4.0,"min_reserve":1.0},{"name":"Краска ВД-АК-1032 фасад. 7,0кг. ECOL","avg3":0.33,"min_reserve":0.0},{"name":"Краска для потолков 1,4кг. FLAGMAN","avg3":2.33,"min_reserve":3.0},{"name":"Краска для потолков 4,2кг. FLAGMAN","avg3":0.67,"min_reserve":3.0},{"name":"Краска для радиатора п/гл 1л. BELAKOR","avg3":1.0,"min_reserve":3.0},{"name":"Краска для радиатора п/мат 1л. BELAKOR","avg3":2.67,"min_reserve":3.0},{"name":"Лак ПФ-2122 паркетный бесц.гл.1л. BRAVA","avg3":1.0,"min_reserve":2.0},{"name":"Эмаль ПФ-115 бежевая 1,0л (0,9кг) ECOL","avg3":0.33,"min_reserve":6.0},{"name":"Эмаль ПФ-115 голубая 1,0л (0,9кг) ECOL","avg3":2.67,"min_reserve":6.0}],"below_reserve":[{"name":"Грунтовка ГФ-021 кр-кор. 2,3кг","stock":0.0,"min_reserve":1.0,"deficit":1.0},{"name":"Грунтовка ГФ-021 св.-сер. 2,3кг","stock":0.0,"min_reserve":1.0,"deficit":1.0},{"name":"Грунтовка-конц. Флагман 08 водоот. 1л","stock":0.0,"min_reserve":2.0,"deficit":2.0},{"name":"Краска HAUSE MASTER белая мат. 11л (14кг)","stock":0.0,"min_reserve":4.0,"deficit":4.0},{"name":"Краска HAUSE MASTER белая мат. 5л(( 7кг)","stock":1.0,"min_reserve":4.0,"deficit":3.0},{"name":"Краска HAUSE MASTER белая мат. 3л (4,2кг)","stock":0.0,"min_reserve":4.0,"deficit":4.0},{"name":"Краска HAUSE MASTER интер. белая мат. 1л (1,4кг)","stock":0.0,"min_reserve":4.0,"deficit":4.0},{"name":"Краска HAUSE MASTER интер. белая мат. 3л (4 кг)","stock":0.0,"min_reserve":4.0,"deficit":4.0},{"name":"Краска HAUSE MASTER интер. белая мат. 5л (7,0кг)","stock":0.0,"min_reserve":4.0,"deficit":4.0},{"name":"Краска ВД-АК-1035у белый Брава","stock":0.0,"min_reserve":1.0,"deficit":1.0},{"name":"Краска для потолков 1,4кг. FLAGMAN","stock":0.0,"min_reserve":3.0,"deficit":3.0},{"name":"Краска для потолков 4,2кг. FLAGMAN","stock":0.0,"min_reserve":3.0,"deficit":3.0},{"name":"Краска для потолков 7,0кг. FLAGMAN","stock":2.0,"min_reserve":3.0,"deficit":1.0},{"name":"Краска для радиатора п/гл 1л. BELAKOR","stock":0.0,"min_reserve":3.0,"deficit":3.0},{"name":"Краска для радиатора п/мат 1л. BELAKOR","stock":0.0,"min_reserve":3.0,"deficit":3.0},{"name":"Лак ПФ-1120 дек.защ.бесц.гл. 1,0л. BRAVA","stock":1.0,"min_reserve":2.0,"deficit":1.0},{"name":"Лак ПФ-2122 паркетный бесц.гл.1л. BRAVA","stock":0.0,"min_reserve":2.0,"deficit":2.0},{"name":"Эмаль ПФ-115 бежевая 1,0л (0,9кг) ECOL","stock":0.0,"min_reserve":6.0,"deficit":6.0},{"name":"Эмаль ПФ-115 бежевая 2,4л (2кг) ECOL","stock":4.0,"min_reserve":6.0,"deficit":2.0},{"name":"Эмаль ПФ-115 белая 2,4л (2кг) ECOL","stock":5.0,"min_reserve":6.0,"deficit":1.0},{"name":"Эмаль ПФ-115 бирюзовая 1,0л (0,9кг) ECOL","stock":2.0,"min_reserve":6.0,"deficit":4.0},{"name":"Эмаль ПФ-115 бирюзовая 2,4л (2кг) ECOL","stock":5.0,"min_reserve":6.0,"deficit":1.0},{"name":"Эмаль ПФ-115 вишневая 1,0л (0,9кг) ECOL","stock":5.0,"min_reserve":6.0,"deficit":1.0},{"name":"Эмаль ПФ-115 вишневая 2,4л (2кг) ECOL","stock":3.0,"min_reserve":6.0,"deficit":3.0},{"name":"Эмаль ПФ-115 голубая 1,0л (0,9кг) ECOL","stock":0.0,"min_reserve":6.0,"deficit":6.0},{"name":"Эмаль ПФ-115 графит 2,4л (2кг) ECOL","stock":2.0,"min_reserve":6.0,"deficit":4.0},{"name":"Эмаль ПФ-115 еловая хвоя 2,4л (2кг) ECOL","stock":2.0,"min_reserve":6.0,"deficit":4.0},{"name":"Эмаль ПФ-115 защитная 1,0л (0,9кг) ECOL","stock":1.0,"min_reserve":6.0,"deficit":5.0},{"name":"Эмаль ПФ-115 зеленая 1,0л (0,9кг) ECOL","stock":2.0,"min_reserve":6.0,"deficit":4.0},{"name":"Эмаль ПФ-115 зеленое яблоко 2,4л (2кг) ECOL","stock":4.0,"min_reserve":6.0,"deficit":2.0},{"name":"Эмаль ПФ-115 коричневая 1,0л (0,9кг) ECOL","stock":5.0,"min_reserve":6.0,"deficit":1.0},{"name":"Эмаль ПФ-115 коричневая 2,4л (2кг) ECOL","stock":4.0,"min_reserve":6.0,"deficit":2.0},{"name":"Эмаль ПФ-115 кр-коричневая 1,0л (0,9кг) ECOL","stock":2.0,"min_reserve":6.0,"deficit":4.0},{"name":"Эмаль ПФ-115 кр-коричневая 2,4л (2кг) ECOL","stock":4.0,"min_reserve":6.0,"deficit":2.0},{"name":"Эмаль ПФ-115 красная 1,0л (0,8кг) ECOL","stock":5.0,"min_reserve":6.0,"deficit":1.0},{"name":"Эмаль ПФ-115 лимонная 1,0л (0,9кг) ECOL","stock":4.0,"min_reserve":6.0,"deficit":2.0},{"name":"Эмаль ПФ-115 майская зелень 1,0л (0,9кг) ECOL","stock":5.0,"min_reserve":6.0,"deficit":1.0},{"name":"Эмаль ПФ-115 оранжевая-1 2,4л (2кг) ECOL","stock":4.0,"min_reserve":6.0,"deficit":2.0},{"name":"Эмаль ПФ-115 ореховая 1,0л (0,9кг) ECOL","stock":4.0,"min_reserve":6.0,"deficit":2.0},{"name":"Эмаль ПФ-115 ореховая 2,4л (2кг) ECOL","stock":4.0,"min_reserve":6.0,"deficit":2.0},{"name":"Эмаль ПФ-115 салатовая 0,9л (0,8кг)","stock":1.0,"min_reserve":3.0,"deficit":2.0},{"name":"Эмаль ПФ-115 св.серая 2,4л (2кг) ECOL","stock":2.0,"min_reserve":6.0,"deficit":4.0},{"name":"Эмаль ПФ-115 слон.кость 1,0л (0,9кг) ECOL","stock":5.0,"min_reserve":6.0,"deficit":1.0},{"name":"Эмаль ПФ-115 фиолетовая 2,4л (2кг) ECOL","stock":5.0,"min_reserve":6.0,"deficit":1.0},{"name":"Эмаль ПФ-115 черная 2,4л (2кг) ECOL","stock":4.0,"min_reserve":6.0,"deficit":2.0}],"overstock":[{"name":"Грунтовка ГФ-021 кр-кор. 1кг","stock":11.0,"cover_months":16.5,"stock_l":8.15},{"name":"Эмаль ПФ-115 оранжевая 0,9л (0,85кг)","stock":15.0,"cover_months":45.0,"stock_l":13.5}],"lost_demand":{"sku":10,"avg3_units":16.0,"avg3_litres":22.4},"deficit_total":116.0,"reserve_surplus_total":177.0,"partial_dynamics":{"oct26_per_day":4.26,"sep26_per_day":10.0,"oct25_per_day":3.03,"oct26_vs_sep_pct":-57.4,"oct26_vs_oct25_pct":40.6},"top_units":[{"name":"Эмаль ПФ-115 белая 0,9л (0,85кг)","units":133.0,"litres":119.7,"stock":15.0,"abc":"A","xyz":"X"},{"name":"Эмаль ПФ-115 белая 2л (1,9кг)","units":114.0,"litres":228.0,"stock":13.0,"abc":"A","xyz":"X"},{"name":"Эмаль ПФ-115 зеленая 2л (1,8кг)","units":104.0,"litres":208.0,"stock":6.0,"abc":"A","xyz":"X"},{"name":"Эмаль ПФ-115 вишневая 2л (1,8кг)","units":93.0,"litres":186.0,"stock":9.0,"abc":"A","xyz":"X"},{"name":"Эмаль ПФ-115 серая 2,0л (1,9кг)","units":91.0,"litres":182.0,"stock":9.0,"abc":"A","xyz":"X"},{"name":"Эмаль ПФ-115 шоколадная 0,9л (0,8кг)","units":90.0,"litres":81.0,"stock":14.0,"abc":"A","xyz":"X"},{"name":"Эмаль ПФ-115 белая гл.1,0л (0,9кг) ECOL","units":83.0,"litres":83.0,"stock":14.0,"abc":"A","xyz":"Y"},{"name":"Эмаль ПФ-115 белая 2,4л (2кг) ECOL","units":76.0,"litres":182.4,"stock":5.0,"abc":"A","xyz":"X"},{"name":"Эмаль ПФ-115 шоколадная 2,0л (1,8кг)","units":71.0,"litres":142.0,"stock":6.0,"abc":"A","xyz":"X"},{"name":"Эмаль ПФ-115 синяя 2л (1,8кг)","units":70.0,"litres":140.0,"stock":12.0,"abc":"A","xyz":"Y"},{"name":"Эмаль ПФ-115 зеленая 0,9л (0,8кг)","units":66.0,"litres":59.4,"stock":11.0,"abc":"A","xyz":"X"},{"name":"Эмаль ПФ-115 черная 0,9л (0,8кг)","units":60.0,"litres":54.0,"stock":7.0,"abc":"A","xyz":"Y"},{"name":"Эмаль ПФ-115 вишневая 0,9 (0,8кг)","units":58.0,"litres":52.2,"stock":4.0,"abc":"A","xyz":"X"},{"name":"Эмаль ПФ-115 черная 2,0 л (1,8кг)","units":57.0,"litres":114.0,"stock":6.0,"abc":"A","xyz":"X"},{"name":"Эмаль ПФ-115 желтая 2л (1,9кг)","units":53.0,"litres":106.0,"stock":7.0,"abc":"A","xyz":"X"}],"top_litres":[{"name":"Грунтовка ВД-АК-01 FLAGMAН 5","units":46.0,"litres":230.0,"stock":4.0,"abc":"A","xyz":"Y"},{"name":"Эмаль ПФ-115 белая 2л (1,9кг)","units":114.0,"litres":228.0,"stock":13.0,"abc":"A","xyz":"X"},{"name":"Эмаль ПФ-115 зеленая 2л (1,8кг)","units":104.0,"litres":208.0,"stock":6.0,"abc":"A","xyz":"X"},{"name":"Эмаль ПФ-115 вишневая 2л (1,8кг)","units":93.0,"litres":186.0,"stock":9.0,"abc":"A","xyz":"X"},{"name":"Эмаль ПФ-115 белая 2,4л (2кг) ECOL","units":76.0,"litres":182.4,"stock":5.0,"abc":"A","xyz":"X"},{"name":"Эмаль ПФ-115 серая 2,0л (1,9кг)","units":91.0,"litres":182.0,"stock":9.0,"abc":"A","xyz":"X"},{"name":"Эмаль ПФ-115 шоколадная 2,0л (1,8кг)","units":71.0,"litres":142.0,"stock":6.0,"abc":"A","xyz":"X"},{"name":"Эмаль ПФ-115 синяя 2л (1,8кг)","units":70.0,"litres":140.0,"stock":12.0,"abc":"A","xyz":"Y"},{"name":"Эмаль ПФ-115 еловая хвоя 2,4л (2кг) ECOL","units":52.0,"litres":124.8,"stock":2.0,"abc":"A","xyz":"Y"},{"name":"Эмаль ПФ-115 белая 0,9л (0,85кг)","units":133.0,"litres":119.7,"stock":15.0,"abc":"A","xyz":"X"},{"name":"Эмаль ПФ-115 желтая 2,4л (2кг) ECOL","units":48.0,"litres":115.2,"stock":10.0,"abc":"A","xyz":"Y"},{"name":"Эмаль ПФ-115 серая 2,4л (2кг) ECOL","units":48.0,"litres":115.2,"stock":6.0,"abc":"A","xyz":"Y"},{"name":"Эмаль ПФ-115 черная 2,0 л (1,8кг)","units":57.0,"litres":114.0,"stock":6.0,"abc":"A","xyz":"X"},{"name":"Эмаль ПФ-115 желтая 2л (1,9кг)","units":53.0,"litres":106.0,"stock":7.0,"abc":"A","xyz":"X"},{"name":"Эмаль ПФ-115 ярко-синяя 2,4л (2кг) ECOL","units":40.0,"litres":96.0,"stock":6.0,"abc":"A","xyz":"X"}],"growth":[{"name":"Эмаль ПФ-115 белая гл.1,0л (0,9кг) ECOL","prev3":21.0,"last3":38.0,"delta":17.0},{"name":"Эмаль ПФ-115 оранжевая-1 2,4л (2кг) ECOL","prev3":5.0,"last3":19.0,"delta":14.0},{"name":"Грунтовка ВД-АК-01 FLAGMAН 5","prev3":12.0,"last3":25.0,"delta":13.0},{"name":"Эмаль ПФ-115 голубая 2л (1,8кг)","prev3":8.0,"last3":20.0,"delta":12.0},{"name":"Эмаль ПФ-115 черная 2,0 л (1,8кг)","prev3":12.0,"last3":23.0,"delta":11.0},{"name":"Эмаль ПФ-115 серая 2,4л (2кг) ECOL","prev3":13.0,"last3":23.0,"delta":10.0},{"name":"Эмаль ПФ-115 серебристая 1,0л (0,8кг) ECOL","prev3":3.0,"last3":13.0,"delta":10.0},{"name":"Грунтовка ГФ-021 св.-сер. 2,3кг","prev3":3.0,"last3":12.0,"delta":9.0},{"name":"Эмаль ПФ-115 шоколадная 2,4л (2кг) ECOL","prev3":4.0,"last3":12.0,"delta":8.0},{"name":"Эмаль ПФ-115 коричневая 1,0л (0,9кг) ECOL","prev3":4.0,"last3":11.0,"delta":7.0}],"decline":[{"name":"Эмаль ПФ-115 еловая хвоя 2,4л (2кг) ECOL","prev3":28.0,"last3":10.0,"delta":-18.0},{"name":"Эмаль ПФ-115 желтая 2,4л (2кг) ECOL","prev3":24.0,"last3":8.0,"delta":-16.0},{"name":"Эмаль ПФ-115 шоколадная 0,9л (0,8кг)","prev3":39.0,"last3":23.0,"delta":-16.0},{"name":"Эмаль ПФ-115 вишневая 1,0л (0,9кг) ECOL","prev3":24.0,"last3":9.0,"delta":-15.0},{"name":"Эмаль ПФ-115 синяя 2л (1,8кг)","prev3":40.0,"last3":26.0,"delta":-14.0},{"name":"Эмаль ПФ-115 шоколадная 1,0л (0,9кг) ECOL","prev3":23.0,"last3":9.0,"delta":-14.0},{"name":"Эмаль ПФ-266 св.-корич.-1 2,4л (2кг) ECOL","prev3":24.0,"last3":11.0,"delta":-13.0},{"name":"Эмаль ПФ-115 черная 0,9л (0,8кг)","prev3":29.0,"last3":17.0,"delta":-12.0},{"name":"Эмаль ПФ-115 зеленая 2л (1,8кг)","prev3":50.0,"last3":40.0,"delta":-10.0},{"name":"Эмаль ПФ-115 красная 1,0л (0,8кг) ECOL","prev3":12.0,"last3":2.0,"delta":-10.0}],"assortment":{"never_sold":4,"no_sales_6m":16,"sold_1_2_months":19,"active_12_months":0,"median_active_months":6},"items":[{"name":"Грунтовка ВД-АК-01 FLAGMAН 5","warehouse":"Склад Кореличи","group":"Грунтовка","colour":"—","finish":"","brand":"FLAGMAN","unit":"шт","article":"","volume_l":5.0,"size":"3–5 л","start":5.0,"income":39.0,"outcome":40.0,"stock":4.0,"min_reserve":3.0,"monthly":[3.0,0.0,2.0,0.0,0.0,3.0,4.0,7.0,1.0,12.0,9.0,4.0,1.0],"total_units":46.0,"total_l":230.0,"full12_units":45.0,"full12_l":225.0,"partial_units":1.0,"last3_units":25.0,"prev3_units":12.0,"last6_units":37.0,"prev6_units":8.0,"stock_l":20.0,"avg3":8.33,"cover_months":0.48,"deficit_vs_reserve":0.0,"cv":0.974,"cv_summer":0.588,"active_months":9,"stock_status":"Норма","abc":"A","abc_cum_share":4.6,"xyz":"Y","trend_pct":108.3},{"name":"Эмаль ПФ-115 белая 2л (1,9кг)","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Белая","finish":"","brand":"Без явного бренда","unit":"банка","article":"","volume_l":2.0,"size":"2–2,4 л","start":10.0,"income":102.0,"outcome":99.0,"stock":13.0,"min_reserve":6.0,"monthly":[1.0,1.0,4.0,0.0,2.0,9.0,16.0,18.0,16.0,11.0,23.0,11.0,2.0],"total_units":114.0,"total_l":228.0,"full12_units":112.0,"full12_l":224.0,"partial_units":2.0,"last3_units":45.0,"prev3_units":50.0,"last6_units":95.0,"prev6_units":17.0,"stock_l":26.0,"avg3":15.0,"cover_months":0.87,"deficit_vs_reserve":0.0,"cv":0.797,"cv_summer":0.261,"active_months":11,"stock_status":"Норма","abc":"A","abc_cum_share":9.2,"xyz":"X","trend_pct":-10.0},{"name":"Эмаль ПФ-115 зеленая 2л (1,8кг)","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Зеленая","finish":"","brand":"Без явного бренда","unit":"банка","article":"","volume_l":2.0,"size":"2–2,4 л","start":9.0,"income":90.0,"outcome":93.0,"stock":6.0,"min_reserve":3.0,"monthly":[3.0,0.0,2.0,0.0,1.0,6.0,23.0,13.0,14.0,20.0,11.0,9.0,2.0],"total_units":104.0,"total_l":208.0,"full12_units":102.0,"full12_l":204.0,"partial_units":2.0,"last3_units":40.0,"prev3_units":50.0,"last6_units":90.0,"prev6_units":12.0,"stock_l":12.0,"avg3":13.33,"cover_months":0.45,"deficit_vs_reserve":0.0,"cv":0.885,"cv_summer":0.329,"active_months":10,"stock_status":"Норма","abc":"A","abc_cum_share":13.4,"xyz":"X","trend_pct":-20.0},{"name":"Эмаль ПФ-115 вишневая 2л (1,8кг)","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Вишневая","finish":"","brand":"Без явного бренда","unit":"банка","article":"","volume_l":2.0,"size":"2–2,4 л","start":4.0,"income":78.0,"outcome":73.0,"stock":9.0,"min_reserve":3.0,"monthly":[3.0,1.0,0.0,0.0,0.0,8.0,14.0,14.0,14.0,15.0,14.0,7.0,3.0],"total_units":93.0,"total_l":186.0,"full12_units":90.0,"full12_l":180.0,"partial_units":3.0,"last3_units":36.0,"prev3_units":42.0,"last6_units":78.0,"prev6_units":12.0,"stock_l":18.0,"avg3":12.0,"cover_months":0.75,"deficit_vs_reserve":0.0,"cv":0.823,"cv_summer":0.208,"active_months":9,"stock_status":"Норма","abc":"A","abc_cum_share":17.1,"xyz":"X","trend_pct":-14.3},{"name":"Эмаль ПФ-115 белая 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Белая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":3.0,"income":55.0,"outcome":53.0,"stock":5.0,"min_reserve":6.0,"monthly":[2.0,0.0,1.0,0.0,0.0,7.0,14.0,4.0,14.0,9.0,17.0,5.0,3.0],"total_units":76.0,"total_l":182.4,"full12_units":73.0,"full12_l":175.2,"partial_units":3.0,"last3_units":31.0,"prev3_units":32.0,"last6_units":63.0,"prev6_units":10.0,"stock_l":12.0,"avg3":10.33,"cover_months":0.48,"deficit_vs_reserve":1.0,"cv":0.964,"cv_summer":0.463,"active_months":9,"stock_status":"Ниже резерва","abc":"A","abc_cum_share":20.7,"xyz":"X","trend_pct":-3.1},{"name":"Эмаль ПФ-115 серая 2,0л (1,9кг)","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Серая","finish":"","brand":"Без явного бренда","unit":"банка","article":"","volume_l":2.0,"size":"2–2,4 л","start":13.0,"income":78.0,"outcome":82.0,"stock":9.0,"min_reserve":3.0,"monthly":[13.0,0.0,0.0,0.0,0.0,1.0,5.0,17.0,17.0,9.0,17.0,5.0,7.0],"total_units":91.0,"total_l":182.0,"full12_units":84.0,"full12_l":168.0,"partial_units":7.0,"last3_units":31.0,"prev3_units":39.0,"last6_units":70.0,"prev6_units":14.0,"stock_l":18.0,"avg3":10.33,"cover_months":0.87,"deficit_vs_reserve":0.0,"cv":0.993,"cv_summer":0.471,"active_months":8,"stock_status":"Норма","abc":"A","abc_cum_share":24.2,"xyz":"X","trend_pct":-20.5},{"name":"Эмаль ПФ-115 шоколадная 2,0л (1,8кг)","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Шоколадная","finish":"","brand":"Без явного бренда","unit":"банка","article":"","volume_l":2.0,"size":"2–2,4 л","start":4.0,"income":66.0,"outcome":64.0,"stock":6.0,"min_reserve":3.0,"monthly":[4.0,0.0,0.0,0.0,0.0,8.0,4.0,14.0,15.0,8.0,10.0,8.0,0.0],"total_units":71.0,"total_l":142.0,"full12_units":71.0,"full12_l":142.0,"partial_units":0.0,"last3_units":26.0,"prev3_units":33.0,"last6_units":59.0,"prev6_units":12.0,"stock_l":12.0,"avg3":8.67,"cover_months":0.69,"deficit_vs_reserve":0.0,"cv":0.879,"cv_summer":0.382,"active_months":8,"stock_status":"Норма","abc":"A","abc_cum_share":27.1,"xyz":"X","trend_pct":-21.2},{"name":"Эмаль ПФ-115 синяя 2л (1,8кг)","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Синяя","finish":"","brand":"Без явного бренда","unit":"банка","article":"","volume_l":2.0,"size":"2–2,4 л","start":1.0,"income":73.0,"outcome":62.0,"stock":12.0,"min_reserve":3.0,"monthly":[1.0,0.0,0.0,0.0,0.0,3.0,5.0,10.0,25.0,15.0,9.0,2.0,0.0],"total_units":70.0,"total_l":140.0,"full12_units":70.0,"full12_l":140.0,"partial_units":0.0,"last3_units":26.0,"prev3_units":40.0,"last6_units":66.0,"prev6_units":4.0,"stock_l":24.0,"avg3":8.67,"cover_months":1.38,"deficit_vs_reserve":0.0,"cv":1.273,"cv_summer":0.678,"active_months":8,"stock_status":"Норма","abc":"A","abc_cum_share":30.0,"xyz":"Y","trend_pct":-35.0},{"name":"Эмаль ПФ-115 еловая хвоя 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Еловая хвоя","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":7.0,"income":36.0,"outcome":41.0,"stock":2.0,"min_reserve":6.0,"monthly":[1.0,0.0,4.0,0.0,0.0,7.0,11.0,4.0,13.0,8.0,1.0,1.0,2.0],"total_units":52.0,"total_l":124.8,"full12_units":50.0,"full12_l":120.0,"partial_units":2.0,"last3_units":10.0,"prev3_units":28.0,"last6_units":38.0,"prev6_units":12.0,"stock_l":4.8,"avg3":3.33,"cover_months":0.6,"deficit_vs_reserve":4.0,"cv":1.05,"cv_summer":0.739,"active_months":9,"stock_status":"Ниже резерва","abc":"A","abc_cum_share":32.5,"xyz":"Y","trend_pct":-64.3},{"name":"Эмаль ПФ-115 белая 0,9л (0,85кг)","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Белая","finish":"","brand":"Без явного бренда","unit":"шт","article":"","volume_l":0.9,"size":"до 1 л","start":9.0,"income":126.0,"outcome":120.0,"stock":15.0,"min_reserve":6.0,"monthly":[1.0,1.0,0.0,0.0,1.0,10.0,27.0,14.0,15.0,19.0,20.0,21.0,4.0],"total_units":133.0,"total_l":119.7,"full12_units":129.0,"full12_l":116.1,"partial_units":4.0,"last3_units":60.0,"prev3_units":56.0,"last6_units":116.0,"prev6_units":13.0,"stock_l":13.5,"avg3":20.0,"cover_months":0.75,"deficit_vs_reserve":0.0,"cv":0.878,"cv_summer":0.221,"active_months":10,"stock_status":"Норма","abc":"A","abc_cum_share":34.8,"xyz":"X","trend_pct":7.1},{"name":"Эмаль ПФ-115 желтая 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Желтая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":8.0,"income":42.0,"outcome":40.0,"stock":10.0,"min_reserve":6.0,"monthly":[3.0,0.0,6.0,0.0,0.0,7.0,8.0,3.0,13.0,6.0,1.0,1.0,0.0],"total_units":48.0,"total_l":115.2,"full12_units":48.0,"full12_l":115.2,"partial_units":0.0,"last3_units":8.0,"prev3_units":24.0,"last6_units":32.0,"prev6_units":16.0,"stock_l":24.0,"avg3":2.67,"cover_months":3.75,"deficit_vs_reserve":0.0,"cv":0.974,"cv_summer":0.8,"active_months":9,"stock_status":"Норма","abc":"A","abc_cum_share":37.2,"xyz":"Y","trend_pct":-66.7},{"name":"Эмаль ПФ-115 серая 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Серая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":5.0,"income":48.0,"outcome":47.0,"stock":6.0,"min_reserve":6.0,"monthly":[3.0,0.0,1.0,0.0,0.0,8.0,3.0,3.0,7.0,5.0,6.0,12.0,0.0],"total_units":48.0,"total_l":115.2,"full12_units":48.0,"full12_l":115.2,"partial_units":0.0,"last3_units":23.0,"prev3_units":13.0,"last6_units":36.0,"prev6_units":12.0,"stock_l":14.4,"avg3":7.67,"cover_months":0.78,"deficit_vs_reserve":0.0,"cv":0.896,"cv_summer":0.509,"active_months":9,"stock_status":"Норма","abc":"A","abc_cum_share":39.6,"xyz":"Y","trend_pct":76.9},{"name":"Эмаль ПФ-115 черная 2,0 л (1,8кг)","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Черная","finish":"","brand":"Без явного бренда","unit":"банка","article":"","volume_l":2.0,"size":"2–2,4 л","start":15.0,"income":30.0,"outcome":39.0,"stock":6.0,"min_reserve":3.0,"monthly":[1.0,0.0,6.0,0.0,0.0,15.0,6.0,3.0,3.0,10.0,6.0,7.0,0.0],"total_units":57.0,"total_l":114.0,"full12_units":57.0,"full12_l":114.0,"partial_units":0.0,"last3_units":23.0,"prev3_units":12.0,"last6_units":35.0,"prev6_units":22.0,"stock_l":12.0,"avg3":7.67,"cover_months":0.78,"deficit_vs_reserve":0.0,"cv":0.922,"cv_summer":0.413,"active_months":9,"stock_status":"Норма","abc":"A","abc_cum_share":41.9,"xyz":"X","trend_pct":91.7},{"name":"Эмаль ПФ-115 желтая 2л (1,9кг)","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Желтая","finish":"","brand":"Без явного бренда","unit":"шт","article":"","volume_l":2.0,"size":"2–2,4 л","start":6.0,"income":42.0,"outcome":41.0,"stock":7.0,"min_reserve":3.0,"monthly":[1.0,0.0,1.0,0.0,0.0,5.0,4.0,11.0,11.0,4.0,8.0,7.0,1.0],"total_units":53.0,"total_l":106.0,"full12_units":52.0,"full12_l":104.0,"partial_units":1.0,"last3_units":19.0,"prev3_units":26.0,"last6_units":45.0,"prev6_units":7.0,"stock_l":14.0,"avg3":6.33,"cover_months":1.11,"deficit_vs_reserve":0.0,"cv":0.915,"cv_summer":0.383,"active_months":9,"stock_status":"Норма","abc":"A","abc_cum_share":44.1,"xyz":"X","trend_pct":-26.9},{"name":"Эмаль ПФ-115 ярко-синяя 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Ярко-синяя","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":9.0,"income":36.0,"outcome":39.0,"stock":6.0,"min_reserve":6.0,"monthly":[0.0,0.0,0.0,0.0,0.0,8.0,3.0,2.0,8.0,6.0,8.0,5.0,0.0],"total_units":40.0,"total_l":96.0,"full12_units":40.0,"full12_l":96.0,"partial_units":0.0,"last3_units":19.0,"prev3_units":13.0,"last6_units":32.0,"prev6_units":8.0,"stock_l":14.4,"avg3":6.33,"cover_months":0.95,"deficit_vs_reserve":0.0,"cv":0.997,"cv_summer":0.428,"active_months":7,"stock_status":"Норма","abc":"A","abc_cum_share":46.0,"xyz":"X","trend_pct":46.2},{"name":"Эмаль ПФ-266 св.-корич.-1 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-266","colour":"Светло-коричневая","finish":"","brand":"ECOL","unit":"шт","article":"","volume_l":2.4,"size":"2–2,4 л","start":1.0,"income":36.0,"outcome":33.0,"stock":4.0,"min_reserve":3.0,"monthly":[1.0,0.0,0.0,0.0,0.0,1.0,4.0,12.0,8.0,3.0,2.0,6.0,2.0],"total_units":39.0,"total_l":93.6,"full12_units":37.0,"full12_l":88.8,"partial_units":2.0,"last3_units":11.0,"prev3_units":24.0,"last6_units":35.0,"prev6_units":2.0,"stock_l":9.6,"avg3":3.67,"cover_months":1.09,"deficit_vs_reserve":0.0,"cv":1.188,"cv_summer":0.581,"active_months":8,"stock_status":"Норма","abc":"A","abc_cum_share":49.7,"xyz":"Y","trend_pct":-54.2},{"name":"Эмаль ПФ-115 зеленая 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Зеленая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":4.0,"income":36.0,"outcome":33.0,"stock":7.0,"min_reserve":6.0,"monthly":[0.0,0.0,0.0,4.0,0.0,6.0,7.0,5.0,4.0,5.0,6.0,0.0,1.0],"total_units":38.0,"total_l":91.2,"full12_units":37.0,"full12_l":88.8,"partial_units":1.0,"last3_units":11.0,"prev3_units":16.0,"last6_units":27.0,"prev6_units":10.0,"stock_l":16.8,"avg3":3.67,"cover_months":1.91,"deficit_vs_reserve":0.0,"cv":0.883,"cv_summer":0.493,"active_months":7,"stock_status":"Норма","abc":"A","abc_cum_share":47.9,"xyz":"X","trend_pct":-31.2},{"name":"Эмаль ПФ-115 черная 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Черная","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":7.0,"income":30.0,"outcome":33.0,"stock":4.0,"min_reserve":6.0,"monthly":[1.0,0.0,0.0,0.0,0.0,6.0,6.0,4.0,6.0,6.0,6.0,1.0,1.0],"total_units":37.0,"total_l":88.8,"full12_units":36.0,"full12_l":86.4,"partial_units":1.0,"last3_units":13.0,"prev3_units":16.0,"last6_units":29.0,"prev6_units":7.0,"stock_l":9.6,"avg3":4.33,"cover_months":0.92,"deficit_vs_reserve":2.0,"cv":0.913,"cv_summer":0.386,"active_months":8,"stock_status":"Ниже резерва","abc":"A","abc_cum_share":53.2,"xyz":"X","trend_pct":-18.8},{"name":"Эмаль ПФ-115 кр-коричневая 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Красно-коричневая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":4.0,"income":30.0,"outcome":30.0,"stock":4.0,"min_reserve":6.0,"monthly":[1.0,0.0,0.0,1.0,0.0,4.0,3.0,7.0,8.0,3.0,5.0,4.0,0.0],"total_units":36.0,"total_l":86.4,"full12_units":36.0,"full12_l":86.4,"partial_units":0.0,"last3_units":12.0,"prev3_units":18.0,"last6_units":30.0,"prev6_units":6.0,"stock_l":9.6,"avg3":4.0,"cover_months":1.0,"deficit_vs_reserve":2.0,"cv":0.871,"cv_summer":0.383,"active_months":9,"stock_status":"Ниже резерва","abc":"A","abc_cum_share":51.5,"xyz":"X","trend_pct":-33.3},{"name":"Эмаль ПФ-115 белая гл.1,0л (0,9кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Белая","finish":"Глянцевая","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":12.0,"income":74.0,"outcome":72.0,"stock":14.0,"min_reserve":6.0,"monthly":[1.0,0.0,1.0,0.0,1.0,19.0,14.0,3.0,4.0,8.0,20.0,10.0,2.0],"total_units":83.0,"total_l":83.0,"full12_units":81.0,"full12_l":81.0,"partial_units":2.0,"last3_units":38.0,"prev3_units":21.0,"last6_units":59.0,"prev6_units":22.0,"stock_l":14.0,"avg3":12.67,"cover_months":1.11,"deficit_vs_reserve":0.0,"cv":1.05,"cv_summer":0.594,"active_months":10,"stock_status":"Норма","abc":"A","abc_cum_share":56.6,"xyz":"Y","trend_pct":81.0},{"name":"Эмаль ПФ-115 вишневая 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Вишневая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":4.0,"income":26.0,"outcome":27.0,"stock":3.0,"min_reserve":6.0,"monthly":[0.0,0.0,3.0,0.0,0.0,3.0,12.0,4.0,2.0,5.0,1.0,4.0,0.0],"total_units":34.0,"total_l":81.6,"full12_units":34.0,"full12_l":81.6,"partial_units":0.0,"last3_units":10.0,"prev3_units":18.0,"last6_units":28.0,"prev6_units":6.0,"stock_l":7.2,"avg3":3.33,"cover_months":0.9,"deficit_vs_reserve":3.0,"cv":1.151,"cv_summer":0.759,"active_months":8,"stock_status":"Ниже резерва","abc":"A","abc_cum_share":54.9,"xyz":"Y","trend_pct":-44.4},{"name":"Эмаль ПФ-115 шоколадная 0,9л (0,8кг)","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Шоколадная","finish":"","brand":"Без явного бренда","unit":"шт","article":"","volume_l":0.9,"size":"до 1 л","start":12.0,"income":84.0,"outcome":82.0,"stock":14.0,"min_reserve":3.0,"monthly":[4.0,5.0,1.0,0.0,2.0,11.0,8.0,15.0,16.0,4.0,10.0,9.0,5.0],"total_units":90.0,"total_l":81.0,"full12_units":85.0,"full12_l":76.5,"partial_units":5.0,"last3_units":23.0,"prev3_units":39.0,"last6_units":62.0,"prev6_units":23.0,"stock_l":12.6,"avg3":7.67,"cover_months":1.83,"deficit_vs_reserve":0.0,"cv":0.714,"cv_summer":0.398,"active_months":11,"stock_status":"Норма","abc":"A","abc_cum_share":58.2,"xyz":"X","trend_pct":-41.0},{"name":"Эмаль ПФ-115 майская зелень 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Майская зелень","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":10.0,"income":24.0,"outcome":27.0,"stock":7.0,"min_reserve":6.0,"monthly":[0.0,0.0,2.0,0.0,0.0,8.0,3.0,2.0,6.0,5.0,2.0,3.0,1.0],"total_units":32.0,"total_l":76.8,"full12_units":31.0,"full12_l":74.4,"partial_units":1.0,"last3_units":10.0,"prev3_units":11.0,"last6_units":21.0,"prev6_units":10.0,"stock_l":16.8,"avg3":3.33,"cover_months":2.1,"deficit_vs_reserve":0.0,"cv":0.967,"cv_summer":0.429,"active_months":8,"stock_status":"Норма","abc":"A","abc_cum_share":59.7,"xyz":"X","trend_pct":-9.1},{"name":"Эмаль ПФ-115 голубая 2л (1,8кг)","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Голубая","finish":"","brand":"Без явного бренда","unit":"банка","article":"","volume_l":2.0,"size":"2–2,4 л","start":2.0,"income":42.0,"outcome":37.0,"stock":7.0,"min_reserve":3.0,"monthly":[2.0,0.0,0.0,0.0,0.0,5.0,2.0,3.0,3.0,12.0,6.0,2.0,3.0],"total_units":38.0,"total_l":76.0,"full12_units":35.0,"full12_l":70.0,"partial_units":3.0,"last3_units":20.0,"prev3_units":8.0,"last6_units":28.0,"prev6_units":7.0,"stock_l":14.0,"avg3":6.67,"cover_months":1.05,"deficit_vs_reserve":0.0,"cv":1.141,"cv_summer":0.759,"active_months":8,"stock_status":"Норма","abc":"A","abc_cum_share":61.1,"xyz":"Y","trend_pct":150.0},{"name":"Эмаль ПФ-115 оранжевая-1 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Оранжевая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":8.0,"income":18.0,"outcome":22.0,"stock":4.0,"min_reserve":6.0,"monthly":[0.0,0.0,0.0,0.0,0.0,3.0,0.0,0.0,5.0,11.0,2.0,6.0,0.0],"total_units":27.0,"total_l":64.8,"full12_units":27.0,"full12_l":64.8,"partial_units":0.0,"last3_units":19.0,"prev3_units":5.0,"last6_units":24.0,"prev6_units":3.0,"stock_l":9.6,"avg3":6.33,"cover_months":0.63,"deficit_vs_reserve":2.0,"cv":1.487,"cv_summer":0.968,"active_months":5,"stock_status":"Ниже резерва","abc":"A","abc_cum_share":62.5,"xyz":"Y","trend_pct":280.0},{"name":"Эмаль ПФ-115 зеленая 0,9л (0,8кг)","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Зеленая","finish":"","brand":"Без явного бренда","unit":"банка","article":"","volume_l":0.9,"size":"до 1 л","start":4.0,"income":63.0,"outcome":56.0,"stock":11.0,"min_reserve":3.0,"monthly":[2.0,0.0,0.0,0.0,0.0,8.0,9.0,10.0,10.0,7.0,10.0,7.0,3.0],"total_units":66.0,"total_l":59.4,"full12_units":63.0,"full12_l":56.7,"partial_units":3.0,"last3_units":24.0,"prev3_units":29.0,"last6_units":53.0,"prev6_units":10.0,"stock_l":9.9,"avg3":8.0,"cover_months":1.38,"deficit_vs_reserve":0.0,"cv":0.809,"cv_summer":0.152,"active_months":8,"stock_status":"Норма","abc":"A","abc_cum_share":66.0,"xyz":"X","trend_pct":-17.2},{"name":"Эмаль ПФ-115 оранжевая 2,0л (1,9кг)","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Оранжевая","finish":"","brand":"Без явного бренда","unit":"шт","article":"","volume_l":2.0,"size":"2–2,4 л","start":3.0,"income":24.0,"outcome":23.0,"stock":4.0,"min_reserve":3.0,"monthly":[0.0,1.0,0.0,0.0,0.0,5.0,1.0,4.0,7.0,8.0,1.0,2.0,0.0],"total_units":29.0,"total_l":58.0,"full12_units":29.0,"full12_l":58.0,"partial_units":0.0,"last3_units":11.0,"prev3_units":12.0,"last6_units":23.0,"prev6_units":6.0,"stock_l":8.0,"avg3":3.67,"cover_months":1.09,"deficit_vs_reserve":0.0,"cv":1.139,"cv_summer":0.729,"active_months":8,"stock_status":"Норма","abc":"A","abc_cum_share":63.7,"xyz":"Y","trend_pct":-8.3},{"name":"Грунтовка ГФ-021 2,4л(2,3кг)кг. кр.кор","warehouse":"Склад Кореличи","group":"Грунтовка","colour":"—","finish":"","brand":"Без явного бренда","unit":"шт","article":"","volume_l":2.4,"size":"2–2,4 л","start":0.0,"income":30.0,"outcome":24.0,"stock":6.0,"min_reserve":4.0,"monthly":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,4.0,13.0,7.0,0.0],"total_units":24.0,"total_l":57.6,"full12_units":24.0,"full12_l":57.6,"partial_units":0.0,"last3_units":24.0,"prev3_units":0.0,"last6_units":24.0,"prev6_units":0.0,"stock_l":14.4,"avg3":8.0,"cover_months":0.75,"deficit_vs_reserve":0.0,"cv":1.969,"cv_summer":1.199,"active_months":3,"stock_status":"Норма","abc":"A","abc_cum_share":64.8,"xyz":"Z","trend_pct":null},{"name":"Эмаль ПФ-115 зеленое яблоко 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Зеленое яблоко","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":9.0,"income":12.0,"outcome":17.0,"stock":4.0,"min_reserve":6.0,"monthly":[0.0,4.0,0.0,3.0,1.0,3.0,2.0,3.0,1.0,3.0,1.0,0.0,3.0],"total_units":24.0,"total_l":57.6,"full12_units":21.0,"full12_l":50.4,"partial_units":3.0,"last3_units":4.0,"prev3_units":6.0,"last6_units":10.0,"prev6_units":11.0,"stock_l":9.6,"avg3":1.33,"cover_months":3.0,"deficit_vs_reserve":2.0,"cv":0.778,"cv_summer":0.663,"active_months":9,"stock_status":"Ниже резерва","abc":"A","abc_cum_share":70.2,"xyz":"Y","trend_pct":-33.3},{"name":"Эмаль ПФ-115 черная 0,9л (0,8кг)","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Черная","finish":"","brand":"Без явного бренда","unit":"банка","article":"","volume_l":0.9,"size":"до 1 л","start":5.0,"income":56.0,"outcome":54.0,"stock":7.0,"min_reserve":3.0,"monthly":[1.0,1.0,0.0,0.0,1.0,8.0,17.0,9.0,3.0,4.0,9.0,4.0,3.0],"total_units":60.0,"total_l":54.0,"full12_units":57.0,"full12_l":51.3,"partial_units":3.0,"last3_units":17.0,"prev3_units":29.0,"last6_units":46.0,"prev6_units":11.0,"stock_l":6.3,"avg3":5.67,"cover_months":1.24,"deficit_vs_reserve":0.0,"cv":1.032,"cv_summer":0.629,"active_months":10,"stock_status":"Норма","abc":"A","abc_cum_share":68.2,"xyz":"Y","trend_pct":-41.4},{"name":"Эмаль ПФ-266 зол.-корич. 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-266","colour":"Золотисто-коричневая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":4.0,"income":18.0,"outcome":17.0,"stock":5.0,"min_reserve":3.0,"monthly":[8.0,0.0,0.0,0.0,0.0,2.0,0.0,2.0,3.0,4.0,3.0,0.0,0.0],"total_units":22.0,"total_l":52.8,"full12_units":22.0,"full12_l":52.8,"partial_units":0.0,"last3_units":7.0,"prev3_units":5.0,"last6_units":12.0,"prev6_units":10.0,"stock_l":12.0,"avg3":2.33,"cover_months":2.14,"deficit_vs_reserve":0.0,"cv":1.276,"cv_summer":0.764,"active_months":6,"stock_status":"Норма","abc":"A","abc_cum_share":67.1,"xyz":"Y","trend_pct":40.0},{"name":"Эмаль ПФ-115 вишневая 0,9 (0,8кг)","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Вишневая","finish":"","brand":"Без явного бренда","unit":"банка","article":"","volume_l":0.9,"size":"до 1 л","start":9.0,"income":41.0,"outcome":46.0,"stock":4.0,"min_reserve":3.0,"monthly":[2.0,0.0,0.0,1.0,0.0,12.0,6.0,8.0,8.0,5.0,7.0,7.0,2.0],"total_units":58.0,"total_l":52.2,"full12_units":56.0,"full12_l":50.4,"partial_units":2.0,"last3_units":19.0,"prev3_units":22.0,"last6_units":41.0,"prev6_units":15.0,"stock_l":3.6,"avg3":6.33,"cover_months":0.63,"deficit_vs_reserve":0.0,"cv":0.818,"cv_summer":0.156,"active_months":9,"stock_status":"Норма","abc":"A","abc_cum_share":69.2,"xyz":"X","trend_pct":-13.6},{"name":"Эмаль ПФ-115 шоколадная 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Шоколадная","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":2.0,"income":24.0,"outcome":20.0,"stock":6.0,"min_reserve":6.0,"monthly":[1.0,0.0,0.0,0.0,0.0,4.0,1.0,3.0,0.0,5.0,4.0,3.0,0.0],"total_units":21.0,"total_l":50.4,"full12_units":21.0,"full12_l":50.4,"partial_units":0.0,"last3_units":12.0,"prev3_units":4.0,"last6_units":16.0,"prev6_units":5.0,"stock_l":14.4,"avg3":4.0,"cover_months":1.5,"deficit_vs_reserve":0.0,"cv":1.047,"cv_summer":0.637,"active_months":7,"stock_status":"Норма","abc":"A","abc_cum_share":71.3,"xyz":"Y","trend_pct":200.0},{"name":"Эмаль ПФ-115 черная 1,0л (0,8кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Черная","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":22.0,"income":26.0,"outcome":40.0,"stock":8.0,"min_reserve":6.0,"monthly":[1.0,1.0,0.0,0.0,0.0,4.0,13.0,7.0,1.0,6.0,5.0,10.0,1.0],"total_units":49.0,"total_l":49.0,"full12_units":48.0,"full12_l":48.0,"partial_units":1.0,"last3_units":21.0,"prev3_units":21.0,"last6_units":42.0,"prev6_units":6.0,"stock_l":8.0,"avg3":7.0,"cover_months":1.14,"deficit_vs_reserve":0.0,"cv":1.036,"cv_summer":0.541,"active_months":9,"stock_status":"Норма","abc":"A","abc_cum_share":72.3,"xyz":"Y","trend_pct":0.0},{"name":"Эмаль ПФ-115 серая 0,9л (0,85кг)","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Серая","finish":"","brand":"Без явного бренда","unit":"шт","article":"","volume_l":0.9,"size":"до 1 л","start":9.0,"income":42.0,"outcome":43.0,"stock":8.0,"min_reserve":3.0,"monthly":[2.0,6.0,1.0,0.0,0.0,1.0,7.0,3.0,7.0,10.0,9.0,5.0,1.0],"total_units":52.0,"total_l":46.8,"full12_units":51.0,"full12_l":45.9,"partial_units":1.0,"last3_units":24.0,"prev3_units":17.0,"last6_units":41.0,"prev6_units":10.0,"stock_l":7.2,"avg3":8.0,"cover_months":1.0,"deficit_vs_reserve":0.0,"cv":0.799,"cv_summer":0.342,"active_months":10,"stock_status":"Норма","abc":"A","abc_cum_share":73.2,"xyz":"X","trend_pct":41.2},{"name":"Грунтовка ГФ-021 2,4л(2,3кг)св-сер","warehouse":"Склад Кореличи","group":"Грунтовка","colour":"—","finish":"","brand":"Без явного бренда","unit":"шт","article":"","volume_l":2.4,"size":"2–2,4 л","start":0.0,"income":24.0,"outcome":18.0,"stock":6.0,"min_reserve":4.0,"monthly":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,4.0,2.0,12.0,0.0],"total_units":18.0,"total_l":43.2,"full12_units":18.0,"full12_l":43.2,"partial_units":0.0,"last3_units":18.0,"prev3_units":0.0,"last6_units":18.0,"prev6_units":0.0,"stock_l":14.4,"avg3":6.0,"cover_months":1.0,"deficit_vs_reserve":0.0,"cv":2.253,"cv_summer":1.427,"active_months":3,"stock_status":"Норма","abc":"A","abc_cum_share":74.1,"xyz":"Z","trend_pct":null},{"name":"Эмаль ПФ-115 желтая 1,0л (0,9кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Желтая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":3.0,"income":35.0,"outcome":28.0,"stock":10.0,"min_reserve":6.0,"monthly":[0.0,0.0,0.0,0.0,0.0,3.0,6.0,3.0,8.0,9.0,4.0,4.0,4.0],"total_units":41.0,"total_l":41.0,"full12_units":37.0,"full12_l":37.0,"partial_units":4.0,"last3_units":17.0,"prev3_units":17.0,"last6_units":34.0,"prev6_units":3.0,"stock_l":10.0,"avg3":5.67,"cover_months":1.76,"deficit_vs_reserve":0.0,"cv":1.012,"cv_summer":0.39,"active_months":7,"stock_status":"Норма","abc":"A","abc_cum_share":79.8,"xyz":"X","trend_pct":0.0},{"name":"Эмаль ПФ-115 бирюзовая 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Бирюзовая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":3.0,"income":18.0,"outcome":16.0,"stock":5.0,"min_reserve":6.0,"monthly":[1.0,0.0,0.0,0.0,0.0,6.0,0.0,5.0,3.0,0.0,1.0,1.0,0.0],"total_units":17.0,"total_l":40.8,"full12_units":17.0,"full12_l":40.8,"partial_units":0.0,"last3_units":2.0,"prev3_units":8.0,"last6_units":10.0,"prev6_units":7.0,"stock_l":12.0,"avg3":0.67,"cover_months":7.5,"deficit_vs_reserve":1.0,"cv":1.425,"cv_summer":1.077,"active_months":6,"stock_status":"Ниже резерва","abc":"A","abc_cum_share":74.9,"xyz":"Z","trend_pct":-75.0},{"name":"Эмаль ПФ-115 графит 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Графит","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":5.0,"income":12.0,"outcome":15.0,"stock":2.0,"min_reserve":6.0,"monthly":[0.0,0.0,0.0,0.0,0.0,2.0,1.0,1.0,7.0,1.0,3.0,2.0,0.0],"total_units":17.0,"total_l":40.8,"full12_units":17.0,"full12_l":40.8,"partial_units":0.0,"last3_units":6.0,"prev3_units":9.0,"last6_units":15.0,"prev6_units":2.0,"stock_l":4.8,"avg3":2.0,"cover_months":1.0,"deficit_vs_reserve":4.0,"cv":1.366,"cv_summer":0.856,"active_months":7,"stock_status":"Ниже резерва","abc":"A","abc_cum_share":75.8,"xyz":"Y","trend_pct":-33.3},{"name":"Эмаль ПФ-115 красная 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Красная","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":5.0,"income":12.0,"outcome":11.0,"stock":6.0,"min_reserve":6.0,"monthly":[0.0,0.0,1.0,0.0,0.0,3.0,1.0,3.0,0.0,0.0,5.0,4.0,0.0],"total_units":17.0,"total_l":40.8,"full12_units":17.0,"full12_l":40.8,"partial_units":0.0,"last3_units":9.0,"prev3_units":4.0,"last6_units":13.0,"prev6_units":4.0,"stock_l":14.4,"avg3":3.0,"cover_months":2.0,"deficit_vs_reserve":0.0,"cv":1.238,"cv_summer":0.9,"active_months":6,"stock_status":"Норма","abc":"A","abc_cum_share":76.6,"xyz":"Y","trend_pct":125.0},{"name":"Эмаль ПФ-115 серебристая 2,40л (1,9кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Серебристая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":5.0,"income":18.0,"outcome":16.0,"stock":7.0,"min_reserve":6.0,"monthly":[0.0,2.0,2.0,0.0,0.0,1.0,1.0,1.0,1.0,3.0,3.0,3.0,0.0],"total_units":17.0,"total_l":40.8,"full12_units":17.0,"full12_l":40.8,"partial_units":0.0,"last3_units":9.0,"prev3_units":3.0,"last6_units":12.0,"prev6_units":5.0,"stock_l":16.8,"avg3":3.0,"cover_months":2.33,"deficit_vs_reserve":0.0,"cv":0.787,"cv_summer":0.5,"active_months":9,"stock_status":"Норма","abc":"A","abc_cum_share":77.4,"xyz":"X","trend_pct":200.0},{"name":"Эмаль ПФ-115 вишневая 1,0л (0,9кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Вишневая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":6.0,"income":28.0,"outcome":29.0,"stock":5.0,"min_reserve":6.0,"monthly":[0.0,0.0,0.0,0.0,0.0,6.0,7.0,3.0,14.0,1.0,3.0,5.0,1.0],"total_units":40.0,"total_l":40.0,"full12_units":39.0,"full12_l":39.0,"partial_units":1.0,"last3_units":9.0,"prev3_units":24.0,"last6_units":33.0,"prev6_units":6.0,"stock_l":5.0,"avg3":3.0,"cover_months":1.67,"deficit_vs_reserve":1.0,"cv":1.251,"cv_summer":0.77,"active_months":7,"stock_status":"Ниже резерва","abc":"A","abc_cum_share":78.2,"xyz":"Y","trend_pct":-62.5},{"name":"Эмаль ПФ-115 шоколадная 1,0л (0,9кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Шоколадная","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":14.0,"income":21.0,"outcome":20.0,"stock":15.0,"min_reserve":6.0,"monthly":[1.0,1.0,1.0,0.0,1.0,3.0,0.0,10.0,13.0,5.0,2.0,2.0,0.0],"total_units":39.0,"total_l":39.0,"full12_units":39.0,"full12_l":39.0,"partial_units":0.0,"last3_units":9.0,"prev3_units":23.0,"last6_units":32.0,"prev6_units":7.0,"stock_l":15.0,"avg3":3.0,"cover_months":5.0,"deficit_vs_reserve":0.0,"cv":1.219,"cv_summer":0.877,"active_months":10,"stock_status":"Норма","abc":"A","abc_cum_share":79.0,"xyz":"Y","trend_pct":-60.9},{"name":"Эмаль ПФ-115 графит 1,0л (0,9кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Графит","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":6.0,"income":35.0,"outcome":34.0,"stock":7.0,"min_reserve":6.0,"monthly":[1.0,2.0,0.0,0.0,1.0,0.0,2.0,7.0,7.0,5.0,6.0,3.0,3.0],"total_units":37.0,"total_l":37.0,"full12_units":34.0,"full12_l":34.0,"partial_units":3.0,"last3_units":14.0,"prev3_units":16.0,"last6_units":30.0,"prev6_units":4.0,"stock_l":7.0,"avg3":4.67,"cover_months":1.5,"deficit_vs_reserve":0.0,"cv":0.921,"cv_summer":0.383,"active_months":9,"stock_status":"Норма","abc":"B","abc_cum_share":81.2,"xyz":"X","trend_pct":-12.5},{"name":"Эмаль ПФ-115 св.серая 1,0л (0,9кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Светло-серая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":4.0,"income":35.0,"outcome":32.0,"stock":7.0,"min_reserve":6.0,"monthly":[0.0,0.0,4.0,0.0,0.0,1.0,7.0,5.0,1.0,4.0,10.0,3.0,0.0],"total_units":35.0,"total_l":35.0,"full12_units":35.0,"full12_l":35.0,"partial_units":0.0,"last3_units":17.0,"prev3_units":13.0,"last6_units":30.0,"prev6_units":5.0,"stock_l":7.0,"avg3":5.67,"cover_months":1.24,"deficit_vs_reserve":0.0,"cv":1.061,"cv_summer":0.577,"active_months":8,"stock_status":"Норма","abc":"B","abc_cum_share":80.5,"xyz":"Y","trend_pct":30.8},{"name":"Эмаль ПФ-115 серая 1,0л (0,9кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Серая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":9.0,"income":22.0,"outcome":23.0,"stock":8.0,"min_reserve":6.0,"monthly":[1.0,3.0,10.0,0.0,0.0,1.0,4.0,3.0,7.0,1.0,0.0,3.0,2.0],"total_units":35.0,"total_l":35.0,"full12_units":33.0,"full12_l":33.0,"partial_units":2.0,"last3_units":4.0,"prev3_units":14.0,"last6_units":18.0,"prev6_units":15.0,"stock_l":8.0,"avg3":1.33,"cover_months":6.0,"deficit_vs_reserve":0.0,"cv":1.072,"cv_summer":0.745,"active_months":9,"stock_status":"Норма","abc":"B","abc_cum_share":81.9,"xyz":"Y","trend_pct":-71.4},{"name":"Эмаль ПФ-115 желтая 0,9л (0,85кг)","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Желтая","finish":"","brand":"Без явного бренда","unit":"банка","article":"","volume_l":0.9,"size":"до 1 л","start":9.0,"income":29.0,"outcome":34.0,"stock":4.0,"min_reserve":3.0,"monthly":[1.0,1.0,0.0,0.0,0.0,9.0,3.0,5.0,5.0,6.0,6.0,0.0,0.0],"total_units":36.0,"total_l":32.4,"full12_units":36.0,"full12_l":32.4,"partial_units":0.0,"last3_units":12.0,"prev3_units":13.0,"last6_units":25.0,"prev6_units":11.0,"stock_l":3.6,"avg3":4.0,"cover_months":1.0,"deficit_vs_reserve":0.0,"cv":0.991,"cv_summer":0.508,"active_months":8,"stock_status":"Норма","abc":"B","abc_cum_share":82.6,"xyz":"Y","trend_pct":-7.7},{"name":"Эмаль ПФ-115 синяя 0,9л (0,8кг)","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Синяя","finish":"","brand":"Без явного бренда","unit":"банка","article":"","volume_l":0.9,"size":"до 1 л","start":15.0,"income":21.0,"outcome":32.0,"stock":4.0,"min_reserve":3.0,"monthly":[1.0,1.0,0.0,0.0,1.0,7.0,2.0,6.0,4.0,3.0,8.0,3.0,0.0],"total_units":36.0,"total_l":32.4,"full12_units":36.0,"full12_l":32.4,"partial_units":0.0,"last3_units":14.0,"prev3_units":12.0,"last6_units":26.0,"prev6_units":10.0,"stock_l":3.6,"avg3":4.67,"cover_months":0.86,"deficit_vs_reserve":0.0,"cv":0.871,"cv_summer":0.474,"active_months":10,"stock_status":"Норма","abc":"B","abc_cum_share":83.2,"xyz":"X","trend_pct":16.7},{"name":"Эмаль ПФ-115 бежевая 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Бежевая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":4.0,"income":12.0,"outcome":12.0,"stock":4.0,"min_reserve":6.0,"monthly":[0.0,2.0,0.0,0.0,0.0,0.0,0.0,4.0,2.0,1.0,4.0,0.0,0.0],"total_units":13.0,"total_l":31.2,"full12_units":13.0,"full12_l":31.2,"partial_units":0.0,"last3_units":5.0,"prev3_units":6.0,"last6_units":11.0,"prev6_units":2.0,"stock_l":9.6,"avg3":1.67,"cover_months":2.4,"deficit_vs_reserve":2.0,"cv":1.382,"cv_summer":0.914,"active_months":5,"stock_status":"Ниже резерва","abc":"B","abc_cum_share":83.9,"xyz":"Y","trend_pct":-16.7},{"name":"Эмаль ПФ-115 еловая хвоя 1,0л (0,9кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Еловая хвоя","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":5.0,"income":28.0,"outcome":27.0,"stock":6.0,"min_reserve":6.0,"monthly":[2.0,0.0,0.0,0.0,0.0,1.0,1.0,3.0,8.0,4.0,11.0,1.0,0.0],"total_units":31.0,"total_l":31.0,"full12_units":31.0,"full12_l":31.0,"partial_units":0.0,"last3_units":16.0,"prev3_units":12.0,"last6_units":28.0,"prev6_units":3.0,"stock_l":6.0,"avg3":5.33,"cover_months":1.12,"deficit_vs_reserve":0.0,"cv":1.308,"cv_summer":0.789,"active_months":8,"stock_status":"Норма","abc":"B","abc_cum_share":84.5,"xyz":"Y","trend_pct":33.3},{"name":"Эмаль ПФ-115 красная 2,0л (1,8кг)","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Красная","finish":"","brand":"Без явного бренда","unit":"шт","article":"","volume_l":2.0,"size":"2–2,4 л","start":3.0,"income":18.0,"outcome":15.0,"stock":6.0,"min_reserve":3.0,"monthly":[0.0,0.0,0.0,0.0,0.0,0.0,1.0,2.0,1.0,3.0,2.0,6.0,0.0],"total_units":15.0,"total_l":30.0,"full12_units":15.0,"full12_l":30.0,"partial_units":0.0,"last3_units":11.0,"prev3_units":4.0,"last6_units":15.0,"prev6_units":0.0,"stock_l":12.0,"avg3":3.67,"cover_months":1.64,"deficit_vs_reserve":0.0,"cv":1.39,"cv_summer":0.683,"active_months":6,"stock_status":"Норма","abc":"B","abc_cum_share":85.1,"xyz":"Y","trend_pct":175.0},{"name":"Эмаль ПФ-115 ореховая 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Ореховая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":3.0,"income":12.0,"outcome":11.0,"stock":4.0,"min_reserve":6.0,"monthly":[0.0,0.0,3.0,0.0,0.0,0.0,1.0,3.0,2.0,0.0,3.0,0.0,0.0],"total_units":12.0,"total_l":28.8,"full12_units":12.0,"full12_l":28.8,"partial_units":0.0,"last3_units":3.0,"prev3_units":6.0,"last6_units":9.0,"prev6_units":3.0,"stock_l":9.6,"avg3":1.0,"cover_months":4.0,"deficit_vs_reserve":2.0,"cv":1.291,"cv_summer":0.839,"active_months":5,"stock_status":"Ниже резерва","abc":"B","abc_cum_share":85.7,"xyz":"Y","trend_pct":-50.0},{"name":"Эмаль ПФ-115 голубая 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Голубая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":4.0,"income":12.0,"outcome":10.0,"stock":6.0,"min_reserve":6.0,"monthly":[0.0,1.0,0.0,0.0,0.0,1.0,0.0,1.0,2.0,4.0,2.0,0.0,0.0],"total_units":11.0,"total_l":26.4,"full12_units":11.0,"full12_l":26.4,"partial_units":0.0,"last3_units":6.0,"prev3_units":3.0,"last6_units":9.0,"prev6_units":2.0,"stock_l":14.4,"avg3":2.0,"cover_months":3.0,"deficit_vs_reserve":0.0,"cv":1.295,"cv_summer":0.923,"active_months":6,"stock_status":"Норма","abc":"B","abc_cum_share":86.3,"xyz":"Y","trend_pct":100.0},{"name":"Грунтовка ГФ-021 кр-кор. 2,3кг","warehouse":"Склад Кореличи","group":"Грунтовка","colour":"—","finish":"","brand":"Без явного бренда","unit":"шт","article":"","volume_l":1.704,"size":"2–2,4 л","start":0.0,"income":15.0,"outcome":15.0,"stock":0.0,"min_reserve":1.0,"monthly":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,12.0,0.0,0.0,3.0,0.0],"total_units":15.0,"total_l":25.56,"full12_units":15.0,"full12_l":25.56,"partial_units":0.0,"last3_units":3.0,"prev3_units":12.0,"last6_units":15.0,"prev6_units":0.0,"stock_l":0.0,"avg3":1.0,"cover_months":0.0,"deficit_vs_reserve":1.0,"cv":2.676,"cv_summer":1.755,"active_months":2,"stock_status":"Нет в наличии","abc":"B","abc_cum_share":86.8,"xyz":"Z","trend_pct":-75.0},{"name":"Грунтовка ГФ-021 св.-сер. 2,3кг","warehouse":"Склад Кореличи","group":"Грунтовка","colour":"—","finish":"","brand":"Без явного бренда","unit":"шт","article":"","volume_l":1.704,"size":"2–2,4 л","start":0.0,"income":15.0,"outcome":15.0,"stock":0.0,"min_reserve":1.0,"monthly":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,3.0,9.0,0.0,3.0,0.0],"total_units":15.0,"total_l":25.56,"full12_units":15.0,"full12_l":25.56,"partial_units":0.0,"last3_units":12.0,"prev3_units":3.0,"last6_units":15.0,"prev6_units":0.0,"stock_l":0.0,"avg3":4.0,"cover_months":0.0,"deficit_vs_reserve":1.0,"cv":2.069,"cv_summer":1.281,"active_months":3,"stock_status":"Нет в наличии","abc":"B","abc_cum_share":87.3,"xyz":"Z","trend_pct":300.0},{"name":"Эмаль ПФ-115 кр-коричневая 1,0л (0,9кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Красно-коричневая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":5.0,"income":21.0,"outcome":24.0,"stock":2.0,"min_reserve":6.0,"monthly":[0.0,0.0,1.0,0.0,0.0,1.0,8.0,0.0,3.0,3.0,4.0,4.0,1.0],"total_units":25.0,"total_l":25.0,"full12_units":24.0,"full12_l":24.0,"partial_units":1.0,"last3_units":11.0,"prev3_units":11.0,"last6_units":22.0,"prev6_units":2.0,"stock_l":2.0,"avg3":3.67,"cover_months":0.55,"deficit_vs_reserve":4.0,"cv":1.19,"cv_summer":0.643,"active_months":7,"stock_status":"Ниже резерва","abc":"B","abc_cum_share":88.3,"xyz":"Y","trend_pct":0.0},{"name":"Эмаль ПФ-115 коричневая 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Коричневая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":8.0,"income":6.0,"outcome":10.0,"stock":4.0,"min_reserve":6.0,"monthly":[0.0,0.0,1.0,0.0,0.0,0.0,1.0,2.0,2.0,1.0,1.0,2.0,0.0],"total_units":10.0,"total_l":24.0,"full12_units":10.0,"full12_l":24.0,"partial_units":0.0,"last3_units":4.0,"prev3_units":5.0,"last6_units":9.0,"prev6_units":1.0,"stock_l":9.6,"avg3":1.33,"cover_months":3.0,"deficit_vs_reserve":2.0,"cv":0.959,"cv_summer":0.333,"active_months":7,"stock_status":"Ниже резерва","abc":"B","abc_cum_share":87.8,"xyz":"X","trend_pct":-20.0},{"name":"Эмаль ПФ-266 жел.-корич. 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-266","colour":"Жёлто-коричневая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":1.0,"income":12.0,"outcome":9.0,"stock":4.0,"min_reserve":3.0,"monthly":[0.0,1.0,0.0,0.0,0.0,1.0,0.0,2.0,2.0,2.0,1.0,1.0,0.0],"total_units":10.0,"total_l":24.0,"full12_units":10.0,"full12_l":24.0,"partial_units":0.0,"last3_units":4.0,"prev3_units":4.0,"last6_units":8.0,"prev6_units":2.0,"stock_l":9.6,"avg3":1.33,"cover_months":3.0,"deficit_vs_reserve":0.0,"cv":0.959,"cv_summer":0.559,"active_months":7,"stock_status":"Норма","abc":"B","abc_cum_share":88.8,"xyz":"Y","trend_pct":0.0},{"name":"Эмаль ПФ-115 красная 0,9л (0,8кг)","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Красная","finish":"","brand":"Без явного бренда","unit":"шт","article":"","volume_l":0.9,"size":"до 1 л","start":4.0,"income":28.0,"outcome":25.0,"stock":7.0,"min_reserve":3.0,"monthly":[1.0,1.0,0.0,0.0,0.0,5.0,3.0,4.0,5.0,0.0,3.0,4.0,0.0],"total_units":26.0,"total_l":23.4,"full12_units":26.0,"full12_l":23.4,"partial_units":0.0,"last3_units":7.0,"prev3_units":12.0,"last6_units":19.0,"prev6_units":7.0,"stock_l":6.3,"avg3":2.33,"cover_months":3.0,"deficit_vs_reserve":0.0,"cv":0.9,"cv_summer":0.497,"active_months":8,"stock_status":"Норма","abc":"B","abc_cum_share":89.3,"xyz":"X","trend_pct":-41.7},{"name":"Краска HAUSE MASTER белая мат. 11л (14кг)","warehouse":"Склад Кореличи","group":"Краска","colour":"—","finish":"","brand":"HAUSE MASTER","unit":"шт","article":"","volume_l":11.0,"size":"7–11 л","start":1.0,"income":0.0,"outcome":1.0,"stock":0.0,"min_reserve":4.0,"monthly":[0.0,0.0,0.0,0.0,2.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"total_units":2.0,"total_l":22.0,"full12_units":2.0,"full12_l":22.0,"partial_units":0.0,"last3_units":0.0,"prev3_units":0.0,"last6_units":0.0,"prev6_units":2.0,"stock_l":0.0,"avg3":0.0,"cover_months":null,"deficit_vs_reserve":4.0,"cv":3.317,"cv_summer":null,"active_months":1,"stock_status":"Нет остатка","abc":"B","abc_cum_share":89.7,"xyz":"—","trend_pct":null},{"name":"Эмаль ПФ-115 оранжевая-1 1,0л (0,9кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Оранжевая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":9.0,"income":14.0,"outcome":17.0,"stock":6.0,"min_reserve":6.0,"monthly":[0.0,0.0,0.0,0.0,1.0,0.0,2.0,0.0,6.0,12.0,0.0,1.0,0.0],"total_units":22.0,"total_l":22.0,"full12_units":22.0,"full12_l":22.0,"partial_units":0.0,"last3_units":13.0,"prev3_units":8.0,"last6_units":21.0,"prev6_units":1.0,"stock_l":6.0,"avg3":4.33,"cover_months":1.38,"deficit_vs_reserve":0.0,"cv":1.9,"cv_summer":1.232,"active_months":5,"stock_status":"Норма","abc":"B","abc_cum_share":90.2,"xyz":"Z","trend_pct":62.5},{"name":"Эмаль ПФ-115 красная 1,0л (0,8кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Красная","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":3.0,"income":21.0,"outcome":19.0,"stock":5.0,"min_reserve":6.0,"monthly":[0.0,0.0,1.0,0.0,0.0,6.0,1.0,2.0,9.0,0.0,2.0,0.0,0.0],"total_units":21.0,"total_l":21.0,"full12_units":21.0,"full12_l":21.0,"partial_units":0.0,"last3_units":2.0,"prev3_units":12.0,"last6_units":14.0,"prev6_units":7.0,"stock_l":5.0,"avg3":0.67,"cover_months":7.5,"deficit_vs_reserve":1.0,"cv":1.567,"cv_summer":1.325,"active_months":6,"stock_status":"Ниже резерва","abc":"B","abc_cum_share":90.6,"xyz":"Z","trend_pct":-83.3},{"name":"Эмаль ПФ-115 серебристая 1,0л (0,8кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Серебристая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":6.0,"income":21.0,"outcome":20.0,"stock":7.0,"min_reserve":6.0,"monthly":[1.0,0.0,0.0,0.0,0.0,2.0,3.0,0.0,0.0,5.0,4.0,4.0,1.0],"total_units":20.0,"total_l":20.0,"full12_units":19.0,"full12_l":19.0,"partial_units":1.0,"last3_units":13.0,"prev3_units":3.0,"last6_units":16.0,"prev6_units":3.0,"stock_l":7.0,"avg3":4.33,"cover_months":1.62,"deficit_vs_reserve":0.0,"cv":1.166,"cv_summer":0.74,"active_months":6,"stock_status":"Норма","abc":"B","abc_cum_share":91.4,"xyz":"Y","trend_pct":333.3},{"name":"Эмаль ПФ-115 лимонная 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Лимонная","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":2.0,"income":12.0,"outcome":8.0,"stock":6.0,"min_reserve":6.0,"monthly":[0.0,0.0,0.0,0.0,0.0,0.0,2.0,0.0,3.0,0.0,1.0,2.0,0.0],"total_units":8.0,"total_l":19.2,"full12_units":8.0,"full12_l":19.2,"partial_units":0.0,"last3_units":3.0,"prev3_units":5.0,"last6_units":8.0,"prev6_units":0.0,"stock_l":14.4,"avg3":1.0,"cover_months":6.0,"deficit_vs_reserve":0.0,"cv":1.541,"cv_summer":0.829,"active_months":4,"stock_status":"Норма","abc":"B","abc_cum_share":91.0,"xyz":"Y","trend_pct":-40.0},{"name":"Эмаль ПФ-115 ярко-синяя 1,0л (0,8кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Ярко-синяя","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":3.0,"income":21.0,"outcome":18.0,"stock":6.0,"min_reserve":6.0,"monthly":[0.0,0.0,0.0,0.0,0.0,3.0,4.0,1.0,3.0,1.0,4.0,2.0,1.0],"total_units":19.0,"total_l":19.0,"full12_units":18.0,"full12_l":18.0,"partial_units":1.0,"last3_units":7.0,"prev3_units":8.0,"last6_units":15.0,"prev6_units":3.0,"stock_l":6.0,"avg3":2.33,"cover_months":2.57,"deficit_vs_reserve":0.0,"cv":1.036,"cv_summer":0.503,"active_months":7,"stock_status":"Норма","abc":"B","abc_cum_share":92.1,"xyz":"Y","trend_pct":-12.5},{"name":"Грунтовка ВД-АК-01 FLAGMAN1л","warehouse":"Склад Кореличи","group":"Грунтовка","colour":"—","finish":"","brand":"FLAGMAN","unit":"шт","article":"","volume_l":1.0,"size":"до 1 л","start":1.0,"income":20.0,"outcome":17.0,"stock":4.0,"min_reserve":3.0,"monthly":[1.0,0.0,0.0,0.0,0.0,1.0,1.0,3.0,1.0,4.0,5.0,0.0,2.0],"total_units":18.0,"total_l":18.0,"full12_units":16.0,"full12_l":16.0,"partial_units":2.0,"last3_units":9.0,"prev3_units":5.0,"last6_units":14.0,"prev6_units":2.0,"stock_l":4.0,"avg3":3.0,"cover_months":1.33,"deficit_vs_reserve":0.0,"cv":1.237,"cv_summer":0.769,"active_months":7,"stock_status":"Норма","abc":"B","abc_cum_share":93.2,"xyz":"Y","trend_pct":80.0},{"name":"Эмаль ПФ-115 зеленое яблоко 1,0л (0,9кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Зеленое яблоко","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":4.0,"income":21.0,"outcome":18.0,"stock":7.0,"min_reserve":6.0,"monthly":[1.0,0.0,1.0,0.0,0.0,2.0,2.0,3.0,0.0,2.0,7.0,0.0,0.0],"total_units":18.0,"total_l":18.0,"full12_units":18.0,"full12_l":18.0,"partial_units":0.0,"last3_units":9.0,"prev3_units":5.0,"last6_units":14.0,"prev6_units":4.0,"stock_l":7.0,"avg3":3.0,"cover_months":2.33,"deficit_vs_reserve":0.0,"cv":1.291,"cv_summer":1.01,"active_months":7,"stock_status":"Норма","abc":"B","abc_cum_share":91.8,"xyz":"Z","trend_pct":80.0},{"name":"Эмаль ПФ-115 коричневая 1,0л (0,9кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Коричневая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":6.0,"income":14.0,"outcome":15.0,"stock":5.0,"min_reserve":6.0,"monthly":[0.0,1.0,0.0,0.0,0.0,1.0,2.0,2.0,0.0,3.0,7.0,1.0,1.0],"total_units":18.0,"total_l":18.0,"full12_units":17.0,"full12_l":17.0,"partial_units":1.0,"last3_units":11.0,"prev3_units":4.0,"last6_units":15.0,"prev6_units":2.0,"stock_l":5.0,"avg3":3.67,"cover_months":1.36,"deficit_vs_reserve":1.0,"cv":1.366,"cv_summer":0.887,"active_months":7,"stock_status":"Ниже резерва","abc":"B","abc_cum_share":92.5,"xyz":"Y","trend_pct":175.0},{"name":"Эмаль ПФ-115 майская зелень 1,0л (0,9кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Майская зелень","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":7.0,"income":14.0,"outcome":16.0,"stock":5.0,"min_reserve":6.0,"monthly":[0.0,1.0,0.0,0.0,0.0,3.0,2.0,1.0,1.0,1.0,6.0,0.0,3.0],"total_units":18.0,"total_l":18.0,"full12_units":15.0,"full12_l":15.0,"partial_units":3.0,"last3_units":7.0,"prev3_units":4.0,"last6_units":11.0,"prev6_units":4.0,"stock_l":5.0,"avg3":2.33,"cover_months":2.14,"deficit_vs_reserve":1.0,"cv":1.352,"cv_summer":1.064,"active_months":7,"stock_status":"Ниже резерва","abc":"C","abc_cum_share":95.4,"xyz":"Z","trend_pct":75.0},{"name":"Эмаль ПФ-115 карамель 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Карамель","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":1.0,"income":12.0,"outcome":7.0,"stock":6.0,"min_reserve":6.0,"monthly":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,3.0,2.0,0.0,0.0],"total_units":7.0,"total_l":16.8,"full12_units":7.0,"full12_l":16.8,"partial_units":0.0,"last3_units":5.0,"prev3_units":2.0,"last6_units":7.0,"prev6_units":0.0,"stock_l":14.4,"avg3":1.67,"cover_months":3.6,"deficit_vs_reserve":0.0,"cv":1.635,"cv_summer":0.915,"active_months":4,"stock_status":"Норма","abc":"B","abc_cum_share":92.8,"xyz":"Y","trend_pct":150.0},{"name":"Эмаль ПФ-115 бирюзовая 1,0л (0,9кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Бирюзовая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":3.0,"income":14.0,"outcome":15.0,"stock":2.0,"min_reserve":6.0,"monthly":[0.0,0.0,1.0,0.0,0.0,5.0,0.0,2.0,3.0,2.0,1.0,2.0,0.0],"total_units":16.0,"total_l":16.0,"full12_units":16.0,"full12_l":16.0,"partial_units":0.0,"last3_units":5.0,"prev3_units":5.0,"last6_units":10.0,"prev6_units":6.0,"stock_l":2.0,"avg3":1.67,"cover_months":1.2,"deficit_vs_reserve":4.0,"cv":1.118,"cv_summer":0.566,"active_months":7,"stock_status":"Ниже резерва","abc":"B","abc_cum_share":93.5,"xyz":"Y","trend_pct":0.0},{"name":"Эмаль ПФ-115 голубая 1,0л (0,9кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Голубая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":8.0,"income":7.0,"outcome":15.0,"stock":0.0,"min_reserve":6.0,"monthly":[1.0,0.0,0.0,0.0,0.0,2.0,2.0,1.0,2.0,6.0,0.0,2.0,0.0],"total_units":16.0,"total_l":16.0,"full12_units":16.0,"full12_l":16.0,"partial_units":0.0,"last3_units":8.0,"prev3_units":5.0,"last6_units":13.0,"prev6_units":3.0,"stock_l":0.0,"avg3":2.67,"cover_months":0.0,"deficit_vs_reserve":6.0,"cv":1.237,"cv_summer":0.86,"active_months":7,"stock_status":"Нет в наличии","abc":"B","abc_cum_share":93.8,"xyz":"Y","trend_pct":60.0},{"name":"Эмаль ПФ-115 слон.кость 1,0л (0,9кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Слоновая кость","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":5.0,"income":14.0,"outcome":14.0,"stock":5.0,"min_reserve":6.0,"monthly":[1.0,0.0,0.0,0.0,0.0,0.0,3.0,1.0,4.0,3.0,3.0,0.0,1.0],"total_units":16.0,"total_l":16.0,"full12_units":15.0,"full12_l":15.0,"partial_units":1.0,"last3_units":6.0,"prev3_units":8.0,"last6_units":14.0,"prev6_units":1.0,"stock_l":5.0,"avg3":2.0,"cover_months":2.5,"deficit_vs_reserve":1.0,"cv":1.183,"cv_summer":0.589,"active_months":6,"stock_status":"Ниже резерва","abc":"C","abc_cum_share":95.7,"xyz":"Y","trend_pct":-25.0},{"name":"Краска ВД-АК-1032 фасад. 4,2кг. ECOL","warehouse":"Склад Кореличи","group":"Краска","colour":"—","finish":"","brand":"ECOL","unit":"шт","article":"","volume_l":3.111,"size":"3–5 л","start":3.0,"income":0.0,"outcome":3.0,"stock":0.0,"min_reserve":0.0,"monthly":[0.0,5.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"total_units":5.0,"total_l":15.56,"full12_units":5.0,"full12_l":15.56,"partial_units":0.0,"last3_units":0.0,"prev3_units":0.0,"last6_units":0.0,"prev6_units":5.0,"stock_l":0.0,"avg3":0.0,"cover_months":null,"deficit_vs_reserve":0.0,"cv":3.317,"cv_summer":null,"active_months":1,"stock_status":"Нет остатка","abc":"B","abc_cum_share":94.1,"xyz":"—","trend_pct":null},{"name":"Краска ВД-АК-1032 фасад. 7,0кг. ECOL","warehouse":"Склад Кореличи","group":"Краска","colour":"—","finish":"","brand":"ECOL","unit":"шт","article":"","volume_l":5.185,"size":"3–5 л","start":3.0,"income":0.0,"outcome":3.0,"stock":0.0,"min_reserve":0.0,"monthly":[0.0,0.0,0.0,0.0,0.0,2.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0],"total_units":3.0,"total_l":15.55,"full12_units":3.0,"full12_l":15.55,"partial_units":0.0,"last3_units":1.0,"prev3_units":0.0,"last6_units":1.0,"prev6_units":2.0,"stock_l":0.0,"avg3":0.33,"cover_months":0.0,"deficit_vs_reserve":0.0,"cv":2.38,"cv_summer":2.236,"active_months":2,"stock_status":"Нет в наличии","abc":"B","abc_cum_share":94.5,"xyz":"Z","trend_pct":null},{"name":"Эмаль ПФ-115 оранжевая 0,9л (0,85кг)","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Оранжевая","finish":"","brand":"Без явного бренда","unit":"шт","article":"","volume_l":0.9,"size":"до 1 л","start":7.0,"income":21.0,"outcome":13.0,"stock":15.0,"min_reserve":3.0,"monthly":[0.0,0.0,0.0,4.0,0.0,5.0,2.0,3.0,2.0,1.0,0.0,0.0,0.0],"total_units":17.0,"total_l":15.3,"full12_units":17.0,"full12_l":15.3,"partial_units":0.0,"last3_units":1.0,"prev3_units":7.0,"last6_units":8.0,"prev6_units":9.0,"stock_l":13.5,"avg3":0.33,"cover_months":45.0,"deficit_vs_reserve":0.0,"cv":1.204,"cv_summer":0.829,"active_months":6,"stock_status":"Избыток","abc":"B","abc_cum_share":94.8,"xyz":"Y","trend_pct":-85.7},{"name":"Эмаль ПФ-115 лимонная 1,0л (0,9кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Лимонная","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":8.0,"income":6.0,"outcome":10.0,"stock":4.0,"min_reserve":6.0,"monthly":[0.0,0.0,0.0,0.0,0.0,0.0,2.0,8.0,1.0,1.0,1.0,2.0,0.0],"total_units":15.0,"total_l":15.0,"full12_units":15.0,"full12_l":15.0,"partial_units":0.0,"last3_units":4.0,"prev3_units":11.0,"last6_units":15.0,"prev6_units":0.0,"stock_l":4.0,"avg3":1.33,"cover_months":3.0,"deficit_vs_reserve":2.0,"cv":1.732,"cv_summer":1.0,"active_months":6,"stock_status":"Ниже резерва","abc":"C","abc_cum_share":95.1,"xyz":"Y","trend_pct":-63.6},{"name":"Эмаль ПФ-115 фиолетовая 1,0л (0,9кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Фиолетовая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":7.0,"income":14.0,"outcome":14.0,"stock":7.0,"min_reserve":6.0,"monthly":[0.0,1.0,0.0,0.0,0.0,0.0,0.0,6.0,2.0,1.0,4.0,1.0,0.0],"total_units":15.0,"total_l":15.0,"full12_units":15.0,"full12_l":15.0,"partial_units":0.0,"last3_units":6.0,"prev3_units":8.0,"last6_units":14.0,"prev6_units":1.0,"stock_l":7.0,"avg3":2.0,"cover_months":3.5,"deficit_vs_reserve":0.0,"cv":1.465,"cv_summer":0.881,"active_months":6,"stock_status":"Норма","abc":"C","abc_cum_share":96.0,"xyz":"Y","trend_pct":-25.0},{"name":"Эмаль ПФ-115 фиолетовая 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Фиолетовая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":5.0,"income":6.0,"outcome":6.0,"stock":5.0,"min_reserve":6.0,"monthly":[0.0,0.0,0.0,0.0,0.0,0.0,5.0,0.0,0.0,1.0,0.0,0.0,0.0],"total_units":6.0,"total_l":14.4,"full12_units":6.0,"full12_l":14.4,"partial_units":0.0,"last3_units":1.0,"prev3_units":5.0,"last6_units":6.0,"prev6_units":0.0,"stock_l":12.0,"avg3":0.33,"cover_months":15.0,"deficit_vs_reserve":1.0,"cv":2.769,"cv_summer":1.826,"active_months":2,"stock_status":"Ниже резерва","abc":"C","abc_cum_share":96.3,"xyz":"Z","trend_pct":-80.0},{"name":"Эмаль ПФ-115 зеленая 1,0л (0,9кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Зеленая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":1.0,"income":14.0,"outcome":13.0,"stock":2.0,"min_reserve":6.0,"monthly":[0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,4.0,4.0,1.0,3.0,1.0],"total_units":14.0,"total_l":14.0,"full12_units":13.0,"full12_l":13.0,"partial_units":1.0,"last3_units":8.0,"prev3_units":5.0,"last6_units":13.0,"prev6_units":0.0,"stock_l":2.0,"avg3":2.67,"cover_months":0.75,"deficit_vs_reserve":4.0,"cv":1.433,"cv_summer":0.726,"active_months":5,"stock_status":"Ниже резерва","abc":"C","abc_cum_share":96.6,"xyz":"Y","trend_pct":60.0},{"name":"Эмаль ПФ-115 карамель 1,0л (0,9кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Карамель","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":5.0,"income":14.0,"outcome":13.0,"stock":6.0,"min_reserve":6.0,"monthly":[0.0,1.0,0.0,0.0,0.0,0.0,0.0,4.0,0.0,4.0,3.0,1.0,0.0],"total_units":13.0,"total_l":13.0,"full12_units":13.0,"full12_l":13.0,"partial_units":0.0,"last3_units":8.0,"prev3_units":4.0,"last6_units":12.0,"prev6_units":1.0,"stock_l":6.0,"avg3":2.67,"cover_months":2.25,"deficit_vs_reserve":0.0,"cv":1.433,"cv_summer":0.866,"active_months":5,"stock_status":"Норма","abc":"C","abc_cum_share":96.8,"xyz":"Y","trend_pct":100.0},{"name":"Краска для потолков 4,2кг. FLAGMAN","warehouse":"Склад Кореличи","group":"Краска","colour":"—","finish":"","brand":"FLAGMAN","unit":"ведро","article":"","volume_l":3.111,"size":"3–5 л","start":0.0,"income":4.0,"outcome":4.0,"stock":0.0,"min_reserve":3.0,"monthly":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,1.0,2.0],"total_units":4.0,"total_l":12.44,"full12_units":2.0,"full12_l":6.22,"partial_units":2.0,"last3_units":2.0,"prev3_units":0.0,"last6_units":2.0,"prev6_units":0.0,"stock_l":0.0,"avg3":0.67,"cover_months":0.0,"deficit_vs_reserve":3.0,"cv":2.236,"cv_summer":1.414,"active_months":2,"stock_status":"Нет в наличии","abc":"C","abc_cum_share":99.3,"xyz":"Z","trend_pct":null},{"name":"Лак ПФ-2122 паркетный бесц.гл.1л. BRAVA","warehouse":"Склад Кореличи","group":"Лак","colour":"—","finish":"","brand":"BRAVA","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":8.0,"income":3.0,"outcome":11.0,"stock":0.0,"min_reserve":2.0,"monthly":[1.0,0.0,0.0,1.0,0.0,0.0,0.0,7.0,0.0,0.0,3.0,0.0,0.0],"total_units":12.0,"total_l":12.0,"full12_units":12.0,"full12_l":12.0,"partial_units":0.0,"last3_units":3.0,"prev3_units":7.0,"last6_units":10.0,"prev6_units":2.0,"stock_l":0.0,"avg3":1.0,"cover_months":0.0,"deficit_vs_reserve":2.0,"cv":2.0,"cv_summer":1.575,"active_months":4,"stock_status":"Нет в наличии","abc":"C","abc_cum_share":97.1,"xyz":"Z","trend_pct":-57.1},{"name":"Эмаль ПФ-115 ореховая 1,0л (0,9кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Ореховая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":1.0,"income":14.0,"outcome":11.0,"stock":4.0,"min_reserve":6.0,"monthly":[0.0,0.0,1.0,0.0,0.0,2.0,1.0,2.0,2.0,0.0,3.0,0.0,1.0],"total_units":12.0,"total_l":12.0,"full12_units":11.0,"full12_l":11.0,"partial_units":1.0,"last3_units":3.0,"prev3_units":5.0,"last6_units":8.0,"prev6_units":3.0,"stock_l":4.0,"avg3":1.0,"cover_months":4.0,"deficit_vs_reserve":2.0,"cv":1.132,"cv_summer":0.829,"active_months":6,"stock_status":"Ниже резерва","abc":"C","abc_cum_share":97.3,"xyz":"Y","trend_pct":-40.0},{"name":"Краска для потолков 7,0кг. FLAGMAN","warehouse":"Склад Кореличи","group":"Краска","colour":"—","finish":"","brand":"FLAGMAN","unit":"ведро","article":"","volume_l":5.185,"size":"3–5 л","start":0.0,"income":4.0,"outcome":2.0,"stock":2.0,"min_reserve":3.0,"monthly":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,2.0,0.0,0.0,0.0],"total_units":2.0,"total_l":10.37,"full12_units":2.0,"full12_l":10.37,"partial_units":0.0,"last3_units":2.0,"prev3_units":0.0,"last6_units":2.0,"prev6_units":0.0,"stock_l":10.37,"avg3":0.67,"cover_months":3.0,"deficit_vs_reserve":1.0,"cv":3.317,"cv_summer":2.236,"active_months":1,"stock_status":"Ниже резерва","abc":"C","abc_cum_share":97.5,"xyz":"Z","trend_pct":null},{"name":"Лак для паркета АУ-2122 бесц.гл. 1л.BRAVA","warehouse":"Склад Кореличи","group":"Лак","colour":"—","finish":"","brand":"BRAVA","unit":"шт","article":"","volume_l":1.0,"size":"до 1 л","start":1.0,"income":6.0,"outcome":4.0,"stock":3.0,"min_reserve":1.0,"monthly":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,6.0,2.0,1.0],"total_units":10.0,"total_l":10.0,"full12_units":9.0,"full12_l":9.0,"partial_units":1.0,"last3_units":8.0,"prev3_units":1.0,"last6_units":9.0,"prev6_units":0.0,"stock_l":3.0,"avg3":2.67,"cover_months":1.12,"deficit_vs_reserve":0.0,"cv":2.253,"cv_summer":1.427,"active_months":3,"stock_status":"Норма","abc":"C","abc_cum_share":98.3,"xyz":"Z","trend_pct":700.0},{"name":"Эмаль ПФ-115 белая мат.1,0л (0,9кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Белая","finish":"Матовая","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":2.0,"income":14.0,"outcome":10.0,"stock":6.0,"min_reserve":6.0,"monthly":[1.0,0.0,0.0,1.0,0.0,0.0,2.0,1.0,0.0,2.0,2.0,1.0,0.0],"total_units":10.0,"total_l":10.0,"full12_units":10.0,"full12_l":10.0,"partial_units":0.0,"last3_units":5.0,"prev3_units":3.0,"last6_units":8.0,"prev6_units":2.0,"stock_l":6.0,"avg3":1.67,"cover_months":3.6,"deficit_vs_reserve":0.0,"cv":0.959,"cv_summer":0.559,"active_months":7,"stock_status":"Норма","abc":"C","abc_cum_share":97.7,"xyz":"Y","trend_pct":66.7},{"name":"Эмаль ПФ-115 защитная 1,0л (0,9кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Защитная","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":4.0,"income":7.0,"outcome":10.0,"stock":1.0,"min_reserve":6.0,"monthly":[3.0,0.0,0.0,0.0,0.0,1.0,0.0,2.0,2.0,2.0,0.0,0.0,0.0],"total_units":10.0,"total_l":10.0,"full12_units":10.0,"full12_l":10.0,"partial_units":0.0,"last3_units":2.0,"prev3_units":4.0,"last6_units":6.0,"prev6_units":4.0,"stock_l":1.0,"avg3":0.67,"cover_months":1.5,"deficit_vs_reserve":5.0,"cv":1.281,"cv_summer":1.0,"active_months":5,"stock_status":"Ниже резерва","abc":"C","abc_cum_share":97.9,"xyz":"Y","trend_pct":-50.0},{"name":"Краска HAUSE MASTER белая мат. 3л (4,2кг)","warehouse":"Склад Кореличи","group":"Краска","colour":"—","finish":"","brand":"HAUSE MASTER","unit":"шт","article":"","volume_l":3.0,"size":"3–5 л","start":2.0,"income":0.0,"outcome":2.0,"stock":0.0,"min_reserve":4.0,"monthly":[2.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"total_units":3.0,"total_l":9.0,"full12_units":3.0,"full12_l":9.0,"partial_units":0.0,"last3_units":0.0,"prev3_units":0.0,"last6_units":0.0,"prev6_units":3.0,"stock_l":0.0,"avg3":0.0,"cover_months":null,"deficit_vs_reserve":4.0,"cv":2.38,"cv_summer":null,"active_months":2,"stock_status":"Нет остатка","abc":"C","abc_cum_share":98.1,"xyz":"—","trend_pct":null},{"name":"Грунтовка-конц. Флагман био 1л","warehouse":"Склад Кореличи","group":"Грунтовка","colour":"—","finish":"","brand":"FLAGMAN","unit":"шт","article":"","volume_l":1.0,"size":"до 1 л","start":2.0,"income":10.0,"outcome":8.0,"stock":4.0,"min_reserve":2.0,"monthly":[1.0,1.0,0.0,0.0,0.0,0.0,1.0,1.0,0.0,2.0,1.0,0.0,1.0],"total_units":8.0,"total_l":8.0,"full12_units":7.0,"full12_l":7.0,"partial_units":1.0,"last3_units":3.0,"prev3_units":2.0,"last6_units":5.0,"prev6_units":2.0,"stock_l":4.0,"avg3":1.0,"cover_months":4.0,"deficit_vs_reserve":0.0,"cv":1.097,"cv_summer":0.825,"active_months":6,"stock_status":"Норма","abc":"C","abc_cum_share":98.8,"xyz":"Y","trend_pct":50.0},{"name":"Краска для радиатора п/мат 1л. BELAKOR","warehouse":"Склад Кореличи","group":"Краска","colour":"—","finish":"","brand":"BELAKOR","unit":"ведро","article":"","volume_l":1.0,"size":"до 1 л","start":0.0,"income":6.0,"outcome":6.0,"stock":0.0,"min_reserve":3.0,"monthly":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,2.0,2.0,4.0,0.0],"total_units":8.0,"total_l":8.0,"full12_units":8.0,"full12_l":8.0,"partial_units":0.0,"last3_units":8.0,"prev3_units":0.0,"last6_units":8.0,"prev6_units":0.0,"stock_l":0.0,"avg3":2.67,"cover_months":0.0,"deficit_vs_reserve":3.0,"cv":1.871,"cv_summer":1.118,"active_months":3,"stock_status":"Нет в наличии","abc":"C","abc_cum_share":98.5,"xyz":"Z","trend_pct":null},{"name":"Краска для потолков 1,4кг. FLAGMAN","warehouse":"Склад Кореличи","group":"Краска","colour":"—","finish":"","brand":"FLAGMAN","unit":"ведро","article":"","volume_l":1.037,"size":"до 1 л","start":0.0,"income":7.0,"outcome":7.0,"stock":0.0,"min_reserve":3.0,"monthly":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,4.0,2.0,1.0,0.0],"total_units":7.0,"total_l":7.26,"full12_units":7.0,"full12_l":7.26,"partial_units":0.0,"last3_units":7.0,"prev3_units":0.0,"last6_units":7.0,"prev6_units":0.0,"stock_l":0.0,"avg3":2.33,"cover_months":0.0,"deficit_vs_reserve":3.0,"cv":2.035,"cv_summer":1.254,"active_months":3,"stock_status":"Нет в наличии","abc":"C","abc_cum_share":98.6,"xyz":"Z","trend_pct":null},{"name":"Эмаль ПФ-115 бежевая 1,0л (0,9кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Бежевая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":7.0,"income":0.0,"outcome":7.0,"stock":0.0,"min_reserve":6.0,"monthly":[0.0,0.0,0.0,1.0,0.0,2.0,2.0,1.0,0.0,0.0,1.0,0.0,0.0],"total_units":7.0,"total_l":7.0,"full12_units":7.0,"full12_l":7.0,"partial_units":0.0,"last3_units":1.0,"prev3_units":3.0,"last6_units":4.0,"prev6_units":3.0,"stock_l":0.0,"avg3":0.33,"cover_months":0.0,"deficit_vs_reserve":6.0,"cv":1.301,"cv_summer":1.118,"active_months":5,"stock_status":"Нет в наличии","abc":"C","abc_cum_share":98.9,"xyz":"Z","trend_pct":-66.7},{"name":"Грунтовка ГФ-021 св.-сер. 1кг","warehouse":"Склад Кореличи","group":"Грунтовка","colour":"—","finish":"","brand":"Без явного бренда","unit":"шт","article":"","volume_l":0.741,"size":"до 1 л","start":0.0,"income":14.0,"outcome":7.0,"stock":7.0,"min_reserve":1.0,"monthly":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,2.0,2.0,4.0,0.0],"total_units":9.0,"total_l":6.67,"full12_units":9.0,"full12_l":6.67,"partial_units":0.0,"last3_units":8.0,"prev3_units":1.0,"last6_units":9.0,"prev6_units":0.0,"stock_l":5.19,"avg3":2.67,"cover_months":2.62,"deficit_vs_reserve":0.0,"cv":1.644,"cv_summer":0.923,"active_months":4,"stock_status":"Норма","abc":"C","abc_cum_share":99.1,"xyz":"Y","trend_pct":700.0},{"name":"Краска ВД-АК-2036 для потолков и стен 4,2кг. ECOL","warehouse":"Склад Кореличи","group":"Краска","colour":"—","finish":"","brand":"ECOL","unit":"шт","article":"","volume_l":3.111,"size":"3–5 л","start":2.0,"income":0.0,"outcome":2.0,"stock":0.0,"min_reserve":0.0,"monthly":[1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"total_units":2.0,"total_l":6.22,"full12_units":2.0,"full12_l":6.22,"partial_units":0.0,"last3_units":0.0,"prev3_units":0.0,"last6_units":0.0,"prev6_units":2.0,"stock_l":0.0,"avg3":0.0,"cover_months":null,"deficit_vs_reserve":0.0,"cv":2.236,"cv_summer":null,"active_months":2,"stock_status":"Нет остатка","abc":"C","abc_cum_share":99.2,"xyz":"—","trend_pct":null},{"name":"Краска HAUSE MASTER интер. белая мат. 3л (4 кг)","warehouse":"Склад Кореличи","group":"Краска","colour":"—","finish":"","brand":"HAUSE MASTER","unit":"шт","article":"","volume_l":3.0,"size":"3–5 л","start":2.0,"income":0.0,"outcome":2.0,"stock":0.0,"min_reserve":4.0,"monthly":[0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0],"total_units":2.0,"total_l":6.0,"full12_units":2.0,"full12_l":6.0,"partial_units":0.0,"last3_units":0.0,"prev3_units":1.0,"last6_units":1.0,"prev6_units":1.0,"stock_l":0.0,"avg3":0.0,"cover_months":null,"deficit_vs_reserve":4.0,"cv":2.236,"cv_summer":2.236,"active_months":2,"stock_status":"Нет остатка","abc":"C","abc_cum_share":99.4,"xyz":"Z","trend_pct":-100.0},{"name":"Краска ВД-АК-2036 для потолков и стен 7кг. ECOL","warehouse":"Склад Кореличи","group":"Краска","colour":"—","finish":"","brand":"ECOL","unit":"шт","article":"","volume_l":5.185,"size":"3–5 л","start":1.0,"income":0.0,"outcome":1.0,"stock":0.0,"min_reserve":0.0,"monthly":[0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"total_units":1.0,"total_l":5.18,"full12_units":1.0,"full12_l":5.18,"partial_units":0.0,"last3_units":0.0,"prev3_units":0.0,"last6_units":0.0,"prev6_units":1.0,"stock_l":0.0,"avg3":0.0,"cover_months":null,"deficit_vs_reserve":0.0,"cv":3.317,"cv_summer":null,"active_months":1,"stock_status":"Нет остатка","abc":"C","abc_cum_share":99.5,"xyz":"—","trend_pct":null},{"name":"Краска HAUSE MASTER белая мат. 5л(( 7кг)","warehouse":"Склад Кореличи","group":"Краска","colour":"—","finish":"","brand":"HAUSE MASTER","unit":"шт","article":"","volume_l":5.0,"size":"3–5 л","start":2.0,"income":0.0,"outcome":1.0,"stock":1.0,"min_reserve":4.0,"monthly":[0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"total_units":1.0,"total_l":5.0,"full12_units":1.0,"full12_l":5.0,"partial_units":0.0,"last3_units":0.0,"prev3_units":0.0,"last6_units":0.0,"prev6_units":1.0,"stock_l":5.0,"avg3":0.0,"cover_months":null,"deficit_vs_reserve":3.0,"cv":3.317,"cv_summer":null,"active_months":1,"stock_status":"Мёртвый остаток","abc":"C","abc_cum_share":99.6,"xyz":"—","trend_pct":null},{"name":"Краска HAUSE MASTER интер. белая мат. 5л (7,0кг)","warehouse":"Склад Кореличи","group":"Краска","colour":"—","finish":"","brand":"HAUSE MASTER","unit":"шт","article":"","volume_l":5.0,"size":"3–5 л","start":1.0,"income":0.0,"outcome":1.0,"stock":0.0,"min_reserve":4.0,"monthly":[0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"total_units":1.0,"total_l":5.0,"full12_units":1.0,"full12_l":5.0,"partial_units":0.0,"last3_units":0.0,"prev3_units":0.0,"last6_units":0.0,"prev6_units":1.0,"stock_l":0.0,"avg3":0.0,"cover_months":null,"deficit_vs_reserve":4.0,"cv":3.317,"cv_summer":null,"active_months":1,"stock_status":"Нет остатка","abc":"C","abc_cum_share":99.7,"xyz":"—","trend_pct":null},{"name":"Краска для радиатора п/гл 1л. BELAKOR","warehouse":"Склад Кореличи","group":"Краска","colour":"—","finish":"","brand":"BELAKOR","unit":"ведро","article":"","volume_l":1.0,"size":"до 1 л","start":1.0,"income":3.0,"outcome":4.0,"stock":0.0,"min_reserve":3.0,"monthly":[1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,0.0],"total_units":4.0,"total_l":4.0,"full12_units":4.0,"full12_l":4.0,"partial_units":0.0,"last3_units":3.0,"prev3_units":0.0,"last6_units":3.0,"prev6_units":1.0,"stock_l":0.0,"avg3":1.0,"cover_months":0.0,"deficit_vs_reserve":3.0,"cv":1.414,"cv_summer":1.0,"active_months":4,"stock_status":"Нет в наличии","abc":"C","abc_cum_share":99.8,"xyz":"Y","trend_pct":null},{"name":"Грунтовка ГФ-021 кр-кор. 1кг","warehouse":"Склад Кореличи","group":"Грунтовка","colour":"—","finish":"","brand":"Без явного бренда","unit":"шт","article":"","volume_l":0.741,"size":"до 1 л","start":0.0,"income":14.0,"outcome":3.0,"stock":11.0,"min_reserve":1.0,"monthly":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0],"total_units":3.0,"total_l":2.22,"full12_units":2.0,"full12_l":1.48,"partial_units":1.0,"last3_units":2.0,"prev3_units":0.0,"last6_units":2.0,"prev6_units":0.0,"stock_l":8.15,"avg3":0.67,"cover_months":16.5,"deficit_vs_reserve":0.0,"cv":2.236,"cv_summer":1.414,"active_months":2,"stock_status":"Избыток","abc":"C","abc_cum_share":100.0,"xyz":"Z","trend_pct":null},{"name":"Краска ВД-АК-2036 для потолков и стен 1,4кг. ECOL","warehouse":"Склад Кореличи","group":"Краска","colour":"—","finish":"","brand":"ECOL","unit":"шт","article":"","volume_l":1.037,"size":"до 1 л","start":2.0,"income":0.0,"outcome":2.0,"stock":0.0,"min_reserve":0.0,"monthly":[2.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"total_units":2.0,"total_l":2.07,"full12_units":2.0,"full12_l":2.07,"partial_units":0.0,"last3_units":0.0,"prev3_units":0.0,"last6_units":0.0,"prev6_units":2.0,"stock_l":0.0,"avg3":0.0,"cover_months":null,"deficit_vs_reserve":0.0,"cv":3.317,"cv_summer":null,"active_months":1,"stock_status":"Нет остатка","abc":"C","abc_cum_share":99.9,"xyz":"—","trend_pct":null},{"name":"Грунтовка-конц. Флагман 08 водоот. 1л","warehouse":"Склад Кореличи","group":"Грунтовка","colour":"—","finish":"","brand":"FLAGMAN","unit":"шт","article":"","volume_l":1.0,"size":"до 1 л","start":2.0,"income":0.0,"outcome":2.0,"stock":0.0,"min_reserve":2.0,"monthly":[0.0,0.0,0.0,0.0,0.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0],"total_units":2.0,"total_l":2.0,"full12_units":2.0,"full12_l":2.0,"partial_units":0.0,"last3_units":0.0,"prev3_units":1.0,"last6_units":1.0,"prev6_units":1.0,"stock_l":0.0,"avg3":0.0,"cover_months":null,"deficit_vs_reserve":2.0,"cv":2.236,"cv_summer":2.236,"active_months":2,"stock_status":"Нет остатка","abc":"C","abc_cum_share":99.9,"xyz":"Z","trend_pct":-100.0},{"name":"Краска HAUSE MASTER интер. белая мат. 1л (1,4кг)","warehouse":"Склад Кореличи","group":"Краска","colour":"—","finish":"","brand":"HAUSE MASTER","unit":"шт","article":"","volume_l":1.0,"size":"до 1 л","start":2.0,"income":0.0,"outcome":2.0,"stock":0.0,"min_reserve":4.0,"monthly":[1.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"total_units":2.0,"total_l":2.0,"full12_units":2.0,"full12_l":2.0,"partial_units":0.0,"last3_units":0.0,"prev3_units":0.0,"last6_units":0.0,"prev6_units":2.0,"stock_l":0.0,"avg3":0.0,"cover_months":null,"deficit_vs_reserve":4.0,"cv":2.236,"cv_summer":null,"active_months":2,"stock_status":"Нет остатка","abc":"C","abc_cum_share":100.0,"xyz":"—","trend_pct":null},{"name":"Грунтовка ВД-АК-08 FLAGMAN1л","warehouse":"Склад Кореличи","group":"Грунтовка","colour":"—","finish":"","brand":"FLAGMAN","unit":"шт","article":"","volume_l":1.0,"size":"до 1 л","start":0.0,"income":7.0,"outcome":1.0,"stock":6.0,"min_reserve":3.0,"monthly":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0],"total_units":1.0,"total_l":1.0,"full12_units":0.0,"full12_l":0.0,"partial_units":1.0,"last3_units":0.0,"prev3_units":0.0,"last6_units":0.0,"prev6_units":0.0,"stock_l":6.0,"avg3":0.0,"cover_months":null,"deficit_vs_reserve":0.0,"cv":null,"cv_summer":null,"active_months":0,"stock_status":"Мёртвый остаток","abc":"C","abc_cum_share":100.0,"xyz":"—","trend_pct":null},{"name":"Эмаль ПФ-115 голубая 0,9л (0,8кг)","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Голубая","finish":"","brand":"Без явного бренда","unit":"банка","article":"","volume_l":0.9,"size":"до 1 л","start":4.0,"income":0.0,"outcome":1.0,"stock":3.0,"min_reserve":3.0,"monthly":[0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"total_units":1.0,"total_l":0.9,"full12_units":1.0,"full12_l":0.9,"partial_units":0.0,"last3_units":0.0,"prev3_units":0.0,"last6_units":0.0,"prev6_units":1.0,"stock_l":2.7,"avg3":0.0,"cover_months":null,"deficit_vs_reserve":0.0,"cv":3.317,"cv_summer":null,"active_months":1,"stock_status":"Мёртвый остаток","abc":"C","abc_cum_share":100.0,"xyz":"—","trend_pct":null},{"name":"Краска ВД-АК-1035у белый Брава","warehouse":"Склад Кореличи","group":"Краска","colour":"—","finish":"","brand":"BRAVA","unit":"шт","article":"094977","volume_l":null,"size":"Не указан","start":1.0,"income":0.0,"outcome":1.0,"stock":0.0,"min_reserve":1.0,"monthly":[0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"total_units":1.0,"total_l":null,"full12_units":1.0,"full12_l":null,"partial_units":0.0,"last3_units":0.0,"prev3_units":0.0,"last6_units":0.0,"prev6_units":1.0,"stock_l":null,"avg3":0.0,"cover_months":null,"deficit_vs_reserve":1.0,"cv":3.317,"cv_summer":null,"active_months":1,"stock_status":"Нет остатка","abc":"C","abc_cum_share":100.0,"xyz":"—","trend_pct":null},{"name":"Лак ПФ-1120 дек.защ.бесц.гл. 1,0л. BRAVA","warehouse":"Склад Кореличи","group":"Лак","colour":"—","finish":"","brand":"BRAVA","unit":"банка","article":"","volume_l":1.0,"size":"до 1 л","start":1.0,"income":0.0,"outcome":0.0,"stock":1.0,"min_reserve":2.0,"monthly":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"total_units":0.0,"total_l":0.0,"full12_units":0.0,"full12_l":0.0,"partial_units":0.0,"last3_units":0.0,"prev3_units":0.0,"last6_units":0.0,"prev6_units":0.0,"stock_l":1.0,"avg3":0.0,"cover_months":null,"deficit_vs_reserve":1.0,"cv":null,"cv_summer":null,"active_months":0,"stock_status":"Мёртвый остаток","abc":"C","abc_cum_share":100.0,"xyz":"—","trend_pct":null},{"name":"Эмаль ПФ-115 салатовая 0,9л (0,8кг)","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Салатовая","finish":"","brand":"Без явного бренда","unit":"шт","article":"","volume_l":0.9,"size":"до 1 л","start":1.0,"income":0.0,"outcome":0.0,"stock":1.0,"min_reserve":3.0,"monthly":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"total_units":0.0,"total_l":0.0,"full12_units":0.0,"full12_l":0.0,"partial_units":0.0,"last3_units":0.0,"prev3_units":0.0,"last6_units":0.0,"prev6_units":0.0,"stock_l":0.9,"avg3":0.0,"cover_months":null,"deficit_vs_reserve":2.0,"cv":null,"cv_summer":null,"active_months":0,"stock_status":"Мёртвый остаток","abc":"C","abc_cum_share":100.0,"xyz":"—","trend_pct":null},{"name":"Эмаль ПФ-115 салатовая 2л (1,8кг)","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Салатовая","finish":"","brand":"Без явного бренда","unit":"банка","article":"","volume_l":2.0,"size":"2–2,4 л","start":5.0,"income":0.0,"outcome":0.0,"stock":5.0,"min_reserve":3.0,"monthly":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"total_units":0.0,"total_l":0.0,"full12_units":0.0,"full12_l":0.0,"partial_units":0.0,"last3_units":0.0,"prev3_units":0.0,"last6_units":0.0,"prev6_units":0.0,"stock_l":10.0,"avg3":0.0,"cover_months":null,"deficit_vs_reserve":0.0,"cv":null,"cv_summer":null,"active_months":0,"stock_status":"Мёртвый остаток","abc":"C","abc_cum_share":100.0,"xyz":"—","trend_pct":null},{"name":"Эмаль ПФ-115 св.серая 2,4л (2кг) ECOL","warehouse":"Склад Кореличи","group":"Эмаль ПФ-115","colour":"Светло-серая","finish":"","brand":"ECOL","unit":"банка","article":"","volume_l":2.4,"size":"2–2,4 л","start":2.0,"income":0.0,"outcome":0.0,"stock":2.0,"min_reserve":6.0,"monthly":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"total_units":0.0,"total_l":0.0,"full12_units":0.0,"full12_l":0.0,"partial_units":0.0,"last3_units":0.0,"prev3_units":0.0,"last6_units":0.0,"prev6_units":0.0,"stock_l":4.8,"avg3":0.0,"cover_months":null,"deficit_vs_reserve":4.0,"cv":null,"cv_summer":null,"active_months":0,"stock_status":"Мёртвый остаток","abc":"C","abc_cum_share":100.0,"xyz":"—","trend_pct":null}],"turnover":{"turns_per_year":5.47,"days":67.0,"turns_per_year_litres":5.74,"days_litres":64.0,"stock_days_at_last3":42.0,"stock_months_at_last3":1.4,"stock_days_at_last3_litres":39.0},"quality":{"monthly_vs_outcome_diff":418.0,"monthly_vs_outcome_pct":16.5,"monthly_eq_outcome_sku":37,"monthly_gt_outcome_sku":74,"monthly_lt_outcome_sku":0,"sales_gt_available_sku":30,"with_article":1,"no_volume_sku":1,"unit_kinds":{"шт":34,"ведро":5,"банка":72},"balance_ok":true}};
+const fmt0 = new Intl.NumberFormat('ru-RU', {maximumFractionDigits: 0});
+const fmt1 = new Intl.NumberFormat('ru-RU', {maximumFractionDigits: 1});
+const fmt2 = new Intl.NumberFormat('ru-RU', {maximumFractionDigits: 2});
+const nf = (v, d = 0) => (v === null || v === undefined) ? '—' :
+  new Intl.NumberFormat('ru-RU', {maximumFractionDigits: d}).format(v);
+const pctTxt = v => (v === null || v === undefined) ? '—' : nf(v, 1) + '%';
+
+function el(html) { const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstElementChild; }
+function mount(sel, html) { document.querySelector(sel).innerHTML = html; }
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* ---------- KPI ---------- */
+const T = DATA.totals;
+mount('#chip-sku', nf(DATA.sku));
+mount('#chip-units', nf(T.units));
+mount('#chip-litres', nf(T.litres));
+
+const kpis = [
+  {cls:'accent', label:'Продано за период', value:nf(T.units), unit:'упак.', note:`${nf(T.litres)} л · 13 месяцев`},
+  {cls:'', label:'Ассортимент', value:nf(DATA.sku), unit:'SKU', note:`${DATA.active_sku} продавались хотя бы раз`},
+  {cls:'green', label:'Оборачиваемость', value:fmt1.format(DATA.turnover.turns_per_year), unit:'об./год', note:`${nf(DATA.turnover.days)} дней запаса`},
+  {cls:'', label:'Остаток на 19.10', value:nf(T.stock), unit:'упак.', note:`${nf(T.stock_litres)} л · ${nf(DATA.turnover.stock_months_at_last3,1)} мес. продаж`},
+  {cls:'amber', label:'Ниже резерва', value:nf(DATA.below_reserve.length), unit:'SKU', note:`дефицит ${nf(DATA.deficit_total)} упак. к нормативу`},
+  {cls:'red', label:'Нет в наличии', value:nf(DATA.lost_demand.sku), unit:'SKU', note:`спрос ~${nf(DATA.lost_demand.avg3_units,1)} упак./мес.`},
+];
+mount('#kpis', kpis.map(k => `
+  <div class="kpi ${k.cls}">
+    <div class="label">${esc(k.label)}</div>
+    <div class="value">${k.value} <small>${esc(k.unit)}</small></div>
+    <div class="note">${esc(k.note)}</div>
+  </div>`).join(''));
+
+/* ---------- helpers ---------- */
+function niceScale(max, ticks = 4) {
+  if (!max) return {top: 1, step: 1};
+  const raw = max / ticks, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const n = raw / mag;
+  let step = n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10;
+  step *= mag;
+  return {top: Math.ceil(max / step) * step, step};
+}
+const SVGNS = 'http://www.w3.org/2000/svg';
+
+function monthlyChart(metric) {
+  const rows = DATA.monthly;
+  const isL = metric === 'litres';
+  const unit = isL ? 'л' : 'упак.';
+  const W = 900, H = 350, m = {t: 24, r: 16, b: 52, l: 58};
+  const iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const max = Math.max(...rows.map(r => r[metric]));
+  const sc = niceScale(max, 4);
+  const slot = iw / rows.length, bw = slot * 0.62;
+  const y = v => m.t + ih - v / sc.top * ih;
+  let g = '';
+  for (let v = 0; v <= sc.top + 1e-9; v += sc.step) {
+    g += `<line class="gridline" x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}"/>
+          <text x="${m.l - 9}" y="${y(v) + 4}" text-anchor="end">${nf(v)}</text>`;
+  }
+  const avg = rows.slice(0, 12).reduce((a, r) => a + r[metric], 0) / 12;
+  g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(avg)}" y2="${y(avg)}"
+          stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="5 5"/>`;
+  g += `<text x="${m.l + 6}" y="${y(avg) - 7}" text-anchor="start" fill="#64748b" font-size="11">
+          среднее 12 мес. — ${nf(avg)} ${unit}</text>`;
+  rows.forEach((r, i) => {
+    const cx = m.l + slot * i + slot / 2;
+    const h = Math.max(1, r[metric] / sc.top * ih);
+    const fill = r.partial ? 'url(#hatch)' : 'url(#barGrad)';
+    g += `<g class="bar">
+      <rect x="${cx - bw / 2}" y="${y(r[metric])}" width="${bw}" height="${h}" rx="3" fill="${fill}"
+        ${r.partial ? 'stroke="#94a3b8" stroke-dasharray="3 3" stroke-width="1"' : ''}>
+        <title>${esc(r.label)}: ${nf(r[metric])} ${unit}; ${nf(r.units)} упак.; ${nf(r.litres)} л; активных SKU: ${r.active_sku}</title>
+      </rect>
+      ${r[metric] > 0 ? `<text x="${cx}" y="${y(r[metric]) - 6}" text-anchor="middle" font-size="10.5" fill="#475569">${nf(r[metric])}</text>` : ''}
+      <text x="${cx}" y="${H - 24}" text-anchor="middle" font-size="11" fill="#64748b">${esc(r.label)}</text>
+    </g>`;
+  });
+  document.querySelector('#monthly-chart').innerHTML = `
+    <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Продажи по месяцам">
+      <defs>
+        <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#3b82f6"/><stop offset="1" stop-color="#1d4ed8"/>
+        </linearGradient>
+        <pattern id="hatch" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+          <rect width="6" height="6" fill="#e2e8f0"/>
+          <line x1="0" y1="0" x2="0" y2="6" stroke="#94a3b8" stroke-width="2"/>
+        </pattern>
+      </defs>
+      <g class="axis">${g}</g>
+    </svg>`;
+  mount('#bar-caption', `${isL ? 'Литры' : 'Упаковки'}, пунктир — среднее за 12 полных месяцев (${nf(avg)} ${unit})`);
+}
+
+function activeChart() {
+  const rows = DATA.monthly;
+  const W = 900, H = 210, m = {t: 18, r: 18, b: 44, l: 42};
+  const iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const max = Math.max(...rows.map(r => r.active_sku));
+  const sc = niceScale(max, 3);
+  const x = i => m.l + iw * i / (rows.length - 1);
+  const y = v => m.t + ih - v / sc.top * ih;
+  let g = '';
+  for (let v = 0; v <= sc.top + 1e-9; v += sc.step) {
+    g += `<line class="gridline" x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}"/>
+          <text x="${m.l - 8}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
+  }
+  const pts = rows.map((r, i) => `${x(i)},${y(r.active_sku)}`).join(' ');
+  g += `<polyline points="${pts}" fill="none" stroke="#0ea5e9" stroke-width="2.5" stroke-linejoin="round"/>`;
+  rows.forEach((r, i) => {
+    g += `<circle cx="${x(i)}" cy="${y(r.active_sku)}" r="3.5" fill="#fff" stroke="#0284c7" stroke-width="2">
+            <title>${esc(r.label)}: ${r.active_sku} активных SKU</title></circle>
+          <text x="${x(i)}" y="${y(r.active_sku) - 10}" text-anchor="middle" font-size="10" fill="#0369a1">${r.active_sku}</text>
+          <text x="${x(i)}" y="${H - 18}" text-anchor="middle" font-size="10.5" fill="#64748b">${esc(r.label.replace('*',''))}</text>`;
+  });
+  mount('#active-chart', `<svg viewBox="0 0 ${W} ${H}">${g}</svg>`);
+}
+
+function hbars(sel, rows, opts) {
+  const {value, unit = '', secondary = null, max = null, color = null, digits = 0} = opts;
+  const top = max || Math.max(...rows.map(r => r[value] || 0), 1);
+  mount(sel, `<div class="hbars">${rows.map(r => {
+    const v = r[value] || 0;
+    const w = Math.max(1.5, v / top * 100);
+    const bg = color ? color(r) : 'linear-gradient(90deg,#2563eb,#38bdf8)';
+    const sec = secondary ? `<small>${nf(r[secondary], 1)} ${secondary === 'litre_share' ? '%' : ''}</small>` : '';
+    return `<div class="hbar" title="${esc(r.key)}: ${nf(v, digits)} ${unit}">
+      <div class="name">${esc(r.key)}</div>
+      <div class="track"><div class="fill" style="width:${w}%;background:${bg}"></div></div>
+      <div class="val">${nf(v, digits)} ${unit}${sec}</div>
+    </div>`;
+  }).join('')}</div>`);
+}
+
+function miniList(sel, rows) {
+  mount(sel, `<div class="mini-list">${rows.map(r => `
+    <div class="mini"><span class="n" title="${esc(r.name)}">${esc(r.name)}</span>
+      <span class="v">${r.value}</span></div>`).join('')}</div>`);
+}
+
+/* ---------- dynamics ---------- */
+let metric = 'litres';
+monthlyChart(metric);
+activeChart();
+document.querySelectorAll('#metric-toggle button').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('#metric-toggle button').forEach(x => x.classList.toggle('on', x === b));
+  metric = b.dataset.metric;
+  monthlyChart(metric);
+}));
+
+hbars('#season-bars', DATA.seasonality.map(s => ({key: s.month, index: s.index})),
+  {value: 'index', unit: '%', max: 200, digits: 0,
+   color: r => r.index >= 100 ? 'linear-gradient(90deg,#16a34a,#4ade80)' : 'linear-gradient(90deg,#d97706,#fbbf24)'});
+
+hbars('#quarter-bars', DATA.quarterly.map(q => ({key: q.label, units: q.unit_share, litres: q.litre_share})),
+  {value: 'units', unit: '%', max: 45, digits: 1});
+document.querySelectorAll('#quarter-bars .hbar').forEach((node, i) => {
+  const q = DATA.quarterly[i];
+  node.querySelector('.val').innerHTML = `${nf(q.unit_share,1)}% упак.<small>${nf(q.litre_share,1)}% л</small>`;
+});
+
+const winterShare = DATA.halves.winter_oct_feb / DATA.totals.units * 100;
+const partialShare = DATA.totals.partial_units / DATA.totals.units * 100;
+const dyn = [
+  ['Пик и минимум', `Июнь 2026 — ${nf(449)} упак., февраль 2026 — ${nf(15)} упак. Размах 30×.`],
+  ['Сезонное окно', `Март–сентябрь дают ${nf(DATA.halves.season_share,1)}% продаж; октябрь 2025 – февраль 2026 — ${nf(winterShare,1)}%; неполный октябрь 2026 — ${nf(partialShare,1)}%.`],
+  ['Октябрь 2026', `4,26 упак./день против 10,0 в сентябре (−57%), но против октября 2025 (3,03/день) — +41%. Это сезонный спад, а не обвал.`],
+  ['Первый и второй сезон', `Апрель–сентябрь 2026 — 2 325 упак. против 549 за октябрь 2025–март 2026. Сравнения год к году нет: в выгрузке только один сезон.`],
+];
+mount('#dynamics-notes', dyn.map(([t, v]) => `
+  <div class="mini" style="align-items:flex-start"><span class="n" style="white-space:normal">
+    <b>${esc(t)}.</b> ${esc(v)}</span></div>`).join(''));
+
+/* ---------- structure ---------- */
+hbars('#group-bars', DATA.groups.map(g => ({key: g.group, litres: g.litres, share: g.litre_share, units: g.unit_share})),
+  {value: 'litres', unit: 'л', digits: 0, secondary: null});
+document.querySelectorAll('#group-bars .hbar').forEach((node, i) => {
+  const g = DATA.groups[i];
+  node.querySelector('.val').innerHTML = `${nf(g.litres)} л <small>· ${nf(g.litre_share,1)}% · ${g.sku} SKU</small>`;
+});
+const sizeRows = DATA.sizes.filter(s => s.litres > 0);
+hbars('#size-bars', sizeRows.map(s => ({key: s.key, litres: s.litres, share: s.litre_share, units: s.units})),
+  {value: 'litres', unit: 'л', digits: 0});
+document.querySelectorAll('#size-bars .hbar').forEach((node, i) => {
+  const s = sizeRows[i];
+  node.querySelector('.val').innerHTML = `${nf(s.litres)} л <small>· ${nf(s.litre_share,1)}%</small>`;
+});
+const enamelTotal = DATA.enamel_colours.reduce((a, c) => a + c.litres, 0);
+hbars('#colour-bars', DATA.enamel_colours.slice(0, 12).map(c => ({key: c.key, litres: c.litres, share: c.litres / enamelTotal * 100})),
+  {value: 'litres', unit: 'л', digits: 0});
+document.querySelectorAll('#colour-bars .hbar').forEach((node, i) => {
+  const c = DATA.enamel_colours[i];
+  node.querySelector('.val').innerHTML = `${nf(c.litres)} л <small>· ${nf(c.litres / enamelTotal * 100,1)}%</small>`;
+});
+hbars('#brand-bars', DATA.brands.map(b => ({key: b.key, litres: b.litres, share: b.litre_share, units: b.units})),
+  {value: 'litres', unit: 'л', digits: 0});
+document.querySelectorAll('#brand-bars .hbar').forEach((node, i) => {
+  const b = DATA.brands[i];
+  node.querySelector('.val').innerHTML = `${nf(b.litres)} л <small>· ${nf(b.litre_share,1)}%</small>`;
+});
+
+/* ---------- ABC ---------- */
+const abcColors = {A: '#1d4ed8', B: '#0ea5e9', C: '#94a3b8'};
+mount('#abc-cards', ['A', 'B', 'C'].map(k => {
+  const a = DATA.abc[k];
+  return `<div class="kpi ${k === 'A' ? 'accent' : ''}" style="border-left-color:${abcColors[k]}">
+    <div class="label">Класс ${k}</div>
+    <div class="value">${a.sku} <small>SKU</small></div>
+    <div class="note">${nf(a.litres)} л · ${nf(a.litre_share,1)}% объёма<br>${nf(a.unit_share,1)}% упаковок</div></div>`;
+}).join(''));
+
+const matrixRows = ['A', 'B', 'C'], matrixCols = ['X', 'Y', 'Z', '—'];
+const matrixLabels = {X: 'X', Y: 'Y', Z: 'Z', '—': '—'};
+let mx = `<table class="matrix"><thead><tr><th></th>${matrixCols.map(z => `<th>${matrixLabels[z]}</th>`).join('')}</tr></thead><tbody>`;
+matrixRows.forEach(a => {
+  mx += `<tr><th>${a}</th>`;
+  matrixCols.forEach(z => {
+    const cell = DATA.matrix[a + z] || {sku: 0, share: 0, litres: 0};
+    const cls = cell.share >= 20 ? 'hot' : cell.share >= 5 ? 'warm' : '';
+    mx += `<td class="${cls}"><b>${cell.sku}</b><small>${nf(cell.share,1)}% · ${nf(cell.litres)} л</small></td>`;
+  });
+  mx += `</tr>`;
+});
+mx += `</tbody></table>`;
+mount('#matrix', mx);
+
+hbars('#pareto', [
+  {key: 'Топ-1', share: DATA.concentration.top1}, {key: 'Топ-5', share: DATA.concentration.top5},
+  {key: 'Топ-10', share: DATA.concentration.top10}, {key: 'Топ-20', share: DATA.concentration.top20},
+  {key: 'Топ-44 (80%)', share: 80}],
+  {value: 'share', unit: '%', max: 100, digits: 1,
+   color: r => r.key.startsWith('Топ-44') ? 'linear-gradient(90deg,#64748b,#94a3b8)' : 'linear-gradient(90deg,#1d4ed8,#38bdf8)'});
+mount('#concentration-list', `
+  <div class="mini"><span class="n">SKU, чтобы набрать 80% объёма</span><span class="v">${DATA.pareto_sku}</span></div>
+  <div class="mini"><span class="n">Доля топ-10 в литрах</span><span class="v">${pctTxt(DATA.concentration.top10)}</span></div>
+  <div class="mini"><span class="n">Доля топ-20 в литрах</span><span class="v">${pctTxt(DATA.concentration.top20)}</span></div>
+  <div class="mini"><span class="n">Хвост C (37 SKU)</span><span class="v">${pctTxt(DATA.abc.C.litre_share)}</span></div>`);
+
+/* ---------- stock ---------- */
+const statusOrder = ['Норма', 'Ниже резерва', 'Нет в наличии', 'Нет остатка', 'Мёртвый остаток', 'Избыток'];
+const statusColors = {
+  'Норма': '#16a34a', 'Ниже резерва': '#f59e0b', 'Нет в наличии': '#dc2626',
+  'Нет остатка': '#94a3b8', 'Мёртвый остаток': '#7c3aed', 'Избыток': '#0ea5e9'
+};
+const statusRows = statusOrder.filter(s => DATA.stock_status[s]).map(s => ({
+  key: s, sku: DATA.stock_status[s].sku, units: DATA.stock_status[s].units
+}));
+mount('#stock-cards', `
+  <div class="kpi green"><div class="label">Норма</div><div class="value">${DATA.stock_status['Норма'].sku} <small>SKU</small></div>
+    <div class="note">${nf(DATA.stock_status['Норма'].units)} упак. · ${nf(DATA.stock_status['Норма'].litres)} л</div></div>
+  <div class="kpi amber"><div class="label">Ниже резерва</div><div class="value">${DATA.below_reserve.length} <small>SKU</small></div>
+    <div class="note">дефицит ${nf(DATA.deficit_total)} упак.</div></div>
+  <div class="kpi red"><div class="label">Нет в наличии</div><div class="value">${DATA.lost_demand.sku} <small>SKU</small></div>
+    <div class="note">спрос ~${nf(DATA.lost_demand.avg3_units,1)} упак./мес.</div></div>
+  <div class="kpi violet"><div class="label">Мёртвый остаток</div><div class="value">${DATA.stock_status['Мёртвый остаток'].sku} <small>SKU</small></div>
+    <div class="note">${nf(DATA.stock_status['Мёртвый остаток'].units)} упак. · ${nf(DATA.stock_status['Мёртвый остаток'].litres)} л</div></div>
+  <div class="kpi"><div class="label">Избыток</div><div class="value">${DATA.stock_status['Избыток'].sku} <small>SKU</small></div>
+    <div class="note">${nf(DATA.stock_status['Избыток'].units)} упак. · ${nf(DATA.stock_status['Избыток'].litres)} л</div></div>
+  <div class="kpi"><div class="label">Профицит к резерву</div><div class="value">+${nf(DATA.reserve_surplus_total)} <small>упак.</small></div>
+    <div class="note">при дефиците ${nf(DATA.deficit_total)} упак.</div></div>`);
+
+hbars('#status-bars', statusRows, {value: 'sku', unit: 'SKU', max: 60, digits: 0,
+  color: r => statusColors[r.key]});
+
+mount('#reserve-note', `<b>Норматив не связан со скоростью продаж.</b> Минимальный резерв
+  принимает значения 0–6 упак. и даёт от 0,2 до 18 месяцев покрытия спроса (медиана — 1,5 мес.).
+  У 19 позиций резерв меньше половины месяца продаж, у 19 — больше трёх месяцев. Итог: по складу
+  профицит +${nf(DATA.reserve_surplus_total)} упак. к нормативу, но 45 позиций в дефиците на
+  ${nf(DATA.deficit_total)} упак. Норматив стоит пересчитать по ABC/XYZ и скорости продаж.`);
+
+const turn = DATA.turnover;
+mount('#turnover-list', `
+  <div class="mini"><span class="n">Оборотов в год (упаковки)</span><span class="v">${fmt2.format(turn.turns_per_year)}</span></div>
+  <div class="mini"><span class="n">Запас, дней (12 мес.)</span><span class="v">${nf(turn.days)}</span></div>
+  <div class="mini"><span class="n">Оборотов в год (литры)</span><span class="v">${fmt2.format(turn.turns_per_year_litres)}</span></div>
+  <div class="mini"><span class="n">Запас, дней (литры)</span><span class="v">${nf(turn.days_litres)}</span></div>
+  <div class="mini"><span class="n">Запас при текущем темпе</span><span class="v">${nf(turn.stock_months_at_last3,1)} мес.</span></div>
+  <div class="mini"><span class="n">Средний остаток за период</span><span class="v">${nf(T.avg_stock)} упак.</span></div>`);
+
+miniList('#oos-list', DATA.out_of_stock.slice(0, 10).map(x => ({
+  name: x.name, value: `${nf(x.avg3,1)} упак./мес.`
+})));
+const deadRows = DATA.dead.map(d => ({name: d.name, value: `${nf(d.stock)} упак. · ${nf(d.stock_l)} л`}));
+const overRows = DATA.overstock.map(d => ({name: d.name, value: `${nf(d.stock)} упак. · ${nf(d.cover_months,1)} мес.`}));
+mount('#dead-list', `<div class="mini-list">
+  ${deadRows.map(r => `<div class="mini"><span class="n" title="${esc(r.name)}">${esc(r.name)}</span><span class="v">${r.value}</span></div>`).join('')}
+  <div class="mini" style="background:#faf5ff;border-color:#e9d5ff"><span class="n"><b>Итого мёртвый остаток</b></span>
+    <span class="v">${nf(DATA.stock_status['Мёртвый остаток'].units)} упак. · ${nf(DATA.stock_status['Мёртвый остаток'].litres)} л</span></div>
+</div>
+<div class="caption" style="margin:14px 0 8px">Избыток (покрытие &gt; 6 месяцев)</div>
+<div class="mini-list">${overRows.map(r => `<div class="mini"><span class="n" title="${esc(r.name)}">${esc(r.name)}</span><span class="v">${r.value}</span></div>`).join('')}</div>`);
+
+/* ---------- tops ---------- */
+hbars('#top-litres', DATA.top_litres.slice(0, 12).map(x => ({key: x.name, litres: x.litres, units: x.units})),
+  {value: 'litres', unit: 'л', digits: 0});
+document.querySelectorAll('#top-litres .hbar').forEach((node, i) => {
+  const x = DATA.top_litres[i];
+  node.querySelector('.val').innerHTML = `${nf(x.litres)} л <small>· ${nf(x.units)} упак.</small>`;
+});
+hbars('#top-units', DATA.top_units.slice(0, 12).map(x => ({key: x.name, units: x.units, litres: x.litres})),
+  {value: 'units', unit: 'упак.', digits: 0});
+document.querySelectorAll('#top-units .hbar').forEach((node, i) => {
+  const x = DATA.top_units[i];
+  node.querySelector('.val').innerHTML = `${nf(x.units)} упак. <small>· ${nf(x.litres)} л</small>`;
+});
+
+miniList('#growth-list', DATA.growth.map(x => ({name: x.name, value: `+${nf(x.delta)} (${nf(x.prev3)}→${nf(x.last3)})`})));
+miniList('#decline-list', DATA.decline.map(x => ({name: x.name, value: `${nf(x.delta)} (${nf(x.prev3)}→${nf(x.last3)})`})));
+
+/* ---------- table ---------- */
+const state = {q: '', group: '', abc: '', status: '', sort: 'total_l', dir: -1};
+const groups = [...new Set(DATA.items.map(x => x.group))];
+mount('#f-group', `<option value="">Все группы</option>${groups.map(g => `<option>${esc(g)}</option>`).join('')}`);
+const statuses = [...new Set(DATA.items.map(x => x.stock_status))];
+mount('#f-status', `<option value="">Все статусы</option>${statuses.map(s => `<option>${esc(s)}</option>`).join('')}`);
+
+function badgeFor(s) {
+  const map = {'Норма':'b-green','Ниже резерва':'b-amber','Нет в наличии':'b-red','Нет остатка':'b-slate',
+    'Мёртвый остаток':'b-violet','Избыток':'b-blue'};
+  return `<span class="badge ${map[s] || 'b-slate'}">${esc(s)}</span>`;
+}
+function renderTable() {
+  const rows = DATA.items.filter(x =>
+    (!state.q || x.name.toLowerCase().includes(state.q)) &&
+    (!state.group || x.group === state.group) &&
+    (!state.abc || x.abc === state.abc) &&
+    (!state.status || x.stock_status === state.status)
+  ).sort((a, b) => {
+    const k = state.sort;
+    let va = a[k], vb = b[k];
+    if (k === 'name' || k === 'group' || k === 'abc' || k === 'xyz' || k === 'stock_status') {
+      va = String(va); vb = String(vb);
+      return va.localeCompare(vb, 'ru') * state.dir;
+    }
+    va = va === null || va === undefined ? -1 : va;
+    vb = vb === null || vb === undefined ? -1 : vb;
+    return (va - vb) * state.dir;
+  });
+  document.querySelector('#items tbody').innerHTML = rows.map(x => `
+    <tr>
+      <td class="name" title="${esc(x.name)}">${esc(x.name)}</td>
+      <td>${esc(x.group)}</td>
+      <td class="num">${x.volume_l ? nf(x.volume_l, 2) : '—'}</td>
+      <td class="num">${nf(x.total_units)}</td>
+      <td class="num">${x.total_l ? nf(x.total_l) : '—'}</td>
+      <td class="num">${nf(x.stock)}</td>
+      <td class="num">${x.cover_months === null ? '—' : nf(x.cover_months, 1)}</td>
+      <td><span class="abc ${x.abc}">${x.abc}</span></td>
+      <td>${x.xyz === '—' ? '—' : x.xyz}</td>
+      <td>${badgeFor(x.stock_status)}</td>
+    </tr>`).join('');
+  mount('#row-count', `Показано ${rows.length} из ${DATA.items.length}`);
+  document.querySelectorAll('#items th').forEach(th => {
+    th.classList.toggle('sorted', th.dataset.key === state.sort);
+    const arrow = th.querySelector('.arrow');
+    if (arrow) arrow.textContent = th.dataset.key === state.sort ? (state.dir > 0 ? '↑' : '↓') : '↕';
+  });
+}
+document.querySelectorAll('#items th').forEach(th => th.addEventListener('click', () => {
+  const k = th.dataset.key;
+  if (!k) return;
+  if (state.sort === k) state.dir *= -1; else { state.sort = k; state.dir = k === 'name' ? 1 : -1; }
+  renderTable();
+}));
+document.querySelector('#q').addEventListener('input', e => {state.q = e.target.value.toLowerCase().trim(); renderTable();});
+document.querySelector('#f-group').addEventListener('change', e => {state.group = e.target.value; renderTable();});
+document.querySelector('#f-abc').addEventListener('change', e => {state.abc = e.target.value; renderTable();});
+document.querySelector('#f-status').addEventListener('change', e => {state.status = e.target.value; renderTable();});
+renderTable();
+
+/* ---------- quality ---------- */
+const Q = DATA.quality;
+mount('#quality-list', `
+  <div class="mini"><span class="n">Баланс «начальный + приход − расход = конечный»</span>
+    <span class="v">${Q.balance_ok ? '✓ сходится' : '✗ есть расхождения'}</span></div>
+  <div class="mini"><span class="n">Сумма месячных колонок vs «Расход»</span>
+    <span class="v" style="color:#b45309">+${nf(Q.monthly_vs_outcome_diff)} (${nf(Q.monthly_vs_outcome_pct,1)}%)</span></div>
+  <div class="mini"><span class="n">Строк, где месяцы = «Расход»</span><span class="v">${Q.monthly_eq_outcome_sku} из 111</span></div>
+  <div class="mini"><span class="n">Строк, где продажи &gt; доступного объёма</span><span class="v" style="color:#b91c1c">${Q.sales_gt_available_sku}</span></div>
+  <div class="mini"><span class="n">Позиций с заполненным артикулом</span><span class="v">${Q.with_article} из 111</span></div>
+  <div class="mini"><span class="n">Единицы измерения</span><span class="v">${Object.entries(Q.unit_kinds).map(([k,v]) => `${k} ${v}`).join(' · ')}</span></div>
+  <div class="mini"><span class="n">Позиций без объёма</span><span class="v">${Q.no_volume_sku}</span></div>`);
+
+mount('#hygiene-list', `
+  <div class="mini"><span class="n">FLAGMAN1л / FLAGMAН 5 — нет пробела и кириллическая «Н»</span><span class="v">2 SKU</span></div>
+  <div class="mini"><span class="n">5л(( 7кг — двойная скобка</span><span class="v">1 SKU</span></div>
+  <div class="mini"><span class="n">0,9 (0,8кг) — потеряна единица «л»</span><span class="v">1 SKU</span></div>
+  <div class="mini"><span class="n">св-сер / св.-сер. — разные написания</span><span class="v">4 SKU</span></div>
+  <div class="mini"><span class="n">2,40л / 2,4л — разный формат</span><span class="v">2 SKU</span></div>
+  <div class="mini"><span class="n">Краска ВД-АК-1035у — нет размера</span><span class="v">1 SKU</span></div>
+  <div class="mini"><span class="n">шт / банка / ведро для одной линейки</span><span class="v">3 единицы</span></div>`);
+
+/* smooth nav */
+document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
+  e.preventDefault(); document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:'smooth'});
+}));
+</script>
+</body>
+</html>

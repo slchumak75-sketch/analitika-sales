@@ -1,0 +1,909 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Аналитика продаж · Ведомость ТМЦ · окт 2025 — окт 2026</title>
+<style>
+  :root{
+    --bg:#f4f6fb; --card:#ffffff; --ink:#0f172a; --muted:#64748b; --soft:#94a3b8;
+    --line:#e2e8f0; --accent:#1d4ed8; --accent-2:#0ea5e9; --green:#15803d;
+    --green-bg:#dcfce7; --amber:#b45309; --amber-bg:#fef3c7; --red:#b91c1c;
+    --red-bg:#fee2e2; --violet:#6d28d9; --violet-bg:#ede9fe; --slate-bg:#e2e8f0;
+    --radius:16px; --shadow:0 1px 2px rgba(15,23,42,.04), 0 10px 28px -18px rgba(15,23,42,.25);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  h1,h2,h3,h4{margin:0;font-weight:700;letter-spacing:-.02em}
+  p{margin:0}
+  a{color:var(--accent);text-decoration:none}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+
+  /* hero */
+  .hero{background:linear-gradient(135deg,#0b1b3f 0%,#12306b 55%,#1d4ed8 100%);
+    color:#fff;padding:42px 0 34px;position:relative;overflow:hidden}
+  .hero:after{content:"";position:absolute;right:-120px;top:-140px;width:460px;height:460px;
+    border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.28),transparent 62%)}
+  .hero .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#93c5fd;
+    font-weight:700;margin-bottom:10px}
+  .hero h1{font-size:clamp(26px,3.2vw,40px);line-height:1.15;max-width:900px}
+  .hero .sub{margin-top:12px;color:#cbd5e1;max-width:860px;font-size:15px}
+  .hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+  .chip{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.10);
+    border:1px solid rgba(255,255,255,.18);padding:7px 12px;border-radius:999px;font-size:13px;
+    color:#e2e8f0;backdrop-filter:blur(4px)}
+  .chip b{color:#fff;font-weight:700}
+
+  main{padding:30px 0 56px}
+  section{margin-bottom:34px;scroll-margin-top:18px}
+  .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;
+    margin-bottom:14px;flex-wrap:wrap}
+  .section-head h2{font-size:21px}
+  .section-head .hint{color:var(--muted);font-size:13px;max-width:720px}
+  .card{min-width:0;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:22px}
+  .grid{display:grid;gap:16px}
+  .kpis{grid-template-columns:repeat(6,1fr)}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 16px 14px;
+    box-shadow:var(--shadow);display:flex;flex-direction:column;gap:5px;min-height:116px}
+  .kpi .label{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .kpi .value{font-size:26px;font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-top:2px}
+  .kpi .value small{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:0}
+  .kpi .note{font-size:12px;color:var(--muted);margin-top:auto}
+  .kpi.accent{border-left:4px solid var(--accent)}
+  .kpi.green{border-left:4px solid var(--green)}
+  .kpi.amber{border-left:4px solid #d97706}
+  .kpi.red{border-left:4px solid var(--red)}
+  .kpi.violet{border-left:4px solid var(--violet)}
+
+  .split{display:grid;grid-template-columns:1.55fr 1fr;gap:16px;align-items:start}
+  .split>*,.split-even>*,.grid>*,.stack>*{min-width:0}
+  .split-even{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+  .stack{display:grid;gap:16px}
+  .card h3{font-size:16px;margin-bottom:4px}
+  .card .caption{font-size:12.5px;color:var(--muted);margin-bottom:14px}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:10px}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px;vertical-align:1px}
+
+  .toggle{display:inline-flex;background:#eef2f7;border:1px solid var(--line);border-radius:10px;
+    padding:3px;gap:3px}
+  .toggle button{border:0;background:transparent;color:var(--muted);font:inherit;font-size:12.5px;
+    font-weight:600;padding:6px 12px;border-radius:8px;cursor:pointer}
+  .toggle button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(15,23,42,.12)}
+
+  svg{display:block;width:100%;height:auto;overflow:visible}
+  .axis text{fill:var(--soft);font-size:11px}
+  .gridline{stroke:#eef2f7;stroke-width:1}
+  .bar{transition:opacity .15s}
+  .bar:hover{opacity:.82}
+
+  /* horizontal bars */
+  .hbars{display:grid;gap:9px}
+  .hbar{display:grid;grid-template-columns:minmax(120px,240px) 1fr 94px;gap:10px;align-items:center}
+  .hbar .name{font-size:13px;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hbar .track{background:#eef2f7;border-radius:7px;height:20px;overflow:hidden}
+  .hbar .fill{height:100%;border-radius:7px;background:linear-gradient(90deg,#2563eb,#38bdf8)}
+  .hbar .val{font-size:12.5px;color:#334155;text-align:right;font-variant-numeric:tabular-nums}
+  .hbar .val small{display:block;color:var(--soft);font-size:11px;margin-top:1px;white-space:nowrap}
+
+  /* table */
+  .scroll-hint{display:none;font-size:11.5px;color:var(--soft);margin:2px 0 6px}
+  .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px}
+  table{border-collapse:collapse;width:100%;font-size:13px;min-width:720px}
+  th,td{padding:9px 8px;text-align:left;border-bottom:1px solid #eef2f7;white-space:nowrap}
+  th{position:sticky;top:0;background:#f8fafc;z-index:1;font-size:11px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--muted);cursor:pointer;user-select:none}
+  th:hover{color:var(--ink)}
+  th .arrow{opacity:.35;font-size:10px;margin-left:3px}
+  th.sorted .arrow{opacity:1;color:var(--accent)}
+  tbody tr:hover{background:#f8fafc}
+  td.num{text-align:right;font-variant-numeric:tabular-nums}
+  td.name{white-space:normal;min-width:250px;max-width:360px}
+  .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;
+    letter-spacing:.02em;white-space:nowrap}
+  .b-green{background:var(--green-bg);color:var(--green)}
+  .b-amber{background:var(--amber-bg);color:var(--amber)}
+  .b-red{background:var(--red-bg);color:var(--red)}
+  .b-violet{background:var(--violet-bg);color:var(--violet)}
+  .b-slate{background:var(--slate-bg);color:#475569}
+  .b-blue{background:#dbeafe;color:#1e40af}
+  .abc{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;
+    border-radius:7px;font-size:11px;font-weight:800}
+  .abc.A{background:#dbeafe;color:#1e40af}.abc.B{background:#e0f2fe;color:#0369a1}
+  .abc.C{background:#f1f5f9;color:#64748b}
+
+  .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+  .filters input,.filters select{font:inherit;font-size:13px;padding:8px 10px;border-radius:9px;
+    border:1px solid var(--line);background:#fff;color:var(--ink);min-width:150px}
+  .filters input{flex:1;min-width:220px}
+  .filters .count{font-size:12px;color:var(--muted);margin-left:auto}
+
+  /* insight blocks */
+  .insights{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .insight{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;
+    border-top:4px solid var(--accent)}
+  .insight.warn{border-top-color:#d97706}.insight.bad{border-top-color:var(--red)}
+  .insight.good{border-top-color:var(--green)}
+  .insight h4{font-size:13.5px;margin-bottom:6px}
+  .insight p{font-size:13px;color:#475569}
+  .insight .num{font-size:24px;font-weight:800;letter-spacing:-.03em;margin:2px 0 6px}
+
+  .note-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:14px 16px;
+    font-size:13px;color:#1e3a8a}
+  .note-box.warn{background:#fffbeb;border-color:#fde68a;color:#78350f}
+  .note-box.bad{background:#fef2f2;border-color:#fecaca;color:#7f1d1d}
+  .note-box b{font-weight:700}
+
+  .mini-list{display:grid;gap:8px;min-width:0}
+  .mini{min-width:0;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 11px;
+    border:1px solid var(--line);border-radius:10px;background:#fbfdff;font-size:13px}
+  .mini .n{color:#334155;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mini .v{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+  .matrix{width:100%;border-collapse:separate;border-spacing:6px;min-width:0;table-layout:fixed}
+  .matrix th,.matrix td{border:0;padding:9px 6px;text-align:center;position:static;background:transparent;
+    cursor:default;text-transform:none;letter-spacing:0;font-size:13px;white-space:normal}
+  .matrix th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+  .matrix td{background:#f8fafc;border-radius:10px}
+  .matrix td b{font-size:17px}
+  .matrix td small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+  .matrix td.hot{background:#dbeafe}
+  .matrix td.warm{background:#eff6ff}
+
+  footer{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--muted);font-size:12.5px}
+  footer p{margin-bottom:6px}
+
+  @media (max-width:1100px){
+    .kpis{grid-template-columns:repeat(3,1fr)}
+    .split,.split-even{grid-template-columns:1fr}
+    .insights{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:720px){
+    .wrap{padding:0 14px}
+    .kpis{grid-template-columns:1fr 1fr}
+    .insights{grid-template-columns:1fr}
+    .hbar{grid-template-columns:minmax(96px,1fr) 1fr 82px}
+    .mini{flex-wrap:wrap}
+    .scroll-hint{display:block}
+    #monthly-chart,#active-chart{overflow-x:auto}
+    #monthly-chart svg{min-width:640px}
+    #active-chart svg{min-width:520px}
+    .mini .n{white-space:normal;overflow:visible;text-overflow:clip}
+    .mini .v{margin-left:auto}
+    .hero{padding:30px 0 26px}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Аналитика продаж · количественные данные</div>
+    <h1>Ведомость по остаткам ТМЦ: что и сколько продавал склад «Кореличи»</h1>
+    <p class="sub">Разбор отчёта 1С за 01.10.2025–19.10.2026: динамика, сезонность, структура ассортимента,
+      ABC/XYZ, остатки и качество данных. Цены в ведомости отсутствуют, поэтому выручка и прибыль
+      не рассчитываются — анализ построен на физическом объёме (упаковки и литры).</p>
+    <div class="hero-meta">
+      <span class="chip">Период <b>01.10.2025 — 19.10.2026</b></span>
+      <span class="chip">Склад <b>Кореличи</b></span>
+      <span class="chip">Позиций <b id="chip-sku">111</b></span>
+      <span class="chip">Продано <b id="chip-units">—</b> упак.</span>
+      <span class="chip">Продано <b id="chip-litres">—</b> л</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- KPI -->
+  <section id="overview">
+    <div class="grid kpis" id="kpis"></div>
+    <div style="margin-top:14px" class="note-box">
+      <b>Главное.</b> Бизнес ярко сезонный: 89% продаж приходится на март–сентябрь, пик — июнь (449 упак.),
+      минимум — февраль (15 упак.). Ассортимент широкий и «плоский»: 10 позиций дают лишь 34% объёма,
+      а для 80% нужно 44 позиции. Склад в целом сбалансирован (536 упак. при нормативе 475), но
+      <b>45 позиций ниже минимального резерва</b> (дефицит 116 упак.); ещё 10 позиций с недавним
+      спросом полностью отсутствуют, а 7 позиций — мёртвый остаток. Данные о продажах расходятся с колонкой «Расход» на 16,5% —
+      это главный риск интерпретации.
+    </div>
+  </section>
+
+  <!-- dynamics -->
+  <section id="dynamics">
+    <div class="section-head">
+      <div>
+        <h2>Динамика по месяцам</h2>
+        <div class="hint">Октябрь 2026 — неполный месяц (1–19 октября), на графике выделен штриховкой.
+          Переключатель меняет единицу измерения.</div>
+      </div>
+      <div class="toggle" id="metric-toggle">
+        <button data-metric="litres" class="on">Литры</button>
+        <button data-metric="units">Упаковки</button>
+      </div>
+    </div>
+    <div class="split">
+      <div class="stack">
+        <div class="card">
+          <h3>Продажи по месяцам</h3>
+          <div class="caption" id="bar-caption">Литры, пунктир — среднее за 12 полных месяцев</div>
+          <div id="monthly-chart"></div>
+          <div class="scroll-hint">На узком экране график прокручивается вправо →</div>
+          <div class="legend">
+            <span><span class="dot" style="background:#2563eb"></span>полный месяц</span>
+            <span><span class="dot" style="background:#cbd5e1"></span>неполный месяц (1–19 окт.)</span>
+            <span><span class="dot" style="background:#94a3b8"></span>среднее 12 мес.</span>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Сезонность</h3>
+          <div class="caption">Индекс к среднемесячному объёму (100% = среднее за 12 мес.)</div>
+          <div id="season-bars"></div>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="card">
+          <h3>Активных позиций в месяц</h3>
+          <div class="caption">Сколько SKU имели хотя бы одну продажу</div>
+          <div id="active-chart"></div>
+        </div>
+        <div class="card">
+          <h3>Кварталы</h3>
+          <div class="caption">Доли по упаковкам и литрам; октябрь 2026 — неполный период (1–19)</div>
+          <div id="quarter-bars"></div>
+        </div>
+        <div class="card">
+          <h3>Что важно понимать</h3>
+          <div class="mini-list" id="dynamics-notes"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- structure -->
+  <section id="structure">
+    <div class="section-head">
+      <div>
+        <h2>Структура ассортимента</h2>
+        <div class="hint">Продажи за 13 месяцев. Литры — расчётная физическая ёмкость упаковки:
+          для имён с «N л» берётся указанный объём, для «N кг» — пересчёт по плотности 1,35 кг/л.</div>
+      </div>
+    </div>
+    <div class="split-even">
+      <div class="card">
+        <h3>Товарные группы</h3>
+        <div class="caption">Доля в литрах · подпись — доля в упаковках</div>
+        <div id="group-bars"></div>
+      </div>
+      <div class="card">
+        <h3>Размер упаковки</h3>
+        <div class="caption">Доля в литрах · спрос смещён в 1 л и 2–2,4 л</div>
+        <div id="size-bars"></div>
+      </div>
+    </div>
+    <div class="split-even" style="margin-top:16px">
+      <div class="card">
+        <h3>Цвета эмали ПФ-115 / ПФ-266</h3>
+        <div class="caption">Топ-12 цветов по литрам; доля — от объёма эмалей 4 408 л, все размеры вместе</div>
+        <div id="colour-bars"></div>
+      </div>
+      <div class="card">
+        <h3>Бренды и линейки в названии</h3>
+        <div class="caption">ECOL — отдельная линейка в наименованиях, не обязательно бренд производителя</div>
+        <div id="brand-bars"></div>
+        <div class="note-box warn" style="margin-top:14px">
+          В названиях 30 позиций бренд не указан — это базовая линейка ПФ-115/ПФ-266.
+          Для закупочной аналитики нужен стабильный атрибут «бренд» в номенклатуре.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABC/XYZ -->
+  <section id="abc-xyz">
+    <div class="section-head">
+      <div>
+        <h2>ABC- и XYZ-анализ</h2>
+        <div class="hint">ABC — по литрам за 12 полных месяцев (порог 80% / 95%).
+          XYZ — по коэффициенту вариации месячных продаж внутри сезона (апр–сен 2026):
+          X ≤ 0,5; Y 0,5–1,0; Z &gt; 1,0. Годовой ряд не используется, потому что сезонность
+          отправила бы почти все позиции в Z.</div>
+      </div>
+    </div>
+    <div class="grid kpis" id="abc-cards" style="grid-template-columns:repeat(3,1fr)"></div>
+    <div class="split" style="margin-top:16px">
+      <div class="card">
+        <h3>Матрица ABC × XYZ</h3>
+        <div class="caption">Число SKU · доля литров в скобках · цвет — вклад в объём.
+          X — стабильный спрос, Y — средний, Z — нерегулярный, «—» — нет продаж в сезоне.</div>
+        <div id="matrix"></div>
+        <div class="note-box" style="margin-top:12px">
+          <b>AX/AY — ядро.</b> 40 позиций дают 75% объёма. Держать наличие и контролировать
+          по ним ежедневно. <b>AZ</b> — 3 позиции с нестабильным спросом: закупать малыми партиями.
+          <b>CZ + C—</b> — 26 позиций в хвосте: кандидаты на вывод или заказ под клиента.
+        </div>
+      </div>
+      <div class="card">
+        <h3>Концентрация объёма</h3>
+        <div class="caption">Накопленная доля литров, %</div>
+        <div id="pareto"></div>
+        <div class="mini-list" style="margin-top:14px" id="concentration-list"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- stock -->
+  <section id="stock">
+    <div class="section-head">
+      <div>
+        <h2>Остатки, оборачиваемость и дефицит</h2>
+        <div class="hint">Покрытие считается по средним продажам последних трёх полных месяцев
+          (июль–сентябрь 2026). «Мёртвый остаток» — остаток есть, продаж за 6 месяцев нет.</div>
+      </div>
+    </div>
+    <div class="grid kpis" id="stock-cards"></div>
+    <div class="split" style="margin-top:16px">
+      <div class="card">
+        <h3>Статусы остатков</h3>
+        <div class="caption">Количество SKU по статусам</div>
+        <div id="status-bars"></div>
+        <div class="note-box warn" style="margin-top:14px" id="reserve-note"></div>
+      </div>
+      <div class="card">
+        <h3>Оборачиваемость</h3>
+        <div class="caption">За 12 полных месяцев</div>
+        <div class="mini-list" id="turnover-list"></div>
+      </div>
+    </div>
+    <div class="split" style="margin-top:16px">
+      <div class="card">
+        <h3>Нет в наличии при наличии спроса</h3>
+        <div class="caption">Средний спрос последних 3 месяцев, упак./мес.</div>
+        <div class="mini-list" id="oos-list"></div>
+      </div>
+      <div class="card">
+        <h3>Мёртвый и избыточный остаток</h3>
+        <div class="caption">Замороженный объём и месяцы покрытия</div>
+        <div class="mini-list" id="dead-list"></div>
+        <div class="mini-list" id="over-list" style="margin-top:8px"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- assortment -->
+  <section id="assortment">
+    <div class="section-head">
+      <div>
+        <h2>Топы и полный список позиций</h2>
+        <div class="hint">Сортировка — клик по заголовку столбца. Поиск и фильтры работают по всем 111 позициям.</div>
+      </div>
+    </div>
+    <div class="split-even">
+      <div class="card">
+        <h3>Топ-12 по литрам</h3>
+        <div class="caption">Физический объём, все группы</div>
+        <div id="top-litres"></div>
+      </div>
+      <div class="card">
+        <h3>Топ-12 по упаковкам</h3>
+        <div class="caption">Штуки/банки/вёдра — операционная единица заказа</div>
+        <div id="top-units"></div>
+      </div>
+    </div>
+    <div class="split-even" style="margin-top:16px">
+      <div class="card">
+        <h3>Рост за 3 месяца</h3>
+        <div class="caption">Июль–сентябрь к апрелю–июню 2026, упак.</div>
+        <div class="mini-list" id="growth-list"></div>
+      </div>
+      <div class="card">
+        <h3>Снижение за 3 месяца</h3>
+        <div class="caption">Июль–сентябрь к апрелю–июню 2026, упак.</div>
+        <div class="mini-list" id="decline-list"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h3>Все позиции</h3>
+      <div class="caption">111 SKU · продажи за 13 месяцев · остаток на 19.10.2026</div>
+      <div class="filters">
+        <input id="q" type="search" placeholder="Поиск по названию…">
+        <select id="f-group"><option value="">Все группы</option></select>
+        <select id="f-abc"><option value="">Все ABC</option><option>A</option><option>B</option><option>C</option></select>
+        <select id="f-status"><option value="">Все статусы</option></select>
+        <span class="count" id="row-count"></span>
+      </div>
+      <div class="table-wrap">
+        <table id="items">
+          <thead><tr>
+            <th data-key="name">Наименование <span class="arrow">↕</span></th>
+            <th data-key="group">Группа <span class="arrow">↕</span></th>
+            <th data-key="volume_l" class="num">Объём, л <span class="arrow">↕</span></th>
+            <th data-key="total_units" class="num">Упак. <span class="arrow">↕</span></th>
+            <th data-key="total_l" class="num">Литры <span class="arrow">↕</span></th>
+            <th data-key="stock" class="num">Остаток <span class="arrow">↕</span></th>
+            <th data-key="cover_months" class="num">Покр., мес. <span class="arrow">↕</span></th>
+            <th data-key="abc">ABC <span class="arrow">↕</span></th>
+            <th data-key="xyz">XYZ <span class="arrow">↕</span></th>
+            <th data-key="stock_status">Статус <span class="arrow">↕</span></th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- quality -->
+  <section id="quality">
+    <div class="section-head">
+      <div>
+        <h2>Качество данных и ограничения</h2>
+        <div class="hint">Что проверено, что сходится и где выводы требуют осторожности.</div>
+      </div>
+    </div>
+    <div class="grid split-even">
+      <div class="card">
+        <h3>Проверки</h3>
+        <div class="caption">Автоматические сверки по 111 строкам</div>
+        <div class="mini-list" id="quality-list"></div>
+      </div>
+      <div class="card">
+        <h3>Что нельзя посчитать по этой ведомости</h3>
+        <div class="mini-list">
+          <div class="mini"><span class="n">Выручка, прибыль, маржа</span><span class="v">нет цен</span></div>
+          <div class="mini"><span class="n">Средний чек и стоимость запасов</span><span class="v">нет сумм</span></div>
+          <div class="mini"><span class="n">Рентабельность по цветам и размерам</span><span class="v">нет цен</span></div>
+          <div class="mini"><span class="n">Сравнение год к году</span><span class="v">только 1 сезон</span></div>
+          <div class="mini"><span class="n">Продажи по клиентам и каналам</span><span class="v">нет аналитики</span></div>
+        </div>
+        <div class="note-box bad" style="margin-top:14px">
+          <b>Расхождение 16,5%.</b> Сумма ежемесячных колонок — 2 955 упак., колонка «Расход» — 2 537.
+          Совпадают 37 строк из 111, в остальных 74 месячная сумма больше. В 30 строках «продажи»
+          превышают доступный объём (начальный остаток + приход). Это означает, что месячные колонки
+          и «Расход» — разные потоки (или в выгрузке есть отрицательные остатки/продажи с другого склада).
+          Проверьте настройку отчёта: какой показатель выведен в месячных колонках.
+        </div>
+      </div>
+    </div>
+    <div class="grid split-even" style="margin-top:16px">
+      <div class="card">
+        <h3>Гигиена номенклатуры</h3>
+        <div class="caption">Примеры, которые мешают автоматической аналитике</div>
+        <div class="mini-list" id="hygiene-list"></div>
+      </div>
+      <div class="card">
+        <h3>Как читать отчёт</h3>
+        <div class="mini-list">
+          <div class="mini"><span class="n">Источник</span><span class="v">PDF, 12 страниц</span></div>
+          <div class="mini"><span class="n">Строк в отчёте</span><span class="v">111</span></div>
+          <div class="mini"><span class="n">Склад</span><span class="v">Склад Кореличи</span></div>
+          <div class="mini"><span class="n">Группа</span><span class="v">2 краски растворители</span></div>
+          <div class="mini"><span class="n">Единицы</span><span class="v">шт · банка · ведро</span></div>
+          <div class="mini"><span class="n">Объём, л</span><span class="v">расчётный</span></div>
+        </div>
+        <p style="font-size:12.5px;color:var(--muted);margin-top:12px">
+          Литры — оценка: «N л» берётся как есть; «N кг» пересчитывается по 1,35 кг/л.
+          Для 2 позиций объём восстановлен по названию (отмечено в отчёте). Одна позиция
+          без размера исключена из литрового объёма (1 упаковка).
+        </p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><b>Источник:</b> «Ведомость по остаткам ТМЦ на складах», 1С, период 01.10.2025–19.10.2026,
+      склад «Кореличи», группа «2 краски растворители», 111 номенклатурных позиций.</p>
+    <p><b>Методика:</b> ABC по литрам (80/95), XYZ по CV месячных продаж апреля–сентября 2026
+      (0,5/1,0), покрытие — остаток ÷ средние продажи июля–сентября 2026, оборачиваемость —
+      продажи 12 полных месяцев ÷ средний остаток. Октябрь 2026 (1–19) показан отдельно и не входит
+      в расчётные средние.</p>
+    <p><b>Ограничение:</b> в ведомости нет цен и сумм, поэтому показатели выручки, прибыли и
+      маржинальности не рассчитывались. Оценка литров — приближённая. Отчёт носит управленческий
+      характер и не заменяет бухгалтерскую отчётность.</p>
+  </div>
+</footer>
+
+<script>
+const DATA = /*__DATA_JSON__*/;
+const fmt0 = new Intl.NumberFormat('ru-RU', {maximumFractionDigits: 0});
+const fmt1 = new Intl.NumberFormat('ru-RU', {maximumFractionDigits: 1});
+const fmt2 = new Intl.NumberFormat('ru-RU', {maximumFractionDigits: 2});
+const nf = (v, d = 0) => (v === null || v === undefined) ? '—' :
+  new Intl.NumberFormat('ru-RU', {maximumFractionDigits: d}).format(v);
+const pctTxt = v => (v === null || v === undefined) ? '—' : nf(v, 1) + '%';
+
+function el(html) { const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstElementChild; }
+function mount(sel, html) { document.querySelector(sel).innerHTML = html; }
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* ---------- KPI ---------- */
+const T = DATA.totals;
+mount('#chip-sku', nf(DATA.sku));
+mount('#chip-units', nf(T.units));
+mount('#chip-litres', nf(T.litres));
+
+const kpis = [
+  {cls:'accent', label:'Продано за период', value:nf(T.units), unit:'упак.', note:`${nf(T.litres)} л · 13 месяцев`},
+  {cls:'', label:'Ассортимент', value:nf(DATA.sku), unit:'SKU', note:`${DATA.active_sku} продавались хотя бы раз`},
+  {cls:'green', label:'Оборачиваемость', value:fmt1.format(DATA.turnover.turns_per_year), unit:'об./год', note:`${nf(DATA.turnover.days)} дней запаса`},
+  {cls:'', label:'Остаток на 19.10', value:nf(T.stock), unit:'упак.', note:`${nf(T.stock_litres)} л · ${nf(DATA.turnover.stock_months_at_last3,1)} мес. продаж`},
+  {cls:'amber', label:'Ниже резерва', value:nf(DATA.below_reserve.length), unit:'SKU', note:`дефицит ${nf(DATA.deficit_total)} упак. к нормативу`},
+  {cls:'red', label:'Нет в наличии', value:nf(DATA.lost_demand.sku), unit:'SKU', note:`спрос ~${nf(DATA.lost_demand.avg3_units,1)} упак./мес.`},
+];
+mount('#kpis', kpis.map(k => `
+  <div class="kpi ${k.cls}">
+    <div class="label">${esc(k.label)}</div>
+    <div class="value">${k.value} <small>${esc(k.unit)}</small></div>
+    <div class="note">${esc(k.note)}</div>
+  </div>`).join(''));
+
+/* ---------- helpers ---------- */
+function niceScale(max, ticks = 4) {
+  if (!max) return {top: 1, step: 1};
+  const raw = max / ticks, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const n = raw / mag;
+  let step = n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10;
+  step *= mag;
+  return {top: Math.ceil(max / step) * step, step};
+}
+const SVGNS = 'http://www.w3.org/2000/svg';
+
+function monthlyChart(metric) {
+  const rows = DATA.monthly;
+  const isL = metric === 'litres';
+  const unit = isL ? 'л' : 'упак.';
+  const W = 900, H = 350, m = {t: 24, r: 16, b: 52, l: 58};
+  const iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const max = Math.max(...rows.map(r => r[metric]));
+  const sc = niceScale(max, 4);
+  const slot = iw / rows.length, bw = slot * 0.62;
+  const y = v => m.t + ih - v / sc.top * ih;
+  let g = '';
+  for (let v = 0; v <= sc.top + 1e-9; v += sc.step) {
+    g += `<line class="gridline" x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}"/>
+          <text x="${m.l - 9}" y="${y(v) + 4}" text-anchor="end">${nf(v)}</text>`;
+  }
+  const avg = rows.slice(0, 12).reduce((a, r) => a + r[metric], 0) / 12;
+  g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(avg)}" y2="${y(avg)}"
+          stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="5 5"/>`;
+  g += `<text x="${m.l + 6}" y="${y(avg) - 7}" text-anchor="start" fill="#64748b" font-size="11">
+          среднее 12 мес. — ${nf(avg)} ${unit}</text>`;
+  rows.forEach((r, i) => {
+    const cx = m.l + slot * i + slot / 2;
+    const h = Math.max(1, r[metric] / sc.top * ih);
+    const fill = r.partial ? 'url(#hatch)' : 'url(#barGrad)';
+    g += `<g class="bar">
+      <rect x="${cx - bw / 2}" y="${y(r[metric])}" width="${bw}" height="${h}" rx="3" fill="${fill}"
+        ${r.partial ? 'stroke="#94a3b8" stroke-dasharray="3 3" stroke-width="1"' : ''}>
+        <title>${esc(r.label)}: ${nf(r[metric])} ${unit}; ${nf(r.units)} упак.; ${nf(r.litres)} л; активных SKU: ${r.active_sku}</title>
+      </rect>
+      ${r[metric] > 0 ? `<text x="${cx}" y="${y(r[metric]) - 6}" text-anchor="middle" font-size="10.5" fill="#475569">${nf(r[metric])}</text>` : ''}
+      <text x="${cx}" y="${H - 24}" text-anchor="middle" font-size="11" fill="#64748b">${esc(r.label)}</text>
+    </g>`;
+  });
+  document.querySelector('#monthly-chart').innerHTML = `
+    <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Продажи по месяцам">
+      <defs>
+        <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#3b82f6"/><stop offset="1" stop-color="#1d4ed8"/>
+        </linearGradient>
+        <pattern id="hatch" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+          <rect width="6" height="6" fill="#e2e8f0"/>
+          <line x1="0" y1="0" x2="0" y2="6" stroke="#94a3b8" stroke-width="2"/>
+        </pattern>
+      </defs>
+      <g class="axis">${g}</g>
+    </svg>`;
+  mount('#bar-caption', `${isL ? 'Литры' : 'Упаковки'}, пунктир — среднее за 12 полных месяцев (${nf(avg)} ${unit})`);
+}
+
+function activeChart() {
+  const rows = DATA.monthly;
+  const W = 900, H = 210, m = {t: 18, r: 18, b: 44, l: 42};
+  const iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const max = Math.max(...rows.map(r => r.active_sku));
+  const sc = niceScale(max, 3);
+  const x = i => m.l + iw * i / (rows.length - 1);
+  const y = v => m.t + ih - v / sc.top * ih;
+  let g = '';
+  for (let v = 0; v <= sc.top + 1e-9; v += sc.step) {
+    g += `<line class="gridline" x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}"/>
+          <text x="${m.l - 8}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
+  }
+  const pts = rows.map((r, i) => `${x(i)},${y(r.active_sku)}`).join(' ');
+  g += `<polyline points="${pts}" fill="none" stroke="#0ea5e9" stroke-width="2.5" stroke-linejoin="round"/>`;
+  rows.forEach((r, i) => {
+    g += `<circle cx="${x(i)}" cy="${y(r.active_sku)}" r="3.5" fill="#fff" stroke="#0284c7" stroke-width="2">
+            <title>${esc(r.label)}: ${r.active_sku} активных SKU</title></circle>
+          <text x="${x(i)}" y="${y(r.active_sku) - 10}" text-anchor="middle" font-size="10" fill="#0369a1">${r.active_sku}</text>
+          <text x="${x(i)}" y="${H - 18}" text-anchor="middle" font-size="10.5" fill="#64748b">${esc(r.label.replace('*',''))}</text>`;
+  });
+  mount('#active-chart', `<svg viewBox="0 0 ${W} ${H}">${g}</svg>`);
+}
+
+function hbars(sel, rows, opts) {
+  const {value, unit = '', secondary = null, max = null, color = null, digits = 0} = opts;
+  const top = max || Math.max(...rows.map(r => r[value] || 0), 1);
+  mount(sel, `<div class="hbars">${rows.map(r => {
+    const v = r[value] || 0;
+    const w = Math.max(1.5, v / top * 100);
+    const bg = color ? color(r) : 'linear-gradient(90deg,#2563eb,#38bdf8)';
+    const sec = secondary ? `<small>${nf(r[secondary], 1)} ${secondary === 'litre_share' ? '%' : ''}</small>` : '';
+    return `<div class="hbar" title="${esc(r.key)}: ${nf(v, digits)} ${unit}">
+      <div class="name">${esc(r.key)}</div>
+      <div class="track"><div class="fill" style="width:${w}%;background:${bg}"></div></div>
+      <div class="val">${nf(v, digits)} ${unit}${sec}</div>
+    </div>`;
+  }).join('')}</div>`);
+}
+
+function miniList(sel, rows) {
+  mount(sel, `<div class="mini-list">${rows.map(r => `
+    <div class="mini"><span class="n" title="${esc(r.name)}">${esc(r.name)}</span>
+      <span class="v">${r.value}</span></div>`).join('')}</div>`);
+}
+
+/* ---------- dynamics ---------- */
+let metric = 'litres';
+monthlyChart(metric);
+activeChart();
+document.querySelectorAll('#metric-toggle button').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('#metric-toggle button').forEach(x => x.classList.toggle('on', x === b));
+  metric = b.dataset.metric;
+  monthlyChart(metric);
+}));
+
+hbars('#season-bars', DATA.seasonality.map(s => ({key: s.month, index: s.index})),
+  {value: 'index', unit: '%', max: 200, digits: 0,
+   color: r => r.index >= 100 ? 'linear-gradient(90deg,#16a34a,#4ade80)' : 'linear-gradient(90deg,#d97706,#fbbf24)'});
+
+hbars('#quarter-bars', DATA.quarterly.map(q => ({key: q.label, units: q.unit_share, litres: q.litre_share})),
+  {value: 'units', unit: '%', max: 45, digits: 1});
+document.querySelectorAll('#quarter-bars .hbar').forEach((node, i) => {
+  const q = DATA.quarterly[i];
+  node.querySelector('.val').innerHTML = `${nf(q.unit_share,1)}% упак.<small>${nf(q.litre_share,1)}% л</small>`;
+});
+
+const winterShare = DATA.halves.winter_oct_feb / DATA.totals.units * 100;
+const partialShare = DATA.totals.partial_units / DATA.totals.units * 100;
+const dyn = [
+  ['Пик и минимум', `Июнь 2026 — ${nf(449)} упак., февраль 2026 — ${nf(15)} упак. Размах 30×.`],
+  ['Сезонное окно', `Март–сентябрь дают ${nf(DATA.halves.season_share,1)}% продаж; октябрь 2025 – февраль 2026 — ${nf(winterShare,1)}%; неполный октябрь 2026 — ${nf(partialShare,1)}%.`],
+  ['Октябрь 2026', `4,26 упак./день против 10,0 в сентябре (−57%), но против октября 2025 (3,03/день) — +41%. Это сезонный спад, а не обвал.`],
+  ['Первый и второй сезон', `Апрель–сентябрь 2026 — 2 325 упак. против 549 за октябрь 2025–март 2026. Сравнения год к году нет: в выгрузке только один сезон.`],
+];
+mount('#dynamics-notes', dyn.map(([t, v]) => `
+  <div class="mini" style="align-items:flex-start"><span class="n" style="white-space:normal">
+    <b>${esc(t)}.</b> ${esc(v)}</span></div>`).join(''));
+
+/* ---------- structure ---------- */
+hbars('#group-bars', DATA.groups.map(g => ({key: g.group, litres: g.litres, share: g.litre_share, units: g.unit_share})),
+  {value: 'litres', unit: 'л', digits: 0, secondary: null});
+document.querySelectorAll('#group-bars .hbar').forEach((node, i) => {
+  const g = DATA.groups[i];
+  node.querySelector('.val').innerHTML = `${nf(g.litres)} л <small>· ${nf(g.litre_share,1)}% · ${g.sku} SKU</small>`;
+});
+const sizeRows = DATA.sizes.filter(s => s.litres > 0);
+hbars('#size-bars', sizeRows.map(s => ({key: s.key, litres: s.litres, share: s.litre_share, units: s.units})),
+  {value: 'litres', unit: 'л', digits: 0});
+document.querySelectorAll('#size-bars .hbar').forEach((node, i) => {
+  const s = sizeRows[i];
+  node.querySelector('.val').innerHTML = `${nf(s.litres)} л <small>· ${nf(s.litre_share,1)}%</small>`;
+});
+const enamelTotal = DATA.enamel_colours.reduce((a, c) => a + c.litres, 0);
+hbars('#colour-bars', DATA.enamel_colours.slice(0, 12).map(c => ({key: c.key, litres: c.litres, share: c.litres / enamelTotal * 100})),
+  {value: 'litres', unit: 'л', digits: 0});
+document.querySelectorAll('#colour-bars .hbar').forEach((node, i) => {
+  const c = DATA.enamel_colours[i];
+  node.querySelector('.val').innerHTML = `${nf(c.litres)} л <small>· ${nf(c.litres / enamelTotal * 100,1)}%</small>`;
+});
+hbars('#brand-bars', DATA.brands.map(b => ({key: b.key, litres: b.litres, share: b.litre_share, units: b.units})),
+  {value: 'litres', unit: 'л', digits: 0});
+document.querySelectorAll('#brand-bars .hbar').forEach((node, i) => {
+  const b = DATA.brands[i];
+  node.querySelector('.val').innerHTML = `${nf(b.litres)} л <small>· ${nf(b.litre_share,1)}%</small>`;
+});
+
+/* ---------- ABC ---------- */
+const abcColors = {A: '#1d4ed8', B: '#0ea5e9', C: '#94a3b8'};
+mount('#abc-cards', ['A', 'B', 'C'].map(k => {
+  const a = DATA.abc[k];
+  return `<div class="kpi ${k === 'A' ? 'accent' : ''}" style="border-left-color:${abcColors[k]}">
+    <div class="label">Класс ${k}</div>
+    <div class="value">${a.sku} <small>SKU</small></div>
+    <div class="note">${nf(a.litres)} л · ${nf(a.litre_share,1)}% объёма<br>${nf(a.unit_share,1)}% упаковок</div></div>`;
+}).join(''));
+
+const matrixRows = ['A', 'B', 'C'], matrixCols = ['X', 'Y', 'Z', '—'];
+const matrixLabels = {X: 'X', Y: 'Y', Z: 'Z', '—': '—'};
+let mx = `<table class="matrix"><thead><tr><th></th>${matrixCols.map(z => `<th>${matrixLabels[z]}</th>`).join('')}</tr></thead><tbody>`;
+matrixRows.forEach(a => {
+  mx += `<tr><th>${a}</th>`;
+  matrixCols.forEach(z => {
+    const cell = DATA.matrix[a + z] || {sku: 0, share: 0, litres: 0};
+    const cls = cell.share >= 20 ? 'hot' : cell.share >= 5 ? 'warm' : '';
+    mx += `<td class="${cls}"><b>${cell.sku}</b><small>${nf(cell.share,1)}% · ${nf(cell.litres)} л</small></td>`;
+  });
+  mx += `</tr>`;
+});
+mx += `</tbody></table>`;
+mount('#matrix', mx);
+
+hbars('#pareto', [
+  {key: 'Топ-1', share: DATA.concentration.top1}, {key: 'Топ-5', share: DATA.concentration.top5},
+  {key: 'Топ-10', share: DATA.concentration.top10}, {key: 'Топ-20', share: DATA.concentration.top20},
+  {key: 'Топ-44 (80%)', share: 80}],
+  {value: 'share', unit: '%', max: 100, digits: 1,
+   color: r => r.key.startsWith('Топ-44') ? 'linear-gradient(90deg,#64748b,#94a3b8)' : 'linear-gradient(90deg,#1d4ed8,#38bdf8)'});
+mount('#concentration-list', `
+  <div class="mini"><span class="n">SKU, чтобы набрать 80% объёма</span><span class="v">${DATA.pareto_sku}</span></div>
+  <div class="mini"><span class="n">Доля топ-10 в литрах</span><span class="v">${pctTxt(DATA.concentration.top10)}</span></div>
+  <div class="mini"><span class="n">Доля топ-20 в литрах</span><span class="v">${pctTxt(DATA.concentration.top20)}</span></div>
+  <div class="mini"><span class="n">Хвост C (37 SKU)</span><span class="v">${pctTxt(DATA.abc.C.litre_share)}</span></div>`);
+
+/* ---------- stock ---------- */
+const statusOrder = ['Норма', 'Ниже резерва', 'Нет в наличии', 'Нет остатка', 'Мёртвый остаток', 'Избыток'];
+const statusColors = {
+  'Норма': '#16a34a', 'Ниже резерва': '#f59e0b', 'Нет в наличии': '#dc2626',
+  'Нет остатка': '#94a3b8', 'Мёртвый остаток': '#7c3aed', 'Избыток': '#0ea5e9'
+};
+const statusRows = statusOrder.filter(s => DATA.stock_status[s]).map(s => ({
+  key: s, sku: DATA.stock_status[s].sku, units: DATA.stock_status[s].units
+}));
+mount('#stock-cards', `
+  <div class="kpi green"><div class="label">Норма</div><div class="value">${DATA.stock_status['Норма'].sku} <small>SKU</small></div>
+    <div class="note">${nf(DATA.stock_status['Норма'].units)} упак. · ${nf(DATA.stock_status['Норма'].litres)} л</div></div>
+  <div class="kpi amber"><div class="label">Ниже резерва</div><div class="value">${DATA.below_reserve.length} <small>SKU</small></div>
+    <div class="note">дефицит ${nf(DATA.deficit_total)} упак.</div></div>
+  <div class="kpi red"><div class="label">Нет в наличии</div><div class="value">${DATA.lost_demand.sku} <small>SKU</small></div>
+    <div class="note">спрос ~${nf(DATA.lost_demand.avg3_units,1)} упак./мес.</div></div>
+  <div class="kpi violet"><div class="label">Мёртвый остаток</div><div class="value">${DATA.stock_status['Мёртвый остаток'].sku} <small>SKU</small></div>
+    <div class="note">${nf(DATA.stock_status['Мёртвый остаток'].units)} упак. · ${nf(DATA.stock_status['Мёртвый остаток'].litres)} л</div></div>
+  <div class="kpi"><div class="label">Избыток</div><div class="value">${DATA.stock_status['Избыток'].sku} <small>SKU</small></div>
+    <div class="note">${nf(DATA.stock_status['Избыток'].units)} упак. · ${nf(DATA.stock_status['Избыток'].litres)} л</div></div>
+  <div class="kpi"><div class="label">Профицит к резерву</div><div class="value">+${nf(DATA.reserve_surplus_total)} <small>упак.</small></div>
+    <div class="note">при дефиците ${nf(DATA.deficit_total)} упак.</div></div>`);
+
+hbars('#status-bars', statusRows, {value: 'sku', unit: 'SKU', max: 60, digits: 0,
+  color: r => statusColors[r.key]});
+
+mount('#reserve-note', `<b>Норматив не связан со скоростью продаж.</b> Минимальный резерв
+  принимает значения 0–6 упак. и даёт от 0,2 до 18 месяцев покрытия спроса (медиана — 1,5 мес.).
+  У 19 позиций резерв меньше половины месяца продаж, у 19 — больше трёх месяцев. Итог: по складу
+  профицит +${nf(DATA.reserve_surplus_total)} упак. к нормативу, но 45 позиций в дефиците на
+  ${nf(DATA.deficit_total)} упак. Норматив стоит пересчитать по ABC/XYZ и скорости продаж.`);
+
+const turn = DATA.turnover;
+mount('#turnover-list', `
+  <div class="mini"><span class="n">Оборотов в год (упаковки)</span><span class="v">${fmt2.format(turn.turns_per_year)}</span></div>
+  <div class="mini"><span class="n">Запас, дней (12 мес.)</span><span class="v">${nf(turn.days)}</span></div>
+  <div class="mini"><span class="n">Оборотов в год (литры)</span><span class="v">${fmt2.format(turn.turns_per_year_litres)}</span></div>
+  <div class="mini"><span class="n">Запас, дней (литры)</span><span class="v">${nf(turn.days_litres)}</span></div>
+  <div class="mini"><span class="n">Запас при текущем темпе</span><span class="v">${nf(turn.stock_months_at_last3,1)} мес.</span></div>
+  <div class="mini"><span class="n">Средний остаток за период</span><span class="v">${nf(T.avg_stock)} упак.</span></div>`);
+
+miniList('#oos-list', DATA.out_of_stock.slice(0, 10).map(x => ({
+  name: x.name, value: `${nf(x.avg3,1)} упак./мес.`
+})));
+const deadRows = DATA.dead.map(d => ({name: d.name, value: `${nf(d.stock)} упак. · ${nf(d.stock_l)} л`}));
+const overRows = DATA.overstock.map(d => ({name: d.name, value: `${nf(d.stock)} упак. · ${nf(d.cover_months,1)} мес.`}));
+mount('#dead-list', `<div class="mini-list">
+  ${deadRows.map(r => `<div class="mini"><span class="n" title="${esc(r.name)}">${esc(r.name)}</span><span class="v">${r.value}</span></div>`).join('')}
+  <div class="mini" style="background:#faf5ff;border-color:#e9d5ff"><span class="n"><b>Итого мёртвый остаток</b></span>
+    <span class="v">${nf(DATA.stock_status['Мёртвый остаток'].units)} упак. · ${nf(DATA.stock_status['Мёртвый остаток'].litres)} л</span></div>
+</div>
+<div class="caption" style="margin:14px 0 8px">Избыток (покрытие &gt; 6 месяцев)</div>
+<div class="mini-list">${overRows.map(r => `<div class="mini"><span class="n" title="${esc(r.name)}">${esc(r.name)}</span><span class="v">${r.value}</span></div>`).join('')}</div>`);
+
+/* ---------- tops ---------- */
+hbars('#top-litres', DATA.top_litres.slice(0, 12).map(x => ({key: x.name, litres: x.litres, units: x.units})),
+  {value: 'litres', unit: 'л', digits: 0});
+document.querySelectorAll('#top-litres .hbar').forEach((node, i) => {
+  const x = DATA.top_litres[i];
+  node.querySelector('.val').innerHTML = `${nf(x.litres)} л <small>· ${nf(x.units)} упак.</small>`;
+});
+hbars('#top-units', DATA.top_units.slice(0, 12).map(x => ({key: x.name, units: x.units, litres: x.litres})),
+  {value: 'units', unit: 'упак.', digits: 0});
+document.querySelectorAll('#top-units .hbar').forEach((node, i) => {
+  const x = DATA.top_units[i];
+  node.querySelector('.val').innerHTML = `${nf(x.units)} упак. <small>· ${nf(x.litres)} л</small>`;
+});
+
+miniList('#growth-list', DATA.growth.map(x => ({name: x.name, value: `+${nf(x.delta)} (${nf(x.prev3)}→${nf(x.last3)})`})));
+miniList('#decline-list', DATA.decline.map(x => ({name: x.name, value: `${nf(x.delta)} (${nf(x.prev3)}→${nf(x.last3)})`})));
+
+/* ---------- table ---------- */
+const state = {q: '', group: '', abc: '', status: '', sort: 'total_l', dir: -1};
+const groups = [...new Set(DATA.items.map(x => x.group))];
+mount('#f-group', `<option value="">Все группы</option>${groups.map(g => `<option>${esc(g)}</option>`).join('')}`);
+const statuses = [...new Set(DATA.items.map(x => x.stock_status))];
+mount('#f-status', `<option value="">Все статусы</option>${statuses.map(s => `<option>${esc(s)}</option>`).join('')}`);
+
+function badgeFor(s) {
+  const map = {'Норма':'b-green','Ниже резерва':'b-amber','Нет в наличии':'b-red','Нет остатка':'b-slate',
+    'Мёртвый остаток':'b-violet','Избыток':'b-blue'};
+  return `<span class="badge ${map[s] || 'b-slate'}">${esc(s)}</span>`;
+}
+function renderTable() {
+  const rows = DATA.items.filter(x =>
+    (!state.q || x.name.toLowerCase().includes(state.q)) &&
+    (!state.group || x.group === state.group) &&
+    (!state.abc || x.abc === state.abc) &&
+    (!state.status || x.stock_status === state.status)
+  ).sort((a, b) => {
+    const k = state.sort;
+    let va = a[k], vb = b[k];
+    if (k === 'name' || k === 'group' || k === 'abc' || k === 'xyz' || k === 'stock_status') {
+      va = String(va); vb = String(vb);
+      return va.localeCompare(vb, 'ru') * state.dir;
+    }
+    va = va === null || va === undefined ? -1 : va;
+    vb = vb === null || vb === undefined ? -1 : vb;
+    return (va - vb) * state.dir;
+  });
+  document.querySelector('#items tbody').innerHTML = rows.map(x => `
+    <tr>
+      <td class="name" title="${esc(x.name)}">${esc(x.name)}</td>
+      <td>${esc(x.group)}</td>
+      <td class="num">${x.volume_l ? nf(x.volume_l, 2) : '—'}</td>
+      <td class="num">${nf(x.total_units)}</td>
+      <td class="num">${x.total_l ? nf(x.total_l) : '—'}</td>
+      <td class="num">${nf(x.stock)}</td>
+      <td class="num">${x.cover_months === null ? '—' : nf(x.cover_months, 1)}</td>
+      <td><span class="abc ${x.abc}">${x.abc}</span></td>
+      <td>${x.xyz === '—' ? '—' : x.xyz}</td>
+      <td>${badgeFor(x.stock_status)}</td>
+    </tr>`).join('');
+  mount('#row-count', `Показано ${rows.length} из ${DATA.items.length}`);
+  document.querySelectorAll('#items th').forEach(th => {
+    th.classList.toggle('sorted', th.dataset.key === state.sort);
+    const arrow = th.querySelector('.arrow');
+    if (arrow) arrow.textContent = th.dataset.key === state.sort ? (state.dir > 0 ? '↑' : '↓') : '↕';
+  });
+}
+document.querySelectorAll('#items th').forEach(th => th.addEventListener('click', () => {
+  const k = th.dataset.key;
+  if (!k) return;
+  if (state.sort === k) state.dir *= -1; else { state.sort = k; state.dir = k === 'name' ? 1 : -1; }
+  renderTable();
+}));
+document.querySelector('#q').addEventListener('input', e => {state.q = e.target.value.toLowerCase().trim(); renderTable();});
+document.querySelector('#f-group').addEventListener('change', e => {state.group = e.target.value; renderTable();});
+document.querySelector('#f-abc').addEventListener('change', e => {state.abc = e.target.value; renderTable();});
+document.querySelector('#f-status').addEventListener('change', e => {state.status = e.target.value; renderTable();});
+renderTable();
+
+/* ---------- quality ---------- */
+const Q = DATA.quality;
+mount('#quality-list', `
+  <div class="mini"><span class="n">Баланс «начальный + приход − расход = конечный»</span>
+    <span class="v">${Q.balance_ok ? '✓ сходится' : '✗ есть расхождения'}</span></div>
+  <div class="mini"><span class="n">Сумма месячных колонок vs «Расход»</span>
+    <span class="v" style="color:#b45309">+${nf(Q.monthly_vs_outcome_diff)} (${nf(Q.monthly_vs_outcome_pct,1)}%)</span></div>
+  <div class="mini"><span class="n">Строк, где месяцы = «Расход»</span><span class="v">${Q.monthly_eq_outcome_sku} из 111</span></div>
+  <div class="mini"><span class="n">Строк, где продажи &gt; доступного объёма</span><span class="v" style="color:#b91c1c">${Q.sales_gt_available_sku}</span></div>
+  <div class="mini"><span class="n">Позиций с заполненным артикулом</span><span class="v">${Q.with_article} из 111</span></div>
+  <div class="mini"><span class="n">Единицы измерения</span><span class="v">${Object.entries(Q.unit_kinds).map(([k,v]) => `${k} ${v}`).join(' · ')}</span></div>
+  <div class="mini"><span class="n">Позиций без объёма</span><span class="v">${Q.no_volume_sku}</span></div>`);
+
+mount('#hygiene-list', `
+  <div class="mini"><span class="n">FLAGMAN1л / FLAGMAН 5 — нет пробела и кириллическая «Н»</span><span class="v">2 SKU</span></div>
+  <div class="mini"><span class="n">5л(( 7кг — двойная скобка</span><span class="v">1 SKU</span></div>
+  <div class="mini"><span class="n">0,9 (0,8кг) — потеряна единица «л»</span><span class="v">1 SKU</span></div>
+  <div class="mini"><span class="n">св-сер / св.-сер. — разные написания</span><span class="v">4 SKU</span></div>
+  <div class="mini"><span class="n">2,40л / 2,4л — разный формат</span><span class="v">2 SKU</span></div>
+  <div class="mini"><span class="n">Краска ВД-АК-1035у — нет размера</span><span class="v">1 SKU</span></div>
+  <div class="mini"><span class="n">шт / банка / ведро для одной линейки</span><span class="v">3 единицы</span></div>`);
+
+/* smooth nav */
+document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
+  e.preventDefault(); document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:'smooth'});
+}));
+</script>
+</body>
+</html>
