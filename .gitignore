@@ -1,0 +1,11 @@
+# Go build outputs
+/dist/
+/build/
+*.exe
+*.test
+
+# Editor / OS noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
